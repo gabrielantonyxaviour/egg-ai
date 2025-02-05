@@ -38,7 +38,7 @@ import {
     RESPONSE_CHANCES,
     TEAM_COORDINATION,
     TIMING_CONSTANTS,
-} from "./constants";
+} from "./constants.ts";
 import {
     sendMessageInChunks,
     canSendMessage,

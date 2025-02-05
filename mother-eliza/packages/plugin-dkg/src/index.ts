@@ -4,8 +4,8 @@ import { dkgInsert } from "./actions/dkgInsert.ts";
 
 import { graphSearch } from "./providers/graphSearch.ts";
 
-export * as actions from "./actions";
-export * as providers from "./providers";
+export * as actions from "./actions/index.ts";
+export * as providers from "./providers/index.ts";
 
 export const dkgPlugin: Plugin = {
     name: "dkg",

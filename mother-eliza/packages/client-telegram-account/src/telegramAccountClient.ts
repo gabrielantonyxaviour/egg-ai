@@ -15,8 +15,8 @@ import {
 } from "@elizaos/core";
 import { TelegramAccountConfig } from "./environment.ts";
 import { TelegramClient, Api } from "telegram";
-import { StoreSession } from "telegram/sessions";
-import { NewMessage, NewMessageEvent } from "telegram/events";
+import { StoreSession } from "telegram/sessions/index";
+import { NewMessage, NewMessageEvent } from "telegram/events/index";
 import { Entity } from "telegram/define";
 import input from "input";
 import bigInt from "big-integer";

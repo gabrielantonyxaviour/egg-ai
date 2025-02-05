@@ -12,10 +12,10 @@ import { walletProvider } from "./providers/wallet.ts";
 import { trustScoreProvider } from "./providers/trustScoreProvider.ts";
 import { trustEvaluator } from "./evaluators/trust.ts";
 import { executeSwap } from "./actions/swap.ts";
-import take_order from "./actions/takeOrder";
+import take_order from "./actions/takeOrder.ts";
 import pumpfun from "./actions/pumpfun.ts";
 import fomo from "./actions/fomo.ts";
-import { executeSwapForDAO } from "./actions/swapDao";
+import { executeSwapForDAO } from "./actions/swapDao.ts";
 export { TokenProvider, WalletProvider, getTokenBalance, getTokenBalances };
 export const solanaPlugin: Plugin = {
     name: "solana",

@@ -14,10 +14,10 @@ import {
 } from "ai";
 import { Buffer } from "buffer";
 import { createOllama } from "ollama-ai-provider";
-import OpenAI from "openai";
+import OpenAI from "openai/index.mjs";
 import { encodingForModel, type TiktokenModel } from "js-tiktoken";
 import { AutoTokenizer } from "@huggingface/transformers";
-import Together from "together-ai";
+import Together from "together-ai/index.mjs";
 import type { ZodSchema } from "zod";
 import { elizaLogger } from "./index.ts";
 import {

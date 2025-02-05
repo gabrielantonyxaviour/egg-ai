@@ -1,6 +1,6 @@
 import type { Plugin } from "@elizaos/core";
 
-import { TransferAction } from "./actions/";
+import { TransferAction } from "./actions";
 
 export const zksyncEraPlugin: Plugin = {
     name: "zksync-era",

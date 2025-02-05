@@ -12,7 +12,7 @@ import {
     type State,
 } from "@elizaos/core";
 import { stringToUuid } from "@elizaos/core";
-import type { ClientBase } from "./base";
+import type { ClientBase } from "./base.ts";
 import { buildConversationThread, sendTweet, wait } from "./utils.ts";
 
 const twitterSearchTemplate =

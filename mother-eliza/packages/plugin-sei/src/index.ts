@@ -1,7 +1,7 @@
 import type { Plugin } from "@elizaos/core";
 import { evmWalletProvider } from "./providers/wallet.ts";
 
-import { transferAction } from "./actions/transfer";
+import { transferAction } from "./actions/transfer.ts";
 
 console.log("SEI IS BEING INITIALIZED")
 

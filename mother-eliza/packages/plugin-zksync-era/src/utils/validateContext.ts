@@ -1,4 +1,4 @@
-import type { TransferContent } from "../actions/";
+import type { TransferContent } from "../actions";
 import { isAddress } from "viem";
 
 export const transferAction = (content: TransferContent): content is TransferContent => {

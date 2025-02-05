@@ -17,7 +17,7 @@ import {
     type IImageDescriptionService,
     ServiceType
 } from "@elizaos/core";
-import type { ClientBase } from "./base";
+import type { ClientBase } from "./base.ts";
 import { buildConversationThread, sendTweet, wait } from "./utils.ts";
 
 export const twitterMessageHandlerTemplate =

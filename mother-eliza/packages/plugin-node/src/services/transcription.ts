@@ -10,7 +10,7 @@ import { exec } from "child_process";
 import { File } from "formdata-node";
 import fs from "fs";
 import { nodewhisper } from "nodejs-whisper";
-import OpenAI from "openai"; // todo, can probably move this to model provider or whateer
+import OpenAI from "openai/index.mjs"; // todo, can probably move this to model provider or whateer
 import os from "os";
 import path from "path";
 import { fileURLToPath } from "url";

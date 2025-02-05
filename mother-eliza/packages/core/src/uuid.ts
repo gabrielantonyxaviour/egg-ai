@@ -1,4 +1,4 @@
-import { sha1 } from "js-sha1";
+import { sha1 } from "js-sha1/index";
 import type { UUID } from "./types.ts";
 import { z } from "zod";
 

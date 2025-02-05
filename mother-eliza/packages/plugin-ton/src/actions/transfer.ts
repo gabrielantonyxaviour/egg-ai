@@ -15,7 +15,7 @@ import {
     initWalletProvider,
     type WalletProvider,
     nativeWalletProvider,
-} from "../providers/wallet";
+} from "../providers/wallet.ts";
 import { internal } from "@ton/ton";
 
 export interface TransferContent extends Content {

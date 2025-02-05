@@ -9,7 +9,7 @@ import {
 import { abstractTestnet, mainnet } from "viem/chains";
 import { normalize } from "viem/ens";
 import { elizaLogger } from "@elizaos/core";
-import { ETH_ADDRESS } from "../constants";
+import { ETH_ADDRESS } from "../constants/index.js";
 
 import {
 	type Account,

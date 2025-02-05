@@ -26,7 +26,7 @@ import { createApiRouter } from "./api.ts";
 import * as fs from "fs";
 import * as path from "path";
 import { createVerifiableLogApiRouter } from "./verifiable-log-api.ts";
-import OpenAI from "openai";
+import OpenAI from "openai/index.mjs";
 
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
