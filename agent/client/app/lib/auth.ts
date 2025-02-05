@@ -12,7 +12,7 @@ export async function sha256(str: string): Promise<ArrayBuffer> {
 
 export function base64URLEncode(buffer: ArrayBuffer): string {
   const bytes = new Uint8Array(buffer)
-  const base64 = btoa(String.fromCharCode(...bytes))
+  const base64 = btoa(String.fromCharCode.apply(null, Array.from(bytes)));
   return base64
     .replace(/\+/g, '-')
     .replace(/\//g, '_')

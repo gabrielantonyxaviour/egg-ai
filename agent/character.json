@@ -5,7 +5,7 @@
     "direct",
     "telegram"
   ],
-  "modelProvider": "gaia",
+  "modelProvider": "gaianet",
   "settings": {
     "secrets": {},
     "voice": {

@@ -11,8 +11,8 @@ import {
 elizaLogger.closeByNewLine = false;
 elizaLogger.verbose = true;
 
-import { SqliteDatabaseAdapter } from "@ai16z/adapter-sqlite";
-import Database from "better-sqlite3";
+// import { SqliteDatabaseAdapter } from "@ai16z/adapter-sqlite";
+// import { SupabaseDatabaseAdapter } from "@elizaos/adapter-supabase"
 import path from "path";
 import { readFileSync, existsSync } from "fs";
 import { resolve } from "path";
@@ -43,6 +43,8 @@ import { Bot, Context } from "grammy";
 import { bootstrapPlugin } from "@ai16z/plugin-bootstrap";
 import { collablandPlugin } from "../plugins/collabland.plugin.js";
 import { StorageService } from "../plugins/gated-storage-plugin/services/storage.service.js";
+import { SqliteDatabaseAdapter } from "@ai16z/adapter-sqlite";
+import Database from "better-sqlite3";
 
 const MAX_MESSAGE_LENGTH = 4096; // Telegram's max message length
 
@@ -408,10 +410,10 @@ export class MessageManager {
         inReplyTo:
           "reply_to_message" in message && message.reply_to_message
             ? stringToUuid(
-                message.reply_to_message.message_id.toString() +
-                  "-" +
-                  this.runtime.agentId
-              )
+              message.reply_to_message.message_id.toString() +
+              "-" +
+              this.runtime.agentId
+            )
             : undefined,
       };
 
@@ -576,6 +578,10 @@ export class ElizaService extends BaseService {
     elizaLogger.info("Using SQLite database at:", sqlitePath);
     // Initialize SQLite adapter
     const db = new SqliteDatabaseAdapter(new Database(sqlitePath));
+    // const db = new SupabaseDatabaseAdapter(
+    // process.env.SUPABASE_URL || "",
+    // process.env.SUPABASE_KEY || "",
+    // )
 
     db.init()
       .then(() => {
