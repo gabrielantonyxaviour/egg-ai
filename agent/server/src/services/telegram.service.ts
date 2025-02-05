@@ -14,7 +14,8 @@ import { parse as jsoncParse } from "jsonc-parser";
 import path, { resolve } from "path";
 import { keccak256, getBytes, toUtf8Bytes } from "ethers";
 import { TwitterService } from "./twitter.service.js";
-import { NgrokService } from "./ngrok.service.js";
+// import { NgrokService } from "./ngrok.service.js";
+import { LocalTunnelService } from "./localtunnel.service.js";
 
 // hack to avoid 400 errors sending params back to telegram. not even close to perfect
 const htmlEscape = (_key: AnyType, val: AnyType) => {
@@ -35,7 +36,8 @@ export class TelegramService extends BaseService {
   private bot: Bot;
   private webhookUrl: string;
   private elizaService: ElizaService;
-  private nGrokService: NgrokService;
+  // private LocalTunnelService: LocalTunnelService;
+  private localTunnelService: LocalTunnelService;
   private twitterService?: TwitterService;
 
   private constructor(webhookUrl?: string) {
@@ -98,7 +100,7 @@ export class TelegramService extends BaseService {
       });
       await this.elizaService.start();
       // required when starting server for telegram webooks
-      this.nGrokService = await NgrokService.getInstance();
+      this.localTunnelService = LocalTunnelService.getInstance();
       try {
         // try starting the twitter service
         this.twitterService = await TwitterService.getInstance();
@@ -165,14 +167,14 @@ You can view the token page below (it takes a few minutes to be visible)`,
           if (this.twitterService) {
             const twitterBotInfo = this.twitterService.me;
             const twitterClient = this.twitterService.getScraper();
-            const ngrokURL = this.nGrokService.getUrl();
+            const ngrokURL = this.localTunnelService.getUrl();
             await ctx.reply(
               `🐦 Posting a tweet about the new token...\n\n` +
-                `Twitter account details:\n<pre lang="json"><code>${JSON.stringify(
-                  twitterBotInfo,
-                  null,
-                  2
-                )}</code></pre>`,
+              `Twitter account details:\n<pre lang="json"><code>${JSON.stringify(
+                twitterBotInfo,
+                null,
+                2
+              )}</code></pre>`,
               {
                 parse_mode: "HTML",
               }
@@ -198,7 +200,7 @@ You can view the token page below (it takes a few minutes to be visible)`,
               console.log("Tweet URL:", tweetURL);
               await ctx.reply(
                 `Tweet posted successfully!\n\n` +
-                  `🎉 Tweet details: ${tweetURL}`,
+                `🎉 Tweet details: ${tweetURL}`,
                 {
                   parse_mode: "HTML",
                 }
@@ -299,11 +301,11 @@ You can view the token page below (it takes a few minutes to be visible)`,
           }
           await ctx.reply(
             "Executing action..." +
-              `\n\nAction Hash: <code>${actionHash.IpfsHash}</code>\n\nParams:\n<pre lang="json"><code>${JSON.stringify(
-                jsParams,
-                htmlEscape,
-                2
-              )}</code></pre>`,
+            `\n\nAction Hash: <code>${actionHash.IpfsHash}</code>\n\nParams:\n<pre lang="json"><code>${JSON.stringify(
+              jsParams,
+              htmlEscape,
+              2
+            )}</code></pre>`,
             {
               parse_mode: "HTML",
             }
@@ -324,12 +326,12 @@ You can view the token page below (it takes a few minutes to be visible)`,
           console.log("Result:", data);
           ctx.reply(
             `Action executed on Lit Nodes 🔥\n\n` +
-              `Action: <code>${actionHash.IpfsHash}</code>\n` +
-              `Result:\n<pre lang="json"><code>${JSON.stringify(
-                data,
-                null,
-                2
-              )}</code></pre>`,
+            `Action: <code>${actionHash.IpfsHash}</code>\n` +
+            `Result:\n<pre lang="json"><code>${JSON.stringify(
+              data,
+              null,
+              2
+            )}</code></pre>`,
             {
               parse_mode: "HTML",
             }
@@ -342,11 +344,11 @@ You can view the token page below (it takes a few minutes to be visible)`,
             );
             ctx.reply(
               "Failed to execute Lit action" +
-                `\n\nError: <pre lang="json"><code>${JSON.stringify(
-                  error.response?.data,
-                  null,
-                  2
-                )}</code></pre>`,
+              `\n\nError: <pre lang="json"><code>${JSON.stringify(
+                error.response?.data,
+                null,
+                2
+              )}</code></pre>`,
               {
                 parse_mode: "HTML",
               }
@@ -355,11 +357,11 @@ You can view the token page below (it takes a few minutes to be visible)`,
             console.error("Failed to execute Lit action:", error);
             ctx.reply(
               "Failed to execute Lit action" +
-                `\n\nError: <pre lang="json"><code>${JSON.stringify(
-                  error?.message,
-                  null,
-                  2
-                )}</code></pre>`,
+              `\n\nError: <pre lang="json"><code>${JSON.stringify(
+                error?.message,
+                null,
+                2
+              )}</code></pre>`,
               {
                 parse_mode: "HTML",
               }

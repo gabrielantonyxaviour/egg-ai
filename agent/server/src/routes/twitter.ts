@@ -1,7 +1,8 @@
 import { Router, Request, Response } from "express";
 import axios, { AxiosError, AxiosResponse } from "axios";
 import crypto from "crypto";
-import { NgrokService } from "../services/ngrok.service.js";
+// import { NgrokService } from "../services/ngrok.service.js";
+import { LocalTunnelService } from "../services/localtunnel.service.js";
 import { CacheService } from "../services/cache.service.js";
 import { getCardHTML, getCollablandApiUrl } from "../utils.js";
 import {
@@ -72,7 +73,7 @@ function generateCodeChallenge(verifier: string) {
  */
 router.post("/init", async (req: Request, res: Response) => {
   try {
-    const ngrokURL = await NgrokService.getInstance().getUrl();
+    const localTunnelURL = LocalTunnelService.getInstance().getUrl();
     const { success_uri } = req.body;
     console.log("Success URI:", success_uri);
     // Generate CSRF protection state
@@ -91,7 +92,7 @@ router.post("/init", async (req: Request, res: Response) => {
     const params = {
       response_type: "code", // OAuth 2.0 auth code flow
       client_id: process.env.TWITTER_CLIENT_ID!, // Your app's client ID
-      redirect_uri: `${ngrokURL}/auth/twitter/callback`, // Must match registered URL
+      redirect_uri: `${localTunnelURL}/auth/twitter/callback`, // Must match registered URL
       scope: "tweet.read users.read offline.access tweet.write", // Requested permissions
       state: state, // CSRF token
       code_challenge: codeChallenge, // PKCE challenge
@@ -116,7 +117,7 @@ router.post("/init", async (req: Request, res: Response) => {
 // Handle OAuth callback from Twitter
 router.get("/callback", async (req: Request, res: Response) => {
   try {
-    const ngrokURL = await NgrokService.getInstance().getUrl();
+    const localTunnelURL = LocalTunnelService.getInstance().getUrl();
     const { code, state } = req.query;
 
     // Verify state matches and get stored verifier
@@ -138,7 +139,7 @@ router.get("/callback", async (req: Request, res: Response) => {
       code: code as string,
       grant_type: "authorization_code",
       client_id: process.env.TWITTER_CLIENT_ID!,
-      redirect_uri: `${ngrokURL}/auth/twitter/callback`,
+      redirect_uri: `${localTunnelURL}/auth/twitter/callback`,
       code_verifier: codeVerifier,
     });
 
@@ -391,9 +392,9 @@ router.post("/tweetCard", async (req: Request, res: Response) => {
       Buffer.from(claimURL).toString("base64url") +
       ":" +
       Buffer.from(me?.username ?? "").toString("base64url");
-    const ngrokURL = await NgrokService.getInstance().getUrl();
+    const localTunnelURL = LocalTunnelService.getInstance().getUrl();
     const claimURLWithNgrok =
-      ngrokURL + `/auth/twitter/card/${slug}/index.html`;
+      localTunnelURL + `/auth/twitter/card/${slug}/index.html`;
     console.log("[Tweet Card] Claim URL:", claimURLWithNgrok);
     const message = `🎉 Just claimed my @wow tokens through @${me?.username} Claim yours now, get started below! 🚀\n\n${claimURLWithNgrok}`;
     console.log("[Tweet Card] Sending tweet:", message);
