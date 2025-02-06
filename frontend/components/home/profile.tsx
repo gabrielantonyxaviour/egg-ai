@@ -6,20 +6,10 @@ import { useEffect, useState } from "react";
 import { Copy } from "lucide-react";
 
 export default function Profile({ close }: { close: () => void }) {
-    const { user, ethBalance, solBalance, setEthBalance, setSolBalance } = useEnvironmentStore((store => store))
+    const { user, ethBalance, solBalance, totalEquity, pnl } = useEnvironmentStore((store => store))
     const [copiedEVM, setCopiedEVM] = useState<boolean>(false);
     const [copiedSOL, setCopiedSOL] = useState<boolean>(false);
 
-    useEffect(() => {
-        if (user) {
-            fetch(`/api/eth/balance?address=${user.evm_address}`)
-                .then(res => res.json())
-                .then(data => setEthBalance(data.balance))
-            fetch(`/api/sol/balance?address=${user.solana_address}`)
-                .then(res => res.json())
-                .then(data => setSolBalance(data.balance))
-        }
-    }, [])
 
     const handleCopy = async (address: string | undefined, type: 'EVM' | 'SOL'): Promise<void> => {
         if (!address) return;
@@ -38,21 +28,21 @@ export default function Profile({ close }: { close: () => void }) {
         }
     };
 
-    return <div className="w-[35%] relative bg-black h-full rounded-sm">
+    return <div className="w-[35%] h-[62%] relative bg-black rounded-sm">
         <div
             onClick={() => { }}
-            className={`absolute flex flex-col p-6  -top-[4px] -left-[4px] w-full h-full sen rounded-sm text-sm border border-[2px] border-black bg-[#faefe0] text-black`}
+            className={`absolute flex flex-col p-6 h-full  -top-[4px] -left-[4px] w-full sen rounded-sm text-sm border border-[2px] border-black bg-[#faefe0] text-black`}
         >
             <p className="text-4xl nouns">SUP FREN 🍳</p>
             <p>gains are calling, put the fries in the bag!</p>
             <div className="flex justify-around pt-4">
                 <div className="">
                     <p className="font-semibold text-base pb-1">Total Equity</p>
-                    <p className="text-2xl nouns">500.00 <span className="text-sm font-bold sen">USDT</span></p>
+                    <p className="text-2xl nouns">{totalEquity} <span className="text-sm font-bold sen">USDT</span></p>
                 </div>
                 <div className="">
                     <p className="font-semibold text-base pb-1">Average PNL</p>
-                    <p className="text-2xl nouns">72.4% <span className="text-sm font-bold sen">(7 DAYS)</span></p>
+                    <p className="text-2xl nouns">{pnl}% <span className="text-sm font-bold sen">(7 DAYS)</span></p>
                 </div>
             </div>
             <div className="flex space-x-2 pt-5 items-center">
@@ -105,7 +95,7 @@ export default function Profile({ close }: { close: () => void }) {
 
             <div className="flex flex-col justify-center items-center py-8">
                 <h3 className="font-semibold text-lg pb-2">Current Mode</h3>
-                <Image src={user?.mode == "CHAD" ? '/chad.png' : "/med.png"} alt="chad" width={50} height={50} />
+                <Image src={user?.mode == "CHAD" ? '/chad.png' : "/tren.png"} alt="chad" width={user?.mode == 'TREN' ? 40 : 50} height={user?.mode == 'TREN' ? 40 : 50} />
                 <p className="nouns spacing-2 tracking-wide text-xl py-1">{user?.mode}</p>
             </div>
         </div>

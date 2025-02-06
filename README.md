@@ -141,7 +141,7 @@ TODO
 
 FRONTEND BOXES
 
-1. Profile
+1. Profile -
 2. Actions
 3. Mode
 4. Chefs

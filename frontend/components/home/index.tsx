@@ -38,12 +38,34 @@ export default function Home() {
             image: "/home/chef.png",
         }
     ];
-    const { user } = useEnvironmentStore(store => store)
+    const { user, setEthPrice, setSolPrice, setEthBalance, setSolBalance, setTotalEquity } = useEnvironmentStore(store => store)
     const [showWindows, setShowWindows] = useState([false, false, false, false, false]);
-    const router = useRouter()
+    const router = useRouter();
+
     useEffect(() => {
-        if (user == undefined) router.push('/')
-    }, [user])
+        if (user == undefined) router.push('/');
+
+        (async () => {
+            try {
+                const res = await fetch(`/api/alchemy/prices`);
+                const { eth, sol, error } = await res.json();
+                if (error) throw new Error(error);
+                setEthPrice(eth)
+                setSolPrice(sol)
+                const bRes = await fetch(`/api/balances?eth=${user?.evm_address}&sol=${user?.solana_address}&prod=${process.env.NEXT_PUBLIC_IS_PROD}`);
+                const { ethBalance, solBalance } = await bRes.json();
+                setEthBalance(ethBalance)
+                setSolBalance(solBalance)
+
+                setTotalEquity((parseFloat(ethBalance) * parseFloat(eth) + parseFloat(solBalance) * parseFloat(sol)).toFixed(2))
+            } catch (error) {
+                console.error('Failed to fetch data:', error);
+            }
+        })()
+    }
+        , [user])
+
+
 
     return user == undefined ? <div></div> : (
         <div className="flex justify-between h-screen">
