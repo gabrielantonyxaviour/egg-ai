@@ -1,8 +1,9 @@
 import { StateCreator } from "zustand";
-import { User } from "@/types";
+import { Chef, User } from "@/types";
 
 interface GlobalState {
   user: User | null;
+  chef: Chef | null;
   ethBalance: string;
   solBalance: string;
   ethPrice: string;
@@ -13,6 +14,7 @@ interface GlobalState {
 
 interface GlobalActions {
   setUser: (user: User | null) => void;
+  setChef: (chef: Chef | null) => void;
   setEthBalance: (balance: string) => void;
   setSolBalance: (balance: string) => void;
   setEthPrice: (price: string) => void;
@@ -30,6 +32,7 @@ export const initialGlobalState: GlobalState = {
   ethPrice: "0",
   solPrice: "0",
   totalEquity: "0",
+  chef: null,
   pnl: "0",
 };
 
@@ -62,4 +65,7 @@ export const createGlobalSlice: StateCreator<
   setPnl: (pnl) => {
     set({ pnl });
   },
+  setChef: (chef) => {
+    set({ chef });
+  }
 });

@@ -45,17 +45,19 @@ export async function getChef(username: string): Promise<Chef | null> {
 
 export async function createChef({
     username, name, bio, image, sub_fee,
+    niche
 }: {
     username: string;
     name: string;
     bio: string;
+    niche: string[];
     image?: string;
     sub_fee?: string;
 }): Promise<Chef | null> {
     console.log(`Creating chef with username: ${username}`);
     const { data, error } = await supabase
         .from('chefs')
-        .insert([{ username, name, bio, image, sub_fee }])
+        .insert([{ username, name, bio, image, niche, sub_fee }])
         .select()
         .single();
 
@@ -147,4 +149,24 @@ export async function updateUser({
     }
     console.log(`User updated successfully: ${JSON.stringify(data)}`);
     return data;
+}
+
+export async function storeImage(fileName: string, file: File): Promise<string> {
+    const { data, error } = await supabase.storage.from('chef_images').upload(fileName, file, {
+        contentType: 'image/png',
+    });
+
+    if (error) {
+        console.error(`Error uploading image: ${error.message}`);
+        return '';
+    }
+
+    const { data: { publicUrl } } = supabase
+        .storage
+        .from('chef_images')
+        .getPublicUrl(fileName);
+
+
+    console.log(`Image uploaded successfully: ${publicUrl}`);
+    return publicUrl;
 }
