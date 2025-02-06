@@ -1,7 +1,8 @@
 import NextAuth, { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-
+import { createClient } from "@supabase/supabase-js";
 import { objectToAuthDataMap, AuthDataValidator } from "@telegram-auth/server";
+import { fetchOrCreateUser } from "@/lib/supabase";
 
 declare module "next-auth" {
     interface Session {
@@ -35,15 +36,15 @@ export const authOptions: NextAuthOptions = {
                         name: [user.first_name, user.last_name || ""].join(" "),
                         image: user.photo_url,
                     };
-
+                    const supabase = createClient(process.env.SUPABASE_URL || "", process.env.SUPABASE_KEY || "");
                     // TODO: Create user supabase
-                    // try {
-                    // 	await createUserOrUpdate(user);
-                    // } catch {
-                    // 	console.log(
-                    // 		"Something went wrong while creating the user."
-                    // 	);
-                    // }
+                    try {
+                        await fetchOrCreateUser(returned);
+                    } catch {
+                        console.log(
+                            "Something went wrong while creating the user."
+                        );
+                    }
 
                     return returned;
                 }
