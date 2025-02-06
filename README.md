@@ -142,6 +142,8 @@ TODO
 FRONTEND BOXES
 
 1. Profile - FULLY DONE
+	1. Pause trades
+	2. Refresh prices
 2. Actions - UI DONE
 3. Mode - FULLY DONE
 4. Chefs - ALMOST DONE

@@ -30,6 +30,14 @@ export default function Landing() {
             >
               Get Started
             </Link>
+            <Link
+              href={user ? `/chef` : '#'}
+              className={`${buttonVariants({
+                variant: 'default'
+              })} ${user ? "hover:border-2 hover:border-[#faefe0] hover:font-bold border-0 bg-[#c49963] hover:bg-[#faefe0]" : "opacity-50 cursor-not-allowed border-0 bg-[#c49963] hover:bg-[#faefe0]"} sen rounded-sm text-black`}
+            >
+              Chef Mode
+            </Link>
           </div>
         </div>
       </div>
