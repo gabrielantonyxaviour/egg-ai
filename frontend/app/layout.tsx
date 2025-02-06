@@ -5,7 +5,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { EnvironmentStoreProvider } from "@/components/context";
 import Layout from "@/components/layout";
 import WalletProvider from "@/components/providers/wallet-provider";
-import AuthProvider from "@/components/providers/auth-provider";
 
 export default function RootLayout({
   children,

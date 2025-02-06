@@ -1,28 +1,10 @@
-"use client";
-import { usePathname, useRouter } from "next/navigation";
+'use client'
 import { Button } from "./ui/button";
 import Image from "next/image";
-import { useAccount, useBalance, useConnect, useDisconnect } from "wagmi";
-import { injected } from "wagmi/connectors";
-import { chain, } from "@/lib/config";
+import { useAccount, useBalance } from "wagmi";
 import { useEnvironmentStore } from "./context";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
-import { useToast } from "@/hooks/use-toast";
-import { TelegramUser } from "@/types/telegram";
-import { TelegramLogin } from "./telegram-login";
-import { useEffect, useRef } from "react";
-// import { useSession, signIn, signOut } from "next-auth/react";
-import { LoginButton } from "@telegram-auth/react";
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuLabel,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { CircleDashedIcon, LogOut } from "lucide-react";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useEffect } from "react";
+import { CircleDashedIcon } from "lucide-react";
 import { usePrivy } from "@privy-io/react-auth";
 export default function Layout({
   children,
@@ -31,16 +13,10 @@ export default function Layout({
 }>) {
   // const { data: session, status } = useSession();
   const { user, setUser } = useEnvironmentStore((store) => store);
-  const { toast } = useToast();
-  const { address, isConnected, chainId } = useAccount();
-  const { connectAsync } = useConnect();
+  const { address, isConnected, } = useAccount();
   const { data: balance } = useBalance({
     address: address,
   });
-  const { disconnect } = useDisconnect();
-  const router = useRouter();
-  const pathname = usePathname();
-  const telegramButtonRef = useRef<HTMLButtonElement>(null);
   const { ready, authenticated, login, user: privyUser } = usePrivy();
 
   useEffect(() => {
@@ -58,35 +34,7 @@ export default function Layout({
       });
     }
   }, [privyUser])
-  // const handleTelegramResponse = async (user: TelegramUser) => {
-  //   try {
-  //     const response = await fetch('/api/auth/telegram', {
-  //       method: 'POST',
-  //       headers: {
-  //         'Content-Type': 'application/json',
-  //       },
-  //       body: JSON.stringify(user),
-  //     });
 
-  //     const data = await response.json();
-
-  //     if (data.success) {
-  //       setUser(user);
-  //       router.push('/home');
-  //       toast({
-  //         title: "Connected",
-  //         description: "Successfully connected with Telegram",
-  //       });
-  //     }
-  //   } catch (error) {
-  //     console.error('Authentication failed:', error);
-  //     toast({
-  //       title: "Error",
-  //       description: "Failed to connect with Telegram",
-  //       variant: "destructive",
-  //     });
-  //   }
-  // };
   return (
     <div className="h-screen w-screen">
       <div className="fixed w-screen flex justify-end space-x-4 p-4">
@@ -115,10 +63,7 @@ export default function Layout({
         )}
         <div className="relative bg-black w-[160px] h-[40px] rounded-sm">
           {user ? <Button
-            // ref={telegramButtonRef}
             onClick={(e) => {
-              // e.preventDefault();
-              // console.log('Button clicked');
               login();
             }}
             className="group absolute -top-[4px] -left-[2px] rounded-sm w-full h-full flex p-5 bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border-[1px] border-black mr-[2px]"
