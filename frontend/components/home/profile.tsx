@@ -78,7 +78,7 @@ export default function Profile({ close }: { close: () => void }) {
             onClick={() => { }}
             className={`absolute flex flex-col p-6 h-full  -top-[4px] -left-[4px] w-full sen rounded-sm text-sm border border-[2px] border-black bg-[#faefe0] text-black`}
         >
-            <p className="text-4xl nouns">SUP FREN 🍳</p>
+            <p className="text-3xl nouns">SUP FREN 🍳</p>
             <p>gains are calling, put the fries in the bag!</p>
             <div className="flex justify-around pt-4">
                 <div className="">

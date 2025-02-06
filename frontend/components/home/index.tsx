@@ -109,6 +109,9 @@ export default function Home() {
                                 prev.map((val, index) => (index === 1 ? !val : val))
                             );
                         }}
+                        setOpenResearch={() => {
+
+                        }}
                     />
                 )}
 

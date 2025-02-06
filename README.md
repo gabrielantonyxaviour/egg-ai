@@ -144,7 +144,7 @@ FRONTEND BOXES
 1. Profile - FULLY DONE
 2. Actions - UI DONE
 3. Mode - FULLY DONE
-4. Chefs - 
+4. Chefs - ALMOST DONE
 5. Chef - 
 6. Trade - 
 
@@ -152,3 +152,7 @@ For Chef
 1. Profile
 2. Recipes
 3. Create
+
+
+Looking to go long BTC at this level (95279) lots of confluence here so looking for a bounce (VAL, golden pocket, 4H OB)
+
