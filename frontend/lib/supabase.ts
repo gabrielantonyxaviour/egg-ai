@@ -1,4 +1,4 @@
-import { Chef, User } from "@/types";
+import { Chef, TradePlay, User } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.SUPABASE_URL!;
@@ -169,4 +169,43 @@ export async function storeImage(fileName: string, file: File): Promise<string> 
 
     console.log(`Image uploaded successfully: ${publicUrl}`);
     return publicUrl;
+}
+
+export async function followChef({
+    chef_id, username, confidence_level
+}: {
+    chef_id: string;
+    username: string;
+    confidence_level: number;
+}) {
+    console.log(`${username} is following chef with id: ${chef_id}`);
+    const { data, error } = await supabase
+        .from('user_follows')
+        .upsert({ chef_id, username, confidence_level, last_subscribed_at: new Date() }, { onConflict: 'chef_id,username' })
+        .select()
+        .single();
+    if (error) {
+        console.error(`Error creating subscription: ${error.message}`);
+        return null;
+    }
+    console.log(`Chef Followed successfully: ${JSON.stringify(data)}`);
+    return data;
+}
+
+
+export async function createPlay({
+    chef_id, asset, direction, entry_price, stop_loss, leverage, trade_type, timeframe, status, pnl_percentage, research_description, dex, image, chain, take_profit, dca, expected_pnl
+}: TradePlay) {
+    console.log(`Chef with chef_id: ${chef_id} is posting a play`);
+    const { data, error } = await supabase
+        .from('trade_plays')
+        .insert({ chef_id, asset, direction, entry_price, stop_loss, leverage, trade_type, timeframe, status, pnl_percentage, research_description, dex, image, chain, take_profit, dca, expected_pnl })
+        .select()
+        .single();
+    if (error) {
+        console.error(`Error creating play: ${error.message}`);
+        return null;
+    }
+    console.log(`Play created successfully: ${JSON.stringify(data)}`);
+    return data;
 }
