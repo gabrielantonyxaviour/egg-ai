@@ -145,8 +145,8 @@ FRONTEND BOXES
 2. Actions - UI DONE
 3. Mode - FULLY DONE
 4. Chefs - 
-5. Chef
-6. Trade
+5. Chef - 
+6. Trade - 
 
 For Chef
 1. Profile

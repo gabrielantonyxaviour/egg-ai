@@ -2,9 +2,10 @@
 import Image from "next/image";
 import { buttonVariants } from "../ui/button";
 import Link from "next/link";
+import { useEnvironmentStore } from "../context";
 
 export default function Landing() {
-
+  const { user } = useEnvironmentStore((store) => store)
   return (
     <div className="w-screen h-screen flex flex-col justify-center pt-2">
       <div className="relative bg-black w-[700px] h-[50%] rounded-xl mx-auto">
@@ -22,10 +23,10 @@ export default function Landing() {
           </p>
           <div className="flex justify-center py-4 space-x-2 ">
             <Link
-              href="/home"
+              href={user ? `/home` : '#'}
               className={`${buttonVariants({
                 variant: 'outline'
-              })} rounded-sm bg-transparent border-0 hover:bg-transparent hover:border-2 hover:border-black hover:font-bold text-black`}
+              })} ${user ? "hover:border-2 hover:border-black hover:font-bold" : "opacity-50 cursor-not-allowed"} sen rounded-sm bg-transparent border-0 hover:bg-transparent text-black`}
             >
               Get Started
             </Link>

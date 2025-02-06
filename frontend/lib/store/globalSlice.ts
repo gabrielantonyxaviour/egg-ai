@@ -12,7 +12,7 @@ interface GlobalState {
 }
 
 interface GlobalActions {
-  setUser: (user: User) => void;
+  setUser: (user: User | null) => void;
   setEthBalance: (balance: string) => void;
   setSolBalance: (balance: string) => void;
   setEthPrice: (price: string) => void;

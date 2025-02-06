@@ -20,7 +20,7 @@ export default function Layout({
   const { data: balance } = useBalance({
     address: address,
   });
-  const { ready, authenticated, login, user: privyUser } = usePrivy();
+  const { ready, authenticated, login, user: privyUser, logout } = usePrivy();
   const router = useRouter()
   useEffect(() => {
     console.log('Privy User:', privyUser);
@@ -124,7 +124,8 @@ export default function Layout({
         <div className="relative bg-black w-[160px] h-[40px] rounded-sm">
           {user ? <Button
             onClick={(e) => {
-              login();
+              logout();
+              setUser(null);
             }}
             className="group absolute -top-[4px] -left-[2px] rounded-sm w-full h-full flex p-5 bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border-[1px] border-black mr-[2px]"
           >
