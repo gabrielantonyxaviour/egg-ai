@@ -161,3 +161,41 @@ For Chef
 Looking to go long BTC at this level (95279) lots of confluence here so looking for a bounce (VAL, golden pocket, 4H OB)
 
 Also setting limit orders for this ONDO long. Entries @ 1.263, 1.177, 4H close under 1.11 for stops, TPs in yellow
+
+Time Left - 20 hours
+
+
+First - 3 hours
+
+1. Chef Profile page with follow feature
+2. Chef Create Recipe
+3. Chef Display Recipe
+4. Users display chefs
+5. Trade page
+
+
+Transactions testing - 3 hours
+
+1. GMX calls testing
+	1. Create Position
+	2. Take profits
+	3. Withdraw position
+
+Preparing AI data - 5 hours
+
+1. Trading PDF resources and creating embeddings
+2. Testing Cookie.fun sentiment, (Twitter Search by Eliza, Tiktok by TokenHunterZorom, Instagram by Eliza LATER)
+3. Test Fetching current market data from GMX APIs
+4. Structure everything into a prompt
+
+AI Testing - 2 hours
+
+1. Test the pipeline, get inferences.
+
+
+Frontend final integrations - 2 hours
+
+
+Telegram Integration - 4 hours
+
+1. 

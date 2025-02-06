@@ -39,7 +39,7 @@ export type TradePlay = {
     timeframe: string
     leverage: number;
     image: string;
-    status: "ongoing" | "completed";
+    status: "pending" | "ongoing" | "completed";
     pnl_percentage: number | null;
     expected_pnl: number;
     research_description: string;
