@@ -114,7 +114,7 @@ export default function Profile({ close }: { close: () => void }) {
             <div className="flex items-center">
                 <div className="w-[30px]"></div>
                 <div className="flex items-center flex-grow">
-                    <p className="mr-2">{user?.evm_address}</p>
+                    <p className="mr-2 text-sm">{user?.evm_address}</p>
 
                 </div>
                 <p>{parseFloat(ethBalance).toFixed(2)} {"ETH"}</p>
@@ -137,7 +137,7 @@ export default function Profile({ close }: { close: () => void }) {
             <div className="flex items-center">
                 <div className="w-[30px]"></div>
                 <div className="flex items-center flex-grow">
-                    <p className="mr-2">{user?.solana_address}</p>
+                    <p className="mr-2 text-sm">{user?.solana_address}</p>
 
                 </div>
                 <p>{parseFloat(solBalance).toFixed(2)} {"ETH"}</p>
