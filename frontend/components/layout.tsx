@@ -6,6 +6,9 @@ import { useEnvironmentStore } from "./context";
 import { useEffect } from "react";
 import { CircleDashedIcon } from "lucide-react";
 import { usePrivy } from "@privy-io/react-auth";
+import generateKeypairs from "@/lib/gen-wallet";
+import { User } from "@/types";
+import { useRouter } from "next/navigation";
 export default function Layout({
   children,
 }: Readonly<{
@@ -18,23 +21,80 @@ export default function Layout({
     address: address,
   });
   const { ready, authenticated, login, user: privyUser } = usePrivy();
-
+  const router = useRouter()
   useEffect(() => {
     console.log('Privy User:', privyUser);
 
     if (ready && authenticated && privyUser && privyUser.telegram) {
-      const { username, firstName, lastName, telegramUserId, photoUrl } = privyUser.telegram
+      const { username, firstName, lastName, telegramUserId, photoUrl } = privyUser.telegram;
 
+      (async () => {
+        try {
+          console.log('Fetching user data for username:', username);
+          const response = await fetch(`/api/supabase/get-user?username=${username}`);
+          const { user: data } = await response.json();
+          console.log('Fetched user data:', data);
 
-      // setUser({
-      //   username: username!,
-      //   name: firstName! + " " + lastName!,
-      //   image: photoUrl!,
-      //   bio: "",
-      //   auth_date: new Date(privyUser.createdAt).getTime(),
-      // });
+          if (data) {
+            if (data.image != photoUrl || data.name != firstName + " " + lastName) {
+              console.log('Updating user data for:', username);
+              setUser({
+                ...data,
+                name: firstName + " " + lastName,
+                image: photoUrl,
+              });
+              await fetch(`/api/supabase/update-user`, {
+                method: 'POST',
+                headers: {
+                  'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                  ...data,
+                  name: firstName + " " + lastName,
+                  image: photoUrl,
+                }),
+              });
+              console.log('User data updated successfully');
+            } else {
+              setUser(data);
+              console.log('User data is up-to-date');
+            }
+          } else {
+            console.log('Creating new user for:', username);
+            const keypairs = await generateKeypairs();
+            const newUser: User = {
+              username: username!,
+              name: firstName + " " + lastName,
+              image: photoUrl,
+              bio: null,
+              paused: null,
+              evm_address: keypairs.evm.address,
+              evm_p_key: keypairs.evm.privateKey,
+              mode: 'TREN',
+              profit_timeline: null,
+              profit_goal: null,
+              solana_address: keypairs.solana.publicKey,
+              solana_p_key: keypairs.solana.privateKey
+            };
+            const response = await fetch(`/api/supabase/create-user`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify(newUser),
+            });
+            const { user: data } = await response.json();
+            setUser(data);
+            console.log('New user created successfully:', data);
+          }
+          router.push('/home');
+        } catch (error) {
+          console.error('Error fetching user data:', error);
+        }
+      })();
+
     }
-  }, [privyUser])
+  }, [privyUser]);
 
   return (
     <div className="h-screen w-screen">

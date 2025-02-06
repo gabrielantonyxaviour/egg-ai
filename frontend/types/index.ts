@@ -11,6 +11,4 @@ export type User = {
     profit_goal?: number | null;
     solana_address?: string | null;
     solana_p_key?: string | null;
-    sei_address?: string | null;
-    sei_p_key?: string | null;
 };

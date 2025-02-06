@@ -1,11 +1,9 @@
 "use client";
 import Image from "next/image";
-import { Button, buttonVariants } from "../ui/button";
+import { buttonVariants } from "../ui/button";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 
 export default function Landing() {
-  const router = useRouter();
 
   return (
     <div className="w-screen h-screen flex flex-col justify-center pt-2">
@@ -25,7 +23,9 @@ export default function Landing() {
           <div className="flex justify-center py-4 space-x-2 ">
             <Link
               href="/home"
-              className={`${buttonVariants()} rounded-sm bg-transparent border-0 hover:bg-transparent hover:border-2 hover:border-black hover:font-bold text-black`}
+              className={`${buttonVariants({
+                variant: 'outline'
+              })} rounded-sm bg-transparent border-0 hover:bg-transparent hover:border-2 hover:border-black hover:font-bold text-black`}
             >
               Get Started
             </Link>

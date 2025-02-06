@@ -17,7 +17,7 @@ export default function WalletProvider({
         appearance: {
           theme: 'light',
           accentColor: '#c49963',
-          logo: 'https://monkfish-relevant-lively.ngrok-free.app/egg.png',
+          logo: 'https://egg-ai.vercel.app/egg.png',
         },
         embeddedWallets: {
           createOnLogin: 'off',
