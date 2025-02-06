@@ -154,7 +154,7 @@ export default function Layout({
                 alt="telegram"
                 className="rounded-full group-hover:filter group-hover:invert"
               />
-                <p>Connect</p></>
+                <p className="sen">Connect</p></>
             }
           </Button>}
         </div>

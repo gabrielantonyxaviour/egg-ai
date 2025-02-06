@@ -73,7 +73,7 @@ export default function Profile({ close }: { close: () => void }) {
 
         setRiskLevel(smoothedRisk);
     }, [expectedPNL, endDate]);
-    return <div className={`w-[35%] ${user?.mode != "CHAD" ? "h-[90%]" : "h-[62%]"} relative bg-black rounded-sm`}>
+    return <div className={`w-[35%] ${user?.mode == "CHAD" ? "h-[90%]" : "h-[42%]"} relative bg-black rounded-sm`}>
         <div
             onClick={() => { }}
             className={`absolute flex flex-col p-6 h-full  -top-[4px] -left-[4px] w-full sen rounded-sm text-sm border border-[2px] border-black bg-[#faefe0] text-black`}
@@ -143,7 +143,7 @@ export default function Profile({ close }: { close: () => void }) {
                 <p>{parseFloat(solBalance).toFixed(2)} {"ETH"}</p>
             </div>
 
-            {user?.mode != 'CHAD' &&
+            {user?.mode == 'CHAD' &&
                 <>
                     {/* Left side - PNL and Calendar */}
                     <div className="w-full pt-4">
