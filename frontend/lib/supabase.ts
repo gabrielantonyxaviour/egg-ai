@@ -1,4 +1,4 @@
-import { User } from "@/types";
+import { Chef, User } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.SUPABASE_URL!;
@@ -19,6 +19,76 @@ export async function getUser(username: string): Promise<User | null> {
         return null;
     }
     console.log(`User fetched successfully: ${JSON.stringify(data)}`);
+    return data;
+}
+
+
+export async function getChef(username: string): Promise<Chef | null> {
+    console.log(`Fetching chef with username: ${username}`);
+
+    const { data, error } = await supabase
+        .from('chefs')
+        .select('*')
+        .eq('username', username)
+        .single();
+
+
+    if (error) {
+        console.error(`Error fetching chef: ${error.message}`);
+        return null;
+    }
+
+    console.log(`Chef fetched successfully: ${JSON.stringify(data)}`);
+    return data;
+
+}
+
+export async function createChef({
+    username, name, bio, image, sub_fee,
+}: {
+    username: string;
+    name: string;
+    bio: string;
+    image?: string;
+    sub_fee?: string;
+}): Promise<Chef | null> {
+    console.log(`Creating chef with username: ${username}`);
+    const { data, error } = await supabase
+        .from('chefs')
+        .insert([{ username, name, bio, image, sub_fee }])
+        .select()
+        .single();
+
+    if (error) {
+        console.error(`Error creating chef: ${error.message}`);
+        return null;
+    }
+    console.log(`Chef created successfully: ${JSON.stringify(data)}`);
+    return data;
+}
+
+export async function updateChef({
+    username, name, bio, image, sub_fee,
+}: {
+    username: string;
+    name?: string;
+    bio?: string;
+    image?: string;
+    sub_fee?: string;
+}): Promise<Chef | null> {
+    console.log(`Updating chef with username: ${username}`);
+    const { data, error } = await supabase
+        .from('chefs')
+        .update({ name, bio, image, sub_fee })
+        .eq('username', username)
+        .select()
+        .single();
+
+    if (error) {
+        console.error(`Error updating chef: ${error.message}`);
+        return null;
+    }
+    console.log(`Chef updated successfully: ${JSON.stringify(data)}`);
     return data;
 }
 

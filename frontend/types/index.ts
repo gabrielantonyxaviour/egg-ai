@@ -11,3 +11,14 @@ export type User = {
     solana_address?: string | null;
     solana_p_key?: string | null;
 };
+
+
+export type Chef = {
+    id: string;
+    username: string;
+    name?: string | null;
+    bio?: string | null;
+    image?: string | null;
+    sub_fee?: string | null;
+
+}
