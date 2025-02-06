@@ -1,13 +1,14 @@
 'use client'
 
 import Image from "next/image";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useEnvironmentStore } from "../context";
 import Profile from "./profile";
 import Chefs from "./chefs";
 import Actions from "./actions";
 import Mode from "./mode";
 import Chef from "./chef";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
     const nav = [
@@ -39,8 +40,12 @@ export default function Home() {
     ];
     const { user } = useEnvironmentStore(store => store)
     const [showWindows, setShowWindows] = useState([false, false, false, false, false]);
+    const router = useRouter()
+    useEffect(() => {
+        if (user == undefined) router.push('/')
+    }, [user])
 
-    return (
+    return user == undefined ? <div></div> : (
         <div className="flex justify-between h-screen">
             <div className="flex flex-col h-full justify-center space-y-12  px-6">
                 {(user?.mode == "TREN" ? [nav[0], nav[1], nav[3]] : [nav[0], nav[1], nav[2], nav[3]]).map((i) => (
