@@ -3,8 +3,9 @@ import Image from "next/image";
 import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { Session } from "next-auth";
 
-export default function Landing() {
+export default function Landing({ session }: { session: Session | null }) {
   const router = useRouter();
 
   return (

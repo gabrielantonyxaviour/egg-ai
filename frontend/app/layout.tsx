@@ -5,6 +5,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { EnvironmentStoreProvider } from "@/components/context";
 import Layout from "@/components/layout";
 import WalletProvider from "@/components/providers/wallet-provider";
+import AuthProvider from "@/components/providers/auth-provider";
 
 export default function RootLayout({
   children,
@@ -12,29 +13,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <EnvironmentStoreProvider>
-      <html lang="en">
-        <body
-          style={{
-            backgroundImage: "url('/bg.png')",
-            backgroundSize: "cover",
-            backgroundPosition: "center",
-            backgroundRepeat: "no-repeat",
-          }}
-        >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            enableSystem
-            disableTransitionOnChange
+    <AuthProvider>
+      <EnvironmentStoreProvider>
+        <html lang="en">
+          <body
+            style={{
+              backgroundImage: "url('/bg.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              backgroundRepeat: "no-repeat",
+            }}
+            className="select-none"
           >
-            <WalletProvider>
-              <Toaster />
-              <Layout>{children}</Layout>
-            </WalletProvider>
-          </ThemeProvider>
-        </body>
-      </html>
-    </EnvironmentStoreProvider>
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="light"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <WalletProvider>
+                <Toaster />
+                <Layout>{children}</Layout>
+              </WalletProvider>
+            </ThemeProvider>
+          </body>
+        </html>
+      </EnvironmentStoreProvider>
+    </AuthProvider>
   );
 }
