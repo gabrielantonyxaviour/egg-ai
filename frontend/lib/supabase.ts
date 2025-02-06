@@ -49,7 +49,7 @@ export async function createUser({
 }
 
 export async function updateUser({
-    username, name, image, evm_address, evm_p_key, solana_address, solana_p_key, bio, mode, profit_goal, profit_timeline, paused
+    username, name, image, evm_address, evm_p_key, solana_address, solana_p_key, mode, profit_goal, profit_timeline, paused
 }: {
     username: string;
     name?: string;
@@ -58,7 +58,6 @@ export async function updateUser({
     evm_p_key?: string;
     solana_address?: string;
     solana_p_key?: string;
-    bio?: string;
     mode?: string;
     profit_goal?: number;
     profit_timeline?: number;
@@ -67,7 +66,7 @@ export async function updateUser({
     console.log(`Updating user with username: ${username}`);
     const { data, error } = await supabase
         .from('users')
-        .update({ name, image, evm_address, evm_p_key, solana_address, solana_p_key, bio, mode, profit_goal, profit_timeline, paused })
+        .update({ name, image, evm_address, evm_p_key, solana_address, solana_p_key, mode, profit_goal, profit_timeline, paused })
         .eq('username', username)
         .select()
         .single();

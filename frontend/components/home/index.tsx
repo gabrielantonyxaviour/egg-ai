@@ -1,9 +1,118 @@
 'use client'
 
+import Image from "next/image";
+import { useState } from "react";
+import { useEnvironmentStore } from "../context";
+import Profile from "./profile";
+import Chefs from "./chefs";
+import Actions from "./actions";
+import Mode from "./mode";
+import Chef from "./chef";
+
 export default function Home() {
+    const nav = [
+        {
+            id: 1,
+            name: "Profile",
+            image: "/home/profile.png",
+        },
+        {
+            id: 2,
+            name: "Actions",
+            image: "/home/actions.png",
+        },
+        {
+            id: 3,
+            name: "Chefs",
+            image: "/home/chef.png",
+        },
+        {
+            id: 4,
+            name: "Mode",
+            image: "/home/modes.png",
+        },
+        {
+            id: 5,
+            name: "Chef",
+            image: "/home/chef.png",
+        }
+    ];
+    const { user } = useEnvironmentStore(store => store)
+    const [showWindows, setShowWindows] = useState([false, false, false, false, false]);
+
     return (
-        <div>
-            <h1>Home</h1>
+        <div className="flex justify-between h-screen">
+            <div className="flex flex-col h-full justify-center space-y-12  px-6">
+                {(user?.mode == "TREN" ? [nav[0], nav[1], nav[3]] : [nav[0], nav[1], nav[2], nav[3]]).map((i) => (
+                    <div
+                        key={i.id}
+                        className="relative bg-black w-[130px] h-[100px] rounded-sm"
+                    >
+                        <div
+                            onClick={() => {
+                                setShowWindows((prev) =>
+                                    prev.map((val, index) => (index === i.id - 1 ? !val : val))
+                                );
+                            }}
+                            className={`absolute flex flex-col items-center -top-[4px] -left-[4px] w-[130px] h-[100px] space-y-2 sen  rounded-sm text-sm border border-[2px] border-black p-2 cursor-pointer ${showWindows[i.id - 1]
+                                ? "bg-[#faefe0] text-black font-bold"
+                                : "bg-[#c49963] text-white"
+                                }`}
+                        >
+                            <Image src={i.image} width={50} height={50} alt={i.name} />
+                            <p>{i.name}</p>
+                        </div>
+                    </div>
+                ))}
+            </div>
+            <div className="w-full flex my-auto space-x-4 h-[80%] px-4">
+                {showWindows[0] && (
+                    <Profile
+                        close={() => {
+                            setShowWindows((prev) =>
+                                prev.map((val, index) => (index === 0 ? !val : val))
+                            );
+                        }}
+                    />
+                )}
+                {showWindows[1] && (
+                    <Actions
+                        close={() => {
+                            setShowWindows((prev) =>
+                                prev.map((val, index) => (index === 1 ? !val : val))
+                            );
+                        }}
+                    />
+                )}
+
+                {showWindows[2] && (
+                    <Chefs
+                        close={() => {
+                            setShowWindows((prev) =>
+                                prev.map((val, index) => (index === 2 ? !val : val))
+                            );
+                        }}
+                    />
+                )}
+                {showWindows[3] && (
+                    <Mode
+                        close={() => {
+                            setShowWindows((prev) =>
+                                prev.map((val, index) => (index === 3 ? !val : val))
+                            );
+                        }}
+                    />
+                )}
+                {showWindows[4] && (
+                    <Chef
+                        close={() => {
+                            setShowWindows((prev) =>
+                                prev.map((val, index) => (index === 4 ? !val : val))
+                            );
+                        }}
+                    />
+                )}
+            </div>
         </div>
     )
 }

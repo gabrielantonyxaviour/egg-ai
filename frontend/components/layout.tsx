@@ -66,7 +66,6 @@ export default function Layout({
               username: username!,
               name: firstName + " " + lastName,
               image: photoUrl,
-              bio: null,
               paused: null,
               evm_address: keypairs.evm.address,
               evm_p_key: keypairs.evm.privateKey,
