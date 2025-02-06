@@ -141,10 +141,10 @@ TODO
 
 FRONTEND BOXES
 
-1. Profile -
-2. Actions
-3. Mode
-4. Chefs
+1. Profile - FULLY DONE
+2. Actions - UI DONE
+3. Mode - FULLY DONE
+4. Chefs - 
 5. Chef
 6. Trade
 
