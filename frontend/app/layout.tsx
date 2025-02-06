@@ -13,32 +13,31 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <AuthProvider>
-      <EnvironmentStoreProvider>
-        <html lang="en">
-          <body
-            style={{
-              backgroundImage: "url('/bg.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              backgroundRepeat: "no-repeat",
-            }}
-            className="select-none"
+
+    <EnvironmentStoreProvider>
+      <html lang="en">
+        <body
+          style={{
+            backgroundImage: "url('/bg.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+          className="select-none"
+        >
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
           >
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="light"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <WalletProvider>
-                <Toaster />
-                <Layout>{children}</Layout>
-              </WalletProvider>
-            </ThemeProvider>
-          </body>
-        </html>
-      </EnvironmentStoreProvider>
-    </AuthProvider>
+            <WalletProvider>
+              <Toaster />
+              <Layout>{children}</Layout>
+            </WalletProvider>
+          </ThemeProvider>
+        </body>
+      </html>
+    </EnvironmentStoreProvider>
   );
 }

@@ -20,6 +20,7 @@ export const authOptions: NextAuthOptions = {
         CredentialsProvider({
             id: "telegram-login",
             name: "Telegram Login",
+
             credentials: {},
             async authorize(credentials, req) {
                 const validator = new AuthDataValidator({

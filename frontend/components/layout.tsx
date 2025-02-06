@@ -10,8 +10,8 @@ import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { useToast } from "@/hooks/use-toast";
 import { TelegramUser } from "@/types/telegram";
 import { TelegramLogin } from "./telegram-login";
-import { useRef } from "react";
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useEffect, useRef } from "react";
+// import { useSession, signIn, signOut } from "next-auth/react";
 import { LoginButton } from "@telegram-auth/react";
 import {
   DropdownMenu,
@@ -23,12 +23,13 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { CircleDashedIcon, LogOut } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { usePrivy } from "@privy-io/react-auth";
 export default function Layout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { data: session, status } = useSession();
+  // const { data: session, status } = useSession();
   const { user, setUser } = useEnvironmentStore((store) => store);
   const { toast } = useToast();
   const { address, isConnected, chainId } = useAccount();
@@ -40,36 +41,52 @@ export default function Layout({
   const router = useRouter();
   const pathname = usePathname();
   const telegramButtonRef = useRef<HTMLButtonElement>(null);
+  const { ready, authenticated, login, user: privyUser } = usePrivy();
 
-  const handleTelegramResponse = async (user: TelegramUser) => {
-    try {
-      const response = await fetch('/api/auth/telegram', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(user),
-      });
+  useEffect(() => {
+    console.log('Privy User:', privyUser);
 
-      const data = await response.json();
-
-      if (data.success) {
-        setUser(user);
-        router.push('/home');
-        toast({
-          title: "Connected",
-          description: "Successfully connected with Telegram",
-        });
-      }
-    } catch (error) {
-      console.error('Authentication failed:', error);
-      toast({
-        title: "Error",
-        description: "Failed to connect with Telegram",
-        variant: "destructive",
+    if (ready && authenticated && privyUser && privyUser.telegram) {
+      const { username, firstName, lastName, telegramUserId, photoUrl } = privyUser.telegram
+      setUser({
+        id: telegramUserId,
+        username: username!,
+        first_name: firstName!,
+        last_name: lastName!,
+        photo_url: photoUrl!,
+        auth_date: new Date(privyUser.createdAt).getTime(),
       });
     }
-  };
+  }, [privyUser])
+  // const handleTelegramResponse = async (user: TelegramUser) => {
+  //   try {
+  //     const response = await fetch('/api/auth/telegram', {
+  //       method: 'POST',
+  //       headers: {
+  //         'Content-Type': 'application/json',
+  //       },
+  //       body: JSON.stringify(user),
+  //     });
+
+  //     const data = await response.json();
+
+  //     if (data.success) {
+  //       setUser(user);
+  //       router.push('/home');
+  //       toast({
+  //         title: "Connected",
+  //         description: "Successfully connected with Telegram",
+  //       });
+  //     }
+  //   } catch (error) {
+  //     console.error('Authentication failed:', error);
+  //     toast({
+  //       title: "Error",
+  //       description: "Failed to connect with Telegram",
+  //       variant: "destructive",
+  //     });
+  //   }
+  // };
   return (
     <div className="h-screen w-screen">
       <div className="fixed w-screen flex justify-end space-x-4 p-4">
@@ -96,63 +113,46 @@ export default function Layout({
             </div>
           </>
         )}
-        {/* <div className="relative bg-black w-[120px] h-[40px] rounded-sm">
-          <Button
-            ref={telegramButtonRef}
+        <div className="relative bg-black w-[160px] h-[40px] rounded-sm">
+          {user ? <Button
+            // ref={telegramButtonRef}
             onClick={(e) => {
-              e.preventDefault();
-              console.log('Button clicked');
+              // e.preventDefault();
+              // console.log('Button clicked');
+              login();
             }}
             className="group absolute -top-[4px] -left-[2px] rounded-sm w-full h-full flex p-5 bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border-[1px] border-black mr-[2px]"
           >
             <Image
-              src="/telegram.svg"
+              src={"/telegram.svg"}
               width={30}
               height={30}
               alt="telegram"
+              onError={(e) => {
+                e.currentTarget.src = "/telegram.svg";
+              }}
               className="rounded-full group-hover:filter group-hover:invert"
             />
-            <p>Connect</p>
-          </Button>
-          <TelegramLogin
-            botName="egg_ai_bot"
-            onAuth={handleTelegramResponse}
-            triggerRef={telegramButtonRef}
-          />
-         
-        </div> */}
-        {status == 'loading' ? <CircleDashedIcon className="h-6 w-6 animate-spin" /> : status == 'authenticated' ? <DropdownMenu>
-          <DropdownMenuTrigger asChild>
-            <div>
-              <Avatar>
-                <AvatarImage
-                  src={session.user?.image ?? "/default.webp"}
-                  alt="@shadcn"
-                />
-                <AvatarFallback>
-                  {session.user?.name}
-                </AvatarFallback>
-              </Avatar>
-            </div>
-          </DropdownMenuTrigger>
-          <DropdownMenuContent align="end" className="w-56">
-            <DropdownMenuLabel>{session.user?.name}</DropdownMenuLabel>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem>Test 1</DropdownMenuItem>
-            <DropdownMenuItem disabled>Test 2</DropdownMenuItem>
-            <DropdownMenuSeparator />
-            <DropdownMenuItem onClick={() => signOut()}>
-              <LogOut className="mr-2 h-4 w-4" />
-              Sign out
-            </DropdownMenuItem>
-          </DropdownMenuContent>
-        </DropdownMenu> : <LoginButton
-          showAvatar={true}
-          botUsername={'egg_ai_bot'}
-          onAuthCallback={(data) => {
-            signIn("telegram-login", { callbackUrl: "/" }, data as any);
-          }}
-        />}
+            <p>{user.username}</p>
+          </Button> : <Button
+            disabled={authenticated || (privyUser != undefined && privyUser.telegram != undefined)}
+            onClick={(e) => {
+              login();
+            }}
+            className="group absolute -top-[4px] -left-[2px] rounded-sm w-full h-full flex p-5 bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border-[1px] border-black mr-[2px]"
+          >
+            {
+              !ready ? <CircleDashedIcon className="h-6 w-6 animate-spin" /> : <>  <Image
+                src="/telegram.svg"
+                width={30}
+                height={30}
+                alt="telegram"
+                className="rounded-full group-hover:filter group-hover:invert"
+              />
+                <p>Connect</p></>
+            }
+          </Button>}
+        </div>
       </div>
       {children}
 
