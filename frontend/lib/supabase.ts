@@ -6,48 +6,58 @@ const supabaseAnonKey = process.env.SUPABASE_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-
-export const fetchOrCreateUser = async ({ id, email, name, image }: {
-    id: string;
-    email: string;
-    name: string;
-    image: string | undefined;
-}) => {
-    // Try fetching the user
+export async function getUser(username: string): Promise<User | null> {
     const { data, error } = await supabase
-        .from("users")
-        .select("*")
-        .eq("username", id)
-        .single();
+        .from('users')
+        .select('*')
+        .eq('username', username)
+        .single()
 
-    if (error && error.code !== "PGRST116") {
-        console.error("Error fetching user:", error.message);
-        throw new Error("Failed to fetch user.");
-    }
+    if (error) return null
+    return data
+}
+export async function createUser({
+    username, name, image, evm_address, evm_p_key, sei_address, sei_p_key, solana_address, solana_p_key,
+}: {
+    username: string;
+    name: string;
+    image?: string;
+    evm_address?: string;
+    evm_p_key?: string;
+    sei_address?: string;
+    sei_p_key?: string;
+    solana_address?: string;
+    solana_p_key?: string;
+}): Promise<User | null> {
+    const { data, error } = await supabase
+        .from('users')
+        .insert([{ username, name, image, evm_address, evm_p_key, sei_address, sei_p_key, solana_address, solana_p_key }]).select().single()
+    if (error) return null
+    return data
+}
 
-    // If user exists, return it
-    if (data) return data;
-
-    // If user does not exist, create it
-    const userData: User = {
-        username: id,
-        name: name,
-        image: image,
-        mode: "TREN",
-        profit_goal: 0,
-        profit_timeline: 0,
-    };
-
-    const { data: newUser, error: insertError } = await supabase
-        .from("users")
-        .insert(userData)
-        .select()
-        .single();
-
-    if (insertError) {
-        console.error("Error creating user:", insertError.message);
-        throw new Error("Failed to create user.");
-    }
-
-    return newUser;
-};
+export async function updateUser({
+    username, name, image, evm_address, evm_p_key, sei_address, sei_p_key, solana_address, solana_p_key, bio, mode, profit_goal, profit_timeline, paused
+}: {
+    username: string;
+    name?: string;
+    image?: string;
+    evm_address?: string;
+    evm_p_key?: string;
+    sei_address?: string;
+    sei_p_key?: string;
+    solana_address?: string;
+    solana_p_key?: string;
+    bio?: string;
+    mode?: string;
+    profit_goal?: number;
+    profit_timeline?: number;
+    paused?: boolean;
+}): Promise<User | null> {
+    const { data, error } = await supabase
+        .from('users')
+        .update({ name, image, evm_address, evm_p_key, sei_address, sei_p_key, solana_address, solana_p_key, bio, mode, profit_goal, profit_timeline, paused })
+        .eq('username', username).select().single()
+    if (error) return null
+    return data
+}

@@ -1,13 +1,11 @@
 import { StateCreator } from "zustand";
-import { TelegramUser } from "@/types/telegram";
+import { User } from "@/types";
 interface GlobalState {
-  user: TelegramUser | null;
-
+  user: User | null;
 }
 
 interface GlobalActions {
-
-  setUser: (user: TelegramUser) => void;
+  setUser: (user: User) => void;
 }
 
 export type GlobalSlice = GlobalState & GlobalActions;

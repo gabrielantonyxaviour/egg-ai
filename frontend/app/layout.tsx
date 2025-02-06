@@ -12,7 +12,6 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-
     <EnvironmentStoreProvider>
       <html lang="en">
         <body
