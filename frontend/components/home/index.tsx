@@ -7,7 +7,7 @@ import Profile from "./profile";
 import Chefs from "./chefs";
 import Actions from "./actions";
 import Mode from "./mode";
-import Chef from "./chef";
+import Chef from "../chef/profile";
 import { useRouter } from "next/navigation";
 
 export default function Home() {
@@ -41,6 +41,7 @@ export default function Home() {
     const { user, setEthPrice, setSolPrice, setEthBalance, setSolBalance, setTotalEquity } = useEnvironmentStore(store => store)
     const [showWindows, setShowWindows] = useState([false, false, false, false, false]);
     const router = useRouter();
+    const [searchUsername, setSearchUsername] = useState('')
 
     useEffect(() => {
         if (user == undefined) router.push('/');
@@ -117,6 +118,7 @@ export default function Home() {
 
                 {showWindows[2] && (
                     <Chefs
+                        setSearchUsername={setSearchUsername}
                         close={() => {
                             setShowWindows((prev) =>
                                 prev.map((val, index) => (index === 2 ? !val : val))
@@ -135,6 +137,7 @@ export default function Home() {
                 )}
                 {showWindows[4] && (
                     <Chef
+                        username={searchUsername}
                         close={() => {
                             setShowWindows((prev) =>
                                 prev.map((val, index) => (index === 4 ? !val : val))

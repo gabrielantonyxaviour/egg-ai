@@ -151,9 +151,10 @@ FRONTEND BOXES
 6. Trade - 
 
 For Chef
-1. Profile
-2. Recipes
-3. Create
+1. Create Chef - DONE
+2. Profile 
+3. Recipes
+4. Create
 
 
 Looking to go long BTC at this level (95279) lots of confluence here so looking for a bounce (VAL, golden pocket, 4H OB)
