@@ -24,14 +24,15 @@ export default function Layout({
 
     if (ready && authenticated && privyUser && privyUser.telegram) {
       const { username, firstName, lastName, telegramUserId, photoUrl } = privyUser.telegram
-      setUser({
-        id: telegramUserId,
-        username: username!,
-        first_name: firstName!,
-        last_name: lastName!,
-        photo_url: photoUrl!,
-        auth_date: new Date(privyUser.createdAt).getTime(),
-      });
+
+
+      // setUser({
+      //   username: username!,
+      //   name: firstName! + " " + lastName!,
+      //   image: photoUrl!,
+      //   bio: "",
+      //   auth_date: new Date(privyUser.createdAt).getTime(),
+      // });
     }
   }, [privyUser])
 

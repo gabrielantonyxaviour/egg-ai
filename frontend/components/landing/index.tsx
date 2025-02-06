@@ -3,9 +3,8 @@ import Image from "next/image";
 import { Button, buttonVariants } from "../ui/button";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Session } from "next-auth";
 
-export default function Landing({ session }: { session: Session | null }) {
+export default function Landing() {
   const router = useRouter();
 
   return (
@@ -18,21 +17,18 @@ export default function Landing({ session }: { session: Session | null }) {
 
           </div>
           <p className="text-center pt-2 font-bold text-xl sen tracking-wide">
-            EggAI
+            Egg AI
           </p>
           <p className="text-center text-xs sen ">
             An autonomous AI agent that prints you money by clicking a button.
           </p>
           <div className="flex justify-center py-4 space-x-2 ">
-            <Button
-              variant={"outline"}
-              className="rounded-sm bg-transparent border-0 hover:bg-transparent hover:border-2 hover:border-black hover:font-bold"
-              onClick={() => {
-                router.push("/home");
-              }}
+            <Link
+              href="/home"
+              className={`${buttonVariants()} rounded-sm bg-transparent border-0 hover:bg-transparent hover:border-2 hover:border-black hover:font-bold text-black`}
             >
               Get Started
-            </Button>
+            </Link>
           </div>
         </div>
       </div>
