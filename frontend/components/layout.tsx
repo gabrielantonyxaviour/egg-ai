@@ -3,13 +3,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useCallback, useEffect } from "react";
 import { Button } from "./ui/button";
 import Image from "next/image";
-import { getSdk } from "@/lib/sdk";
 import { useAccount, useBalance, useConnect, useDisconnect } from "wagmi";
-import { arbitrumTestnet, shortenAddress } from "@/lib/utils";
+import { shortenAddress } from "@/lib/utils";
 import { injected } from "wagmi/connectors";
 import { getBalance } from "@wagmi/core";
 import { config } from "@/lib/config";
-import { EGG_AI_ADDRESS } from "@/lib/constants";
+// import { EGG_AI_ADDRESS } from "@/lib/constants";
 import { useEnvironmentStore } from "./context";
 import {
   DropdownMenu,
@@ -24,8 +23,8 @@ export default function Layout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const { eggAiBalance, setEggAiBalance, setActive, setCompleted } =
-    useEnvironmentStore((store) => store);
+  // const { eggAiBalance, setEggAiBalance, setActive, setCompleted } =
+  //   useEnvironmentStore((store) => store);
   const { toast } = useToast();
   const { address, isConnected, chainId } = useAccount();
   const { connectAsync } = useConnect();
@@ -33,19 +32,8 @@ export default function Layout({
     address: address,
   });
   const { disconnect } = useDisconnect();
-  const authSdk = getSdk();
   const router = useRouter();
   const pathname = usePathname();
-
-
-  useEffect(() => {
-    if (authSdk) {
-      if (pathname.split("/")[1] == "embed" || pathname.split("/")[1] == "quiz")
-        return;
-      if (!authSdk.isAuthenticated()) router.push("/");
-      else router.push("/home");
-    }
-  }, [authSdk]);
 
   return (
     <div className="h-screen w-screen">
@@ -55,13 +43,15 @@ export default function Layout({
             <div className="relative w-[130px] bg-black h-[40px] rounded-sm">
               <Button
                 onClick={() => {
-                  window.open(
-                    "https://arbiscan.io/address/" +
-                    EGG_AI_ADDRESS,
-                    "_blank"
-                  );
+                  // window.open(
+                  //   "https://arbiscan.io/address/" +
+                  //   EGG_AI_ADDRESS,
+                  //   "_blank"
+                  // );
+
+                  // TODO: Fix this
                 }}
-                className="absolute -top-[4px] -left-[4px] w-full h-full flex p-5 space-x-2 bg-[#131beb] hover:bg-[#131beb] border-black mr-[2px]"
+                className="absolute -top-[4px] -left-[4px] w-full h-full flex p-5 space-x-2 bg-[#d74b1a] hover:bg-[#d74b1a] border-black mr-[2px]"
               >
                 <Image
                   src={"/robin.jpg"}
@@ -70,7 +60,7 @@ export default function Layout({
                   alt="robin"
                   className="rounded-full"
                 />
-                <p> {eggAiBalance.toFixed(2)} RX</p>
+                {/* <p> {eggAiBalance.toFixed(2)} RX</p> TODO*/}
               </Button>
             </div>
             <div className="relative w-[130px] bg-black h-[40px] rounded-sm">
@@ -78,7 +68,7 @@ export default function Layout({
                 onClick={() => {
                   window.open("https://arbiscan.io/", "_blank");
                 }}
-                className="absolute -top-[4px] -left-[4px] w-full h-full flex p-5 space-x-2 bg-[#131beb] hover:bg-[#131beb] border-black mr-[2px]"
+                className="absolute -top-[4px] -left-[4px] w-full h-full flex p-5 space-x-2 bg-[#d74b1a] hover:bg-[#d74b1a] border-black mr-[2px]"
               >
                 <Image
                   src={"/chains/arbitrum.png"}
@@ -98,12 +88,12 @@ export default function Layout({
         {!isConnected || address == null ? (
           <div className="relative bg-black w-[160px] h-[40px] rounded-sm">
             <Button
-              className="absolute -top-[4px] -left-[4px] w-full h-full flex p-5 space-x-2 bg-[#131beb] hover:bg-[#ffd75f] hover:text-black border-[1px] border-black mr-[2px]"
+              className="absolute -top-[4px] -left-[4px] w-full h-full flex p-5 space-x-2 bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border-[1px] border-black mr-[2px]"
               onClick={async () => {
-                await connectAsync({
-                  chainId: arbitrumTestnet.id,
-                  connector: injected(),
-                });
+                // await connectAsync({
+                //   chainId: arbitrumTestnet.id,
+                //   connector: injected(),
+                // });
                 // await authSdk.signInWithRedirect({
                 //   state: "opencampus",
                 // });
@@ -117,7 +107,7 @@ export default function Layout({
             <DropdownMenuTrigger asChild>
               <div className="relative bg-black w-[160px] h-[40px] rounded-sm">
                 <Button
-                  className="absolute -top-[4px] -left-[4px] flex p-5 space-x-2 bg-[#131beb] hover:bg-[#ffd75f] hover:text-black border-[1px] border-black mr-[2px]"
+                  className="absolute -top-[4px] -left-[4px] flex p-5 space-x-2 bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border-[1px] border-black mr-[2px]"
                   onClick={() => {
                     // handleLogout();
                     // disconnect();

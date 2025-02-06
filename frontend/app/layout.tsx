@@ -14,7 +14,14 @@ export default function RootLayout({
   return (
     <EnvironmentStoreProvider>
       <html lang="en">
-        <body className="bg-[#2c6cc3]">
+        <body
+          style={{
+            backgroundImage: "url('/bg.png')",
+            backgroundSize: "cover",
+            backgroundPosition: "center",
+            backgroundRepeat: "no-repeat",
+          }}
+        >
           <ThemeProvider
             attribute="class"
             defaultTheme="light"
