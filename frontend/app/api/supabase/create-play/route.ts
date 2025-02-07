@@ -1,42 +1,81 @@
-import { createChef, storeImage } from '@/lib/supabase'
+import { createPlay, storeImage } from '@/lib/supabase'
 
 export async function POST(request: Request) {
     try {
-        console.log('Received request to create chef')
+        console.log('Received request to create play')
         const formData = await request.formData()
         const chef_id = formData.get('chef_id') as string
         const asset = formData.get('asset') as string
-        const bio = formData.get('bio') as string
-        const niches = JSON.parse(formData.get('niches') as string)
-        const subFee = parseFloat(formData.get('subFee') as string)
-        const fileExt = image.name.split('.').pop()
-        const fileName = `${username}.${fileExt}`
+        const direction = formData.get('direction') as string
+        const chain = formData.get('chain') as string
+        const entryPrice = parseFloat(formData.get('entry_price') as string)
+        const stopLoss = parseFloat(formData.get('stop_loss') as string)
+        const leverage = parseFloat(formData.get('leverage') as string)
+        const tradeType = formData.get('trade_type') as string
+        const timeFrame = parseFloat(formData.get('timeframe') as string)
+        const status = formData.get('status') as string
+        const researchDescription = formData.get('research_description') as string
+        const dex = formData.get('dex') as string
         const image = formData.get('image') as File
-
+        const takeProfits = JSON.parse(formData.get('take_profit') as string)
+        const dcaPoints = JSON.parse(formData.get('dca') as string)
+        const expectedPnl = formData.get('expected_pnl') as string
+        const fileExt = image.name.split('.').pop()
+        const fileName = `${chef_id}-${Math.floor(Math.random() * 1000000000)}.${fileExt}`
+        console.log(timeFrame)
         console.log('Storing image with filename:', fileName)
         const imageUrl = await storeImage(fileName, image)
         console.log('Image stored at URL:', imageUrl)
 
-        console.log('Creating chef with data:', { username, name, bio, image: imageUrl, niche: niches, sub_fee: subFee.toString() })
-        const chef = await createChef({
-            username: username,
-            name,
-            bio,
+        console.log('Creating trade play with data:', {
+            chef_id,
+            asset,
+            direction,
+            entry_price: entryPrice.toString(),
+            stop_loss: stopLoss.toString(),
+            leverage: leverage.toString(),
+            trade_type: 'future',
+            timeframe: timeFrame.toString(),
+            status: 'pending',
+            pnl_percentage: null,
+            research_description: researchDescription,
+            dex,
             image: imageUrl,
-            niche: niches,
-            sub_fee: subFee.toString(),
+            chain,
+            take_profit: takeProfits,
+            dca: dcaPoints,
+            expected_pnl: expectedPnl
+        })
+        const play = await createPlay({
+            chef_id,
+            asset,
+            direction,
+            entry_price: entryPrice.toString(),
+            stop_loss: stopLoss.toString(),
+            leverage: leverage.toString(),
+            trade_type: 'future',
+            timeframe: timeFrame.toString(),
+            status: 'pending',
+            pnl_percentage: null,
+            research_description: researchDescription,
+            dex,
+            image: imageUrl,
+            chain,
+            take_profit: takeProfits,
+            dca: dcaPoints,
+            expected_pnl: expectedPnl
         })
 
-        if (!chef) {
-            console.error('Error creating chef')
+        if (!play) {
+            console.error('Error creating play')
             return Response.json(
-                { error: 'Error creating chef' },
+                { error: 'Error creating play' },
                 { status: 500 }
             )
         }
 
-        console.log('Chef created successfully:', chef)
-        return Response.json({ chef })
+        console.log('Play created successfully:', play)
+        return Response.json({ play })
     } catch (error) {
         console.error('Internal server error:', error)
         return Response.json(

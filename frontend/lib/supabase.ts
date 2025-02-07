@@ -169,6 +169,7 @@ export async function updateUser({
 export async function storeImage(fileName: string, file: File): Promise<string> {
     const { data, error } = await supabase.storage.from('chef_images').upload(fileName, file, {
         contentType: 'image/png',
+        upsert: true,
     });
 
     if (error) {
@@ -180,7 +181,6 @@ export async function storeImage(fileName: string, file: File): Promise<string> 
         .storage
         .from('chef_images')
         .getPublicUrl(fileName);
-
 
     console.log(`Image uploaded successfully: ${publicUrl}`);
     return publicUrl;

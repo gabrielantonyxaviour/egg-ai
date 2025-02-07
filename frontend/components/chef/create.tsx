@@ -21,24 +21,33 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import { DCA, TakeProfit } from '@/types';
 import { assets } from '@/lib/constants';
-import Image from 'next/image';
 import { cn } from '@/lib/utils';
 import { Calendar } from '../ui/calendar';
-
-
-
+import { ScrollArea, ScrollBar } from '../ui/scroll-area';
+import { useEnvironmentStore } from '../context';
 
 interface CreateRecipeProps {
     close: () => void;
 }
 
 const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
-    const [takeProfits, setTakeProfits] = useState<TakeProfit[]>([{ price: '', percentage: '' }]);
-    const [dcaPoints, setDcaPoints] = useState<DCA[]>([{ price: '', percentage: '' }]);
-    const [selectedAsset, setSelectedAsset] = useState<string>('');
-    const [selectedChain, setSelectedChain] = useState<string>('');
+    const { chef } = useEnvironmentStore((store) => store)
+    const [entryPrice, setEntryPrice] = useState<number>(187.45);
+    const [leverage, setLeverage] = useState<number>(10);
+    const [stopLoss, setStopLoss] = useState<number>(180.00);
+    const [researchDescription, setResearchDescription] = useState<string>('Taking a long position on AAVE at $187.45 because technical indicators show bullish momentum with MACD crossover and RSI at 62. Protocol metrics are strong with TVL up 12% to $4.2B and daily users at 15,240. Recent institutional inflows of $45M and neutral funding rates suggest room for upside. Main risk is regulatory uncertainty but current price level offers good risk/reward ratio for a long entry.');
+    const [image, setImage] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string>('');
+    const [selectedTime, setSelectedTime] = useState<string>('12:00');
+    const [expectedPnl, setExpectedPnl] = useState<string>("15");
+    const [takeProfits, setTakeProfits] = useState<TakeProfit[]>([{ price: '200', percentage: '10' }]);
+    const [dcaPoints, setDcaPoints] = useState<DCA[]>([{ price: '185', percentage: '5' }]);
+    const [selectedAsset, setSelectedAsset] = useState<string>('AAVE');
+    const [selectedChain, setSelectedChain] = useState<string>('arb');
     const [direction, setDirection] = useState<'buy_long' | 'sell_short'>('buy_long');
-    const [selectedDate, setSelectedDate] = useState<Date>();
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+    const [loading, setLoading] = useState(0);
+    const [error, setError] = useState<string>('');
     // Sample asset data - replace with your actual data
 
     const handleAddTakeProfit = () => {
@@ -75,6 +84,81 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
         }
     };
 
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0]
+        if (file) {
+            console.log("Selected file:", file);
+            const img = new Image()
+            img.onload = () => {
+                console.log("Image loaded successfully");
+                setImage(file)
+                setImagePreview(URL.createObjectURL(file))
+            }
+            img.onerror = () => {
+                console.error("Failed to load image");
+            }
+            img.src = URL.createObjectURL(file)
+        } else {
+            console.log("No file selected");
+        }
+    }
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        e.preventDefault()
+        console.log("Submitted")
+        setLoading(1)
+        console.log(image)
+        if (!image) {
+            setError('Please upload a profile image')
+            return
+        }
+        // Handle form submission here
+        console.log({ takeProfits, dcaPoints, selectedAsset, selectedChain, direction, selectedDate, entryPrice, leverage, stopLoss, researchDescription, image, imagePreview, selectedTime, expectedPnl })
+
+        const targetDateTime = new Date(selectedDate);
+        const [hours, minutes] = selectedTime.split(':').map(Number);
+        targetDateTime.setHours(hours, minutes, 0, 0);
+
+        const currentDate = new Date();
+        const timeFrame = Math.floor((targetDateTime.getTime() - currentDate.getTime()) / 1000);
+
+        console.log(timeFrame)
+        const formData = new FormData()
+        formData.append('chef_id', chef?.id || "")
+        formData.append('asset', selectedAsset)
+        formData.append('direction', direction)
+        formData.append('chain', selectedChain)
+        formData.append('entry_price', entryPrice.toString());
+        formData.append('stop_loss', stopLoss.toString());
+        formData.append('leverage', leverage.toString());
+        formData.append('trade_type', 'future');
+        formData.append('timeframe', timeFrame.toString());
+        formData.append('status', 'pending');
+        formData.append('research_description', researchDescription);
+        formData.append('dex', 'GMX');
+        formData.append('image', image);
+        formData.append('take_profit', JSON.stringify(takeProfits));
+        formData.append('dca', JSON.stringify(dcaPoints));
+        formData.append('expected_pnl', expectedPnl.length > 0 ? expectedPnl : "0");
+        console.log("FormData")
+        console.log(formData)
+        const response = await fetch('/api/supabase/create-play', {
+            method: 'POST',
+            body: formData
+        })
+        const { play, error } = await response.json()
+
+        if (error) {
+            console.log(error)
+            setError(error)
+            return
+        }
+        console.log("Successfully created play")
+        console.log(play)
+
+        await new Promise(resolve => setTimeout(resolve, 1000));
+        setLoading(2)
+    }
     return (
         <div className="relative w-[68%] h-full bg-black rounded-sm">
             <div className="absolute w-full h-full flex flex-col -top-[0.5%] -left-[0.5%] space-y-2 sen rounded-sm text-sm border-2 border-black py-2 bg-[#faefe0] text-black">
@@ -84,328 +168,364 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
                         <X className="h-4 w-4" />
                     </Button>
                 </div>
-
-                <form className="flex flex-col gap-4 p-4 overflow-y-auto max-h-[calc(100vh-100px)]">
-                    {/* Top Row: DEX, Asset, Chain */}
-                    <div className="flex gap-4 items-start">
-                        {/* DEX */}
-                        <div className="flex-none w-32">
-                            <Label>DEX</Label>
-                            <div className="flex items-center p-2 border rounded-md bg-[#c49963] mt-2">
-                                <img src="/gmx.png" alt="GMX Logo" className="mr-2 w-[20px] h-[20px] rounded-full" />
-                                <span className='text-white font-semibold'>GMX</span>
+                <ScrollArea className='max-h-[calc(100vh-100px)]'>
+                    <form className="flex flex-col gap-4 p-4 overflow-y-auto " onSubmit={handleSubmit}>
+                        {/* Top Row: DEX, Asset, Chain */}
+                        <div className="flex gap-4 items-start">
+                            {/* DEX */}
+                            <div className="flex-none w-32">
+                                <Label>DEX</Label>
+                                <div className="flex items-center p-2 border rounded-md bg-[#c49963] mt-2">
+                                    <img src="/gmx.png" alt="GMX Logo" className="mr-2 w-[20px] h-[20px] rounded-full" />
+                                    <span className='text-white font-semibold'>GMX</span>
+                                </div>
                             </div>
-                        </div>
 
-                        {/* Asset Selection */}
-                        <div className="flex-1">
-                            <Label>Asset</Label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button variant="outline" className="w-full mt-2 justify-between hover:bg-[#c49963] hover:text-white">
-                                        <div className='ml-2 flex w-full items-center space-x-2'>
-                                            <p className='sen font-semibold '>{selectedAsset ? `${selectedAsset}/USD` : "Select Asset"}</p>
-                                            {selectedAsset && <div className='flex space-x-1 flex-1 justify-end'>
-                                                {Object.keys(assets[selectedAsset]).filter((chain: string) => assets[selectedAsset][chain as 'arb' | 'avax'] != '').map((chain: string) => <Image src={`/chains/${chain}.png`} className='rounded-full' width={24} height={24} alt={chain} />)}
+                            {/* Asset Selection */}
+                            <div className="flex-1">
+                                <Label>Asset</Label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button variant="outline" className="w-full mt-2 justify-between hover:bg-[#c49963] hover:text-white">
+                                            <div className='ml-2 flex w-full items-center space-x-2'>
+                                                <p className='sen font-semibold '>{selectedAsset ? `${selectedAsset}/USD` : "Select Asset"}</p>
+                                                {selectedAsset && <div className='flex space-x-1 flex-1 justify-end'>
+                                                    {Object.keys(assets[selectedAsset]).filter((chain: string) => assets[selectedAsset][chain as 'arb' | 'avax'] != '').map((chain: string) => <img src={`/chains/${chain}.png`} className='rounded-full w-[24px] h-[24px]' alt={chain} />)}
 
-                                            </div>}
+                                                </div>}
 
-                                        </div>
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="p-0" align="start">
-                                    <Command>
-                                        <CommandInput placeholder="Search assets..." className='sen' />
-                                        <CommandList>
-                                            <CommandEmpty className='sen p-4 text-sm text-center'>No assets found.</CommandEmpty>
-                                            <CommandGroup>
+                                            </div>
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="p-0" align="start">
+                                        <Command>
+                                            <CommandInput placeholder="Search assets..." className='sen' />
+                                            <CommandList>
+                                                <CommandEmpty className='sen p-4 text-sm text-center'>No assets found.</CommandEmpty>
+                                                <CommandGroup>
 
-                                                {Object.entries(assets).map(([asset, chains]) => (
-                                                    <CommandItem
-                                                        key={asset}
-                                                        value={asset}
-                                                        onSelect={() => handleAssetChange(asset)}
-                                                        className='w-full hover:bg-[#c49963]'
-                                                    >
-                                                        <div className='ml-2 flex w-full items-center space-x-2'>
-                                                            <p className='sen font-semibold '>{asset}/USD</p>
-                                                            {selectedAsset === asset && (
-                                                                <Check className=" h-4 w-4" />
-                                                            )}
-                                                            <div className='flex space-x-1 flex-1 justify-end'>
-                                                                {Object.keys(chains).filter((chain: string) => chains[chain as 'arb' | 'avax'] != '').map((chain: string) => <Image src={`/chains/${chain}.png`} className='rounded-full' width={24} height={24} alt={chain} />)}
+                                                    {Object.entries(assets).map(([asset, chains]) => (
+                                                        <CommandItem
+                                                            key={asset}
+                                                            value={asset}
+                                                            onSelect={() => handleAssetChange(asset)}
+                                                            className='w-full hover:bg-[#c49963]'
+                                                        >
+                                                            <div className='ml-2 flex w-full items-center space-x-2'>
+                                                                <p className='sen font-semibold '>{asset}/USD</p>
+                                                                {selectedAsset === asset && (
+                                                                    <Check className=" h-4 w-4" />
+                                                                )}
+                                                                <div className='flex space-x-1 flex-1 justify-end'>
+                                                                    {Object.keys(chains).filter((chain: string) => chains[chain as 'arb' | 'avax'] != '').map((chain: string) => <img src={`/chains/${chain}.png`} className='rounded-full w-[24px] h-[24px]' alt={chain} />)}
+
+                                                                </div>
 
                                                             </div>
 
-                                                        </div>
 
 
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </CommandList>
 
-                                                    </CommandItem>
-                                                ))}
-                                            </CommandGroup>
-                                        </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
 
-                                    </Command>
-                                </PopoverContent>
-                            </Popover>
-                        </div>
-
-                        {/* Chain Selection */}
-                        <div className="flex-1">
-                            <Label>Chain</Label>
-                            <Popover>
-                                <PopoverTrigger asChild>
-                                    <Button
-                                        variant="outline"
-                                        className="w-full mt-2 hover:bg-[#c49963] hover:text-white"
-                                        disabled={!selectedAsset || Object.keys(assets[selectedAsset] || {}).length === 1}
-                                    >
-                                        {selectedChain ? selectedChain.toUpperCase() : "Select Chain"}
-                                    </Button>
-                                </PopoverTrigger>
-                                <PopoverContent className="p-0 sen" align="start">
-                                    <Command>
-                                        <CommandList>
-                                            <CommandGroup>
-                                                {selectedAsset && Object.keys(assets[selectedAsset]).length > 1 && (
-                                                    <CommandItem value="both" onSelect={() => setSelectedChain('both')}>
-                                                        Either
-                                                        {selectedChain === 'both' && (
-                                                            <Check className="ml-auto h-4 w-4" />
-                                                        )}
-                                                    </CommandItem>
-                                                )}
-                                                {selectedAsset &&
-                                                    Object.keys(assets[selectedAsset]).map((chain) => (
-                                                        <CommandItem
-                                                            key={chain}
-                                                            value={chain}
-                                                            onSelect={() => setSelectedChain(chain)}
-                                                        >
-                                                            {chain.toUpperCase()}
-                                                            {selectedChain === chain && (
+                            {/* Chain Selection */}
+                            <div className="flex-1">
+                                <Label>Chain</Label>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <Button
+                                            variant="outline"
+                                            className="w-full mt-2 hover:bg-[#c49963] hover:text-white"
+                                            disabled={!selectedAsset || Object.keys(assets[selectedAsset] || {}).length === 1}
+                                        >
+                                            {selectedChain ? selectedChain.toUpperCase() : "Select Chain"}
+                                        </Button>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="p-0 sen" align="start">
+                                        <Command>
+                                            <CommandList>
+                                                <CommandGroup>
+                                                    {selectedAsset && Object.values(assets[selectedAsset]).filter((address) => address != '').length > 1 && (
+                                                        <CommandItem value="either" onSelect={() => setSelectedChain('either')}>
+                                                            Either
+                                                            {selectedChain === 'either' && (
                                                                 <Check className="ml-auto h-4 w-4" />
                                                             )}
                                                         </CommandItem>
-                                                    ))}
-                                            </CommandGroup>
-                                        </CommandList>
+                                                    )}
+                                                    {selectedAsset &&
+                                                        Object.keys(assets[selectedAsset]).filter((chain) => assets[selectedAsset][chain as 'arb' | 'avax'] != "").map((chain) => (
+                                                            <CommandItem
+                                                                key={chain}
+                                                                value={chain}
+                                                                onSelect={() => setSelectedChain(chain)}
+                                                            >
+                                                                {chain.toUpperCase()}
+                                                                {selectedChain === chain && (
+                                                                    <Check className="ml-auto h-4 w-4" />
+                                                                )}
+                                                            </CommandItem>
+                                                        ))}
+                                                </CommandGroup>
+                                            </CommandList>
 
-                                    </Command>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
+                            </div>
+                        </div>
+
+                        {/* Direction Radio Group */}
+                        <div className="space-y-2">
+                            <Label>Direction</Label>
+                            <RadioGroup
+                                defaultValue="buy_long"
+                                onValueChange={(value) => setDirection(value as 'buy_long' | 'sell_short')}
+                                className="flex gap-4"
+                            >
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="buy_long" id="buy_long" />
+                                    <Label htmlFor="buy_long">Buy Long</Label>
+                                </div>
+                                <div className="flex items-center space-x-2">
+                                    <RadioGroupItem value="sell_short" id="sell_short" />
+                                    <Label htmlFor="sell_short">Sell Short</Label>
+                                </div>
+                            </RadioGroup>
+                        </div>
+
+                        {/* Entry Price */}
+                        <div className="space-y-2">
+                            <Label>Entry Price</Label>
+                            <Input type="number" step="0.01" value={entryPrice} onChange={(e) => {
+                                setEntryPrice(Number(e.target.value))
+                            }} />
+                        </div>
+
+                        {/* Take Profit Points */}
+                        <div className="space-y-2">
+                            <Label>Take Profit Points</Label>
+                            {takeProfits.map((tp, index) => (
+                                <div key={index} className="flex gap-2 mb-2">
+                                    <Input
+                                        type="number"
+                                        placeholder="Price"
+                                        step="0.01"
+                                        value={tp.price}
+                                        onChange={(e) => {
+                                            const newTakeProfits = [...takeProfits];
+                                            newTakeProfits[index].price = e.target.value;
+                                            setTakeProfits(newTakeProfits);
+                                        }}
+                                    />
+                                    <Input
+                                        type="number"
+                                        placeholder="Percentage"
+                                        step="0.1"
+                                        value={tp.percentage}
+                                        onChange={(e) => {
+                                            const newTakeProfits = [...takeProfits];
+                                            newTakeProfits[index].percentage = e.target.value;
+                                            setTakeProfits(newTakeProfits);
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                            <div className='flex space-x-2'>  {takeProfits.length < 3 && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={handleAddTakeProfit}
+                                    className="flex items-center gap-1 hover:bg-[#c49963] hover:text-white"
+                                >
+                                    <Plus className="h-4 w-4" /> Add Take Profit
+                                </Button>
+                            )}
+                                {takeProfits.length > 1 && (
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        onClick={handleSubTakeProfit}
+                                        className="flex items-center gap-1 bg-[#d74b1a] hover:bg-[#d74b1a]"
+                                    >
+                                        <Trash2 className="h-4 w-4" /> Remove
+                                    </Button>
+                                )}</div>
+
+                        </div>
+
+                        {/* DCA Points */}
+                        <div className="space-y-2">
+                            <Label>DCA Points</Label>
+                            {dcaPoints.map((dca, index) => (
+                                <div key={index} className="flex gap-2 mb-2">
+                                    <Input
+                                        type="number"
+                                        placeholder="Price"
+                                        step="0.01"
+                                        value={dca.price}
+                                        onChange={(e) => {
+                                            const newDcaPoints = [...dcaPoints];
+                                            newDcaPoints[index].price = e.target.value;
+                                            setDcaPoints(newDcaPoints);
+                                        }}
+                                    />
+                                    <Input
+                                        type="number"
+                                        placeholder="Percentage"
+                                        step="0.1"
+                                        value={dca.percentage}
+                                        onChange={(e) => {
+                                            const newDcaPoints = [...dcaPoints];
+                                            newDcaPoints[index].percentage = e.target.value;
+                                            setDcaPoints(newDcaPoints);
+                                        }}
+                                    />
+                                </div>
+                            ))}
+                            <div className='flex space-x-2'>  {dcaPoints.length < 3 && (
+                                <Button
+                                    type="button"
+                                    variant="outline"
+                                    onClick={handleAddDCA}
+                                    className="flex items-center gap-1 hover:bg-[#c49963] hover:text-white"
+                                >
+                                    <Plus className="h-4 w-4" /> Add DCA points
+                                </Button>
+                            )}
+                                {dcaPoints.length > 1 && (
+                                    <Button
+                                        type="button"
+                                        variant="destructive"
+                                        onClick={handleSubDCA}
+                                        className="flex items-center gap-1 bg-[#d74b1a] hover:bg-[#d74b1a]"
+                                    >
+                                        <Trash2 className="h-4 w-4" /> Remove
+                                    </Button>
+                                )}</div>
+                        </div>
+
+                        {/* Other Fields */}
+                        <div className="space-y-2">
+                            <Label>Stop Loss</Label>
+                            <Input type="number" step="0.01" value={stopLoss} onChange={(e) => {
+                                setStopLoss(Number(e.target.value))
+                            }} />
+                        </div>
+
+                        <div className="space-y-2">
+                            <Label>Leverage (1-20)</Label>
+                            <Input type="number" min="1" max="20" step="1" value={leverage} onChange={(e) => {
+                                setLeverage(Number(e.target.value));
+                            }} />
+                        </div>
+
+                        <div className=" flex flex-col space-y-2">
+                            <Label>Timeframe</Label>
+                            <div className='flex space-x-2'><Popover>
+                                <PopoverTrigger asChild>
+                                    <Button
+                                        variant={"outline"}
+                                        className={cn(
+                                            "w-[240px] pl-3 text-left font-normal hover:bg-[#c49963] hover:text-white",
+                                            !selectedDate && "text-muted-foreground"
+                                        )}
+                                    >
+                                        {selectedDate ? (
+                                            format(selectedDate, "PPP")
+                                        ) : (
+                                            <span>Pick a date</span>
+                                        )}
+                                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                    </Button>
+                                </PopoverTrigger>
+                                <PopoverContent className="w-auto p-0" align="start">
+                                    <Calendar
+                                        mode="single"
+                                        selected={selectedDate}
+                                        onSelect={(date) => date && setSelectedDate(date)}
+                                        disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                                        initialFocus
+                                        className='sen'
+                                    />
                                 </PopoverContent>
                             </Popover>
-                        </div>
-                    </div>
-
-                    {/* Direction Radio Group */}
-                    <div className="space-y-2">
-                        <Label>Direction</Label>
-                        <RadioGroup
-                            defaultValue="buy_long"
-                            onValueChange={(value) => setDirection(value as 'buy_long' | 'sell_short')}
-                            className="flex gap-4"
-                        >
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="buy_long" id="buy_long" />
-                                <Label htmlFor="buy_long">Buy Long</Label>
-                            </div>
-                            <div className="flex items-center space-x-2">
-                                <RadioGroupItem value="sell_short" id="sell_short" />
-                                <Label htmlFor="sell_short">Sell Short</Label>
-                            </div>
-                        </RadioGroup>
-                    </div>
-
-                    {/* Entry Price */}
-                    <div className="space-y-2">
-                        <Label>Entry Price</Label>
-                        <Input type="number" step="0.01" />
-                    </div>
-
-                    {/* Take Profit Points */}
-                    <div className="space-y-2">
-                        <Label>Take Profit Points</Label>
-                        {takeProfits.map((tp, index) => (
-                            <div key={index} className="flex gap-2 mb-2">
                                 <Input
-                                    type="number"
-                                    placeholder="Price"
-                                    step="0.01"
-                                    value={tp.price}
-                                    onChange={(e) => {
-                                        const newTakeProfits = [...takeProfits];
-                                        newTakeProfits[index].price = e.target.value;
-                                        setTakeProfits(newTakeProfits);
-                                    }}
-                                />
-                                <Input
-                                    type="number"
-                                    placeholder="Percentage"
-                                    step="0.1"
-                                    value={tp.percentage}
-                                    onChange={(e) => {
-                                        const newTakeProfits = [...takeProfits];
-                                        newTakeProfits[index].percentage = e.target.value;
-                                        setTakeProfits(newTakeProfits);
-                                    }}
-                                />
-                            </div>
-                        ))}
-                        <div className='flex space-x-2'>  {takeProfits.length < 3 && (
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleAddTakeProfit}
-                                className="flex items-center gap-1 hover:bg-[#c49963] hover:text-white"
-                            >
-                                <Plus className="h-4 w-4" /> Add Take Profit
-                            </Button>
-                        )}
-                            {takeProfits.length > 1 && (
-                                <Button
-                                    type="button"
-                                    variant="destructive"
-                                    onClick={handleSubTakeProfit}
-                                    className="flex items-center gap-1 bg-[#d74b1a] hover:bg-[#d74b1a]"
-                                >
-                                    <Trash2 className="h-4 w-4" /> Remove
-                                </Button>
-                            )}</div>
-
-                    </div>
-
-                    {/* DCA Points */}
-                    <div className="space-y-2">
-                        <Label>DCA Points</Label>
-                        {dcaPoints.map((dca, index) => (
-                            <div key={index} className="flex gap-2 mb-2">
-                                <Input
-                                    type="number"
-                                    placeholder="Price"
-                                    step="0.01"
-                                    value={dca.price}
-                                    onChange={(e) => {
-                                        const newDcaPoints = [...dcaPoints];
-                                        newDcaPoints[index].price = e.target.value;
-                                        setDcaPoints(newDcaPoints);
-                                    }}
-                                />
-                                <Input
-                                    type="number"
-                                    placeholder="Percentage"
-                                    step="0.1"
-                                    value={dca.percentage}
-                                    onChange={(e) => {
-                                        const newDcaPoints = [...dcaPoints];
-                                        newDcaPoints[index].percentage = e.target.value;
-                                        setDcaPoints(newDcaPoints);
-                                    }}
-                                />
-                            </div>
-                        ))}
-                        <div className='flex space-x-2'>  {dcaPoints.length < 3 && (
-                            <Button
-                                type="button"
-                                variant="outline"
-                                onClick={handleAddDCA}
-                                className="flex items-center gap-1 hover:bg-[#c49963] hover:text-white"
-                            >
-                                <Plus className="h-4 w-4" /> Add DCA points
-                            </Button>
-                        )}
-                            {dcaPoints.length > 1 && (
-                                <Button
-                                    type="button"
-                                    variant="destructive"
-                                    onClick={handleSubDCA}
-                                    className="flex items-center gap-1 bg-[#d74b1a] hover:bg-[#d74b1a]"
-                                >
-                                    <Trash2 className="h-4 w-4" /> Remove
-                                </Button>
-                            )}</div>
-                    </div>
-
-                    {/* Other Fields */}
-                    <div className="space-y-2">
-                        <Label>Stop Loss</Label>
-                        <Input type="number" step="0.01" />
-                    </div>
-
-                    <div className="space-y-2">
-                        <Label>Leverage (1-20)</Label>
-                        <Input type="number" min="1" max="20" step="1" />
-                    </div>
-
-                    <div className=" flex flex-col space-y-2">
-                        <Label>Timeframe</Label>
-                        <div className='flex space-x-2'><Popover>
-                            <PopoverTrigger asChild>
-                                <Button
-                                    variant={"outline"}
+                                    type="time"
                                     className={cn(
-                                        "w-[240px] pl-3 text-left font-normal hover:bg-[#c49963] hover:text-white",
-                                        !selectedDate && "text-muted-foreground"
+                                        "h-10 px-3 py-2 rounded-md border border-gray-200",
+                                        "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+                                        "hover:border-gray-300",
+                                        "text-gray-900 placeholder:text-gray-400",
+                                        "transition-colors duration-200 w-[120px]",
                                     )}
-                                >
-                                    {selectedDate ? (
-                                        format(selectedDate, "PPP")
-                                    ) : (
-                                        <span>Pick a date</span>
-                                    )}
-                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                                </Button>
-                            </PopoverTrigger>
-                            <PopoverContent className="w-auto p-0" align="start">
-                                <Calendar
-                                    mode="single"
-                                    selected={selectedDate}
-                                    onSelect={setSelectedDate}
-                                    disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
-                                    initialFocus
-                                    className='sen'
+                                    value={selectedTime}
+                                    onChange={(e) => setSelectedTime(e.target.value)}
                                 />
-                            </PopoverContent>
-                        </Popover>
-                            <Input
-                                type="time"
-                                className={cn(
-                                    "h-10 px-3 py-2 rounded-md border border-gray-200",
-                                    "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
-                                    "hover:border-gray-300",
-                                    "text-gray-900 placeholder:text-gray-400",
-                                    "transition-colors duration-200 w-[120px]",
-                                )}
-                            />
+
+
+                            </div>
 
 
                         </div>
 
+                        <div className="space-y-2">
+                            <Label>Expected PNL (%)</Label>
+                            <Input id="subFee"
+                                type="number"
+                                step="0.05"
+                                min="1" value={expectedPnl} onChange={(e) => {
+                                    setExpectedPnl(e.target.value)
+                                }} />
 
-                    </div>
+                        </div>
 
-                    <div className="space-y-2">
-                        <Label>Expected PNL (%)</Label>
-                        <Input type="number" step="0.1" />
-                    </div>
+                        <div className="space-y-2">
+                            <Label>Research Description</Label>
+                            <Textarea
+                                className="h-32 resize-none"
+                                placeholder="Enter your research description..."
+                                value={researchDescription}
+                                onChange={(e) => {
+                                    setResearchDescription(e.target.value)
+                                }}
+                            />
+                        </div>
 
-                    <div className="space-y-2">
-                        <Label>Research Description</Label>
-                        <Textarea
-                            className="h-32 resize-none"
-                            placeholder="Enter your research description..."
-                        />
-                    </div>
+                        <div className="space-y-2">
+                            <Label htmlFor="image">Image</Label>
+                            <Input
+                                id="image"
+                                type="file"
+                                accept="image/png,image/jpeg"
+                                onChange={handleImageChange}
+                                className="bg-white"
+                            />
+                            {imagePreview && (
+                                <div className="mt-2">
+                                    <img
+                                        src={imagePreview}
+                                        alt="Preview"
+                                        className="w-32 h-32 object-cover rounded-md"
+                                    />
+                                </div>
+                            )}
+                        </div>
 
-                    <div className="space-y-2">
-                        <Label>Image</Label>
-                        <Input type="file" accept="image/*" />
-                    </div>
+                        <Button type="submit" className="w-full mt-4" disabled={loading != 0}>
+                            {loading == 1 ? "Loading" : loading == 2 ? 'Successuly posted play' : "Create Trade Play"}
+                        </Button>
+                    </form>
+                    <ScrollBar orientation='vertical' />
+                </ScrollArea>
 
-                    <Button type="submit" className="w-full mt-4">
-                        Create Trade Play
-                    </Button>
-                </form>
             </div>
         </div>
     );
