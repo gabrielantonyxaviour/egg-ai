@@ -27,6 +27,7 @@ export default function ChefHome() {
         },
     ];
     const { user, chef } = useEnvironmentStore(store => store)
+    const [openDetailedRecipe, setOpenDetailedRecipe] = useState("")
     const [showWindows, setShowWindows] = useState([false, false, false, false, false]);
     const router = useRouter();
 
@@ -60,6 +61,26 @@ export default function ChefHome() {
                 ))}
             </div>
             <div className="w-full flex my-auto space-x-4 h-[80%] px-4">
+                {showWindows[2] && (
+                    <CreateRecipe
+                        close={() => {
+                            setShowWindows((prev) =>
+                                prev.map((val, index) => (index === 2 ? !val : val))
+                            );
+                        }}
+                    />
+                )}
+                {showWindows[1] && (
+                    <Recipes
+                        setOpenDetailedRecipe={setOpenDetailedRecipe}
+                        close={() => {
+                            setShowWindows((prev) =>
+                                prev.map((val, index) => (index === 1 ? !val : val))
+                            );
+                        }}
+
+                    />
+                )}
                 {showWindows[0] && (
                     <Chef
                         chef_id={user.username}
@@ -70,26 +91,9 @@ export default function ChefHome() {
                         }}
                     />
                 )}
-                {showWindows[1] && (
-                    <Recipes
-                        close={() => {
-                            setShowWindows((prev) =>
-                                prev.map((val, index) => (index === 1 ? !val : val))
-                            );
-                        }}
 
-                    />
-                )}
 
-                {showWindows[2] && (
-                    <CreateRecipe
-                        close={() => {
-                            setShowWindows((prev) =>
-                                prev.map((val, index) => (index === 2 ? !val : val))
-                            );
-                        }}
-                    />
-                )}
+
 
             </div>
         </div>

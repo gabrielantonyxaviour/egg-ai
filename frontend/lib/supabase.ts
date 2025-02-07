@@ -22,12 +22,12 @@ export async function getUser(username: string): Promise<User | null> {
     return data;
 }
 
-export async function getFollows(username: string): Promise<string[]> {
-    console.log(`Fetching follows for user with username: ${username}`);
+export async function getFollows(id: string): Promise<string[]> {
+    console.log(`Fetching follows for user with id: ${id}`);
     const { data, error } = await supabase
         .from('user_follows')
         .select('chef_id')
-        .eq('username', username);
+        .eq('id', id);
 
     if (error) {
         console.error(`Error fetching follows: ${error.message}`);
@@ -37,7 +37,21 @@ export async function getFollows(username: string): Promise<string[]> {
     return data.map(({ chef_id }) => chef_id);
 
 }
+export async function getRecipes(id: string): Promise<string[]> {
+    console.log(`Fetching recipes for chefs with id: ${id}`);
+    const { data, error } = await supabase
+        .from('trade_plays')
+        .select('*')
+        .eq('chef_id', id);
 
+    if (error) {
+        console.error(`Error fetching recipes: ${error.message}`);
+        return [];
+    }
+    console.log(`Recipes fetched successfully: ${JSON.stringify(data)}`);
+    return data;
+
+}
 export async function getChef(username: string): Promise<Chef | null> {
     console.log(`Fetching chef with username: ${username}`);
 

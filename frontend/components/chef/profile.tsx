@@ -108,14 +108,14 @@ export default function ChefProfile({ chef_id, close }: { chef_id: string; close
                             <BarChart className="h-4 w-4" />
                             <span className="text-sm">Calls/Day</span>
                         </div>
-                        <p className="text-2xl font-bold">{chefData.avg_calls_per_day.toFixed(1)}</p>
+                        <p className="text-2xl font-bold">{chefData.avg_calls_per_day.toFixed(2)}</p>
                     </div>
                 </div>
 
                 <Separator className="bg-[#faefe0]" />
 
                 {/* Subscription */}
-                {chefData.id == chef?.id && (
+                {chefData.id != chef?.id && (
                     <div className="flex flex-col items-center space-y-1">
                         <div className="relative bg-black w-[200px] h-[34px] rounded-sm mx-auto">       <Button
                             onClick={async (e) => {

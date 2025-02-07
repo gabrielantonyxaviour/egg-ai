@@ -160,11 +160,11 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
         setLoading(2)
     }
     return (
-        <div className="relative w-[68%] h-full bg-black rounded-sm">
+        <div className="relative w-[42%] h-full bg-black rounded-sm">
             <div className="absolute w-full h-full flex flex-col -top-[0.5%] -left-[0.5%] space-y-2 sen rounded-sm text-sm border-2 border-black py-2 bg-[#faefe0] text-black">
                 <div className="flex justify-between items-center px-4">
                     <h2 className="text-xl font-bold">Create Trade Play</h2>
-                    <Button variant="ghost" size="icon" onClick={close}>
+                    <Button variant="ghost" size="icon" onClick={close} className="hover:bg-transparent">
                         <X className="h-4 w-4" />
                     </Button>
                 </div>
