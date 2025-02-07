@@ -190,7 +190,7 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
                                             <div className='ml-2 flex w-full items-center space-x-2'>
                                                 <p className='sen font-semibold '>{selectedAsset ? `${selectedAsset}/USD` : "Select Asset"}</p>
                                                 {selectedAsset && <div className='flex space-x-1 flex-1 justify-end'>
-                                                    {Object.keys(assets[selectedAsset]).filter((chain: string) => assets[selectedAsset][chain as 'arb' | 'avax'] != '').map((chain: string) => <img src={`/chains/${chain}.png`} className='rounded-full w-[24px] h-[24px]' alt={chain} />)}
+                                                    {Object.keys(assets[selectedAsset]).filter((chain: string) => assets[selectedAsset][chain as 'arb' | 'avax'] != '').map((chain: string) => <img key={chain} src={`/chains/${chain}.png`} className='rounded-full w-[24px] h-[24px]' alt={chain} />)}
 
                                                 </div>}
 
@@ -217,7 +217,7 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
                                                                     <Check className=" h-4 w-4" />
                                                                 )}
                                                                 <div className='flex space-x-1 flex-1 justify-end'>
-                                                                    {Object.keys(chains).filter((chain: string) => chains[chain as 'arb' | 'avax'] != '').map((chain: string) => <img src={`/chains/${chain}.png`} className='rounded-full w-[24px] h-[24px]' alt={chain} />)}
+                                                                    {Object.keys(chains).filter((chain: string) => chains[chain as 'arb' | 'avax'] != '').map((chain: string) => <img key={chain} src={`/chains/${chain}.png`} className='rounded-full w-[24px] h-[24px]' alt={chain} />)}
 
                                                                 </div>
 
