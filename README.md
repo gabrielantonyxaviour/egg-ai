@@ -163,16 +163,7 @@ Looking to go long BTC at this level (95279) lots of confluence here so looking 
 
 Also setting limit orders for this ONDO long. Entries @ 1.263, 1.177, 4H close under 1.11 for stops, TPs in yellow
 
-Time Left - 20 hours
-
-
-First - 6 hours
-
-1. Chef Profile page with follow feature - DONE
-2. Chef Create Recipe - DONE
-3. Chef Display Recipe - DONE
-4. Users display chefs - 
-
+Time Left - 14 hours
 
 Transactions testing - 3 hours
 
