@@ -25,7 +25,12 @@ export type Chef = {
     avg_pnl_percentage: number;
     avg_calls_per_day: number;
 }
-
+export interface AssetData {
+    [ticker: string]: {
+        arb: string | null;
+        avax: string | null;
+    };
+}
 export type TradePlay = {
     id?: string;
     created_at?: string;
@@ -34,30 +39,29 @@ export type TradePlay = {
     asset: string;
     chain: string;
     direction: string;
-    entry_price: number;
+    entry_price: string;
     trade_type: 'spot' | 'future';
     take_profit: TakeProfit[];
-    stop_loss: number;
+    stop_loss: string;
     dca: DCA[];
     timeframe: string
-    leverage: number;
+    leverage: string;
     image: string;
     status: "pending" | "ongoing" | "completed";
-    pnl_percentage: number | null;
-    expected_pnl: number;
+    pnl_percentage: string | null;
+    expected_pnl: string;
     research_description: string;
 }
 
 export type TakeProfit = {
-    price: number;
-    percent: number;
+    price: string;
+    percentage: string;
 }
 
 export type DCA = {
-    price: number;
-    percent: number;
+    price: string;
+    percentage: string;
 }
-
 
 export type ExecutedTrade = {
     id: string;

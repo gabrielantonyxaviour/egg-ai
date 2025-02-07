@@ -153,7 +153,7 @@ FRONTEND BOXES
 
 For Chef
 1. Create Chef - DONE
-2. Profile - 
+2. Profile - DONE
 3. Recipes -  
 4. Create - 
 
@@ -167,8 +167,8 @@ Time Left - 20 hours
 
 First - 3 hours
 
-1. Chef Profile page with follow feature
-2. Chef Create Recipe
+1. Chef Profile page with follow feature - DONE
+2. Chef Create Recipe -
 3. Chef Display Recipe
 4. Users display chefs
 5. Trade page
