@@ -3,12 +3,16 @@ export async function GET(request: Request) {
     const eth = searchParams.get('eth') || ""
     const sol = searchParams.get('sol') || ""
     const prod = JSON.parse(searchParams.get('prod') || "false")
+
+    console.log('Received request with parameters:', { eth, sol, prod })
+
     const ethRpc = !prod ? `https://arb-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}` : `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}`
     const solRpc = !prod ? `https://solana-devnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}` : `https://solana-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}`
     let ethBalance = "0";
     let solBalance = "0";
 
     try {
+        console.log('Fetching ETH balance from:', ethRpc)
         const ethResponse = await fetch(ethRpc, {
             method: 'POST',
             headers: {
@@ -22,13 +26,18 @@ export async function GET(request: Request) {
             }),
         });
         const ethData = await ethResponse.json();
+        console.log('ETH response data:', ethData)
         if (ethData.result) ethBalance = (parseInt(ethData.result, 16) / 1e18).toString();
-        else return Response.json({
-            error: "Failed to fetch ETH Balance",
-        }, {
-            status: 500
-        })
+        else {
+            console.error('Failed to fetch ETH Balance')
+            return Response.json({
+                error: "Failed to fetch ETH Balance",
+            }, {
+                status: 500
+            })
+        }
 
+        console.log('Fetching SOL balance from:', solRpc)
         const solResponse = await fetch(solRpc, {
             method: 'POST',
             headers: {
@@ -42,15 +51,21 @@ export async function GET(request: Request) {
             }),
         });
         const solData = await solResponse.json();
-        if (solData.result?.value) solBalance = (parseFloat(solData.result.value) / 1e9).toString();
-        else return Response.json({
-            error: "Failed to fetch SOL Balance"
-        }, {
-            status: 500
-        })
+        console.log('SOL response data:', solData)
+        if (!isNaN(solData.result?.value)) solBalance = (parseFloat(solData.result.value) / 1e9).toString();
+        else {
+            console.error('Failed to fetch SOL Balance')
+            return Response.json({
+                error: "Failed to fetch SOL Balance"
+            }, {
+                status: 500
+            })
+        }
 
+        console.log('Returning balances:', { ethBalance, solBalance })
         return Response.json({ ethBalance, solBalance })
     } catch (error: any) {
+        console.error('Error fetching balances:', error.message)
         return Response.json({ error: error.message }, { status: 500 })
     }
 }

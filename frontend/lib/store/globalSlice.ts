@@ -10,6 +10,7 @@ interface GlobalState {
   solPrice: string;
   totalEquity: string;
   pnl: string;
+  user_follows: string[];
 }
 
 interface GlobalActions {
@@ -21,6 +22,8 @@ interface GlobalActions {
   setSolPrice: (price: string) => void;
   setTotalEquity: (equity: string) => void;
   setPnl: (pnl: string) => void;
+  setUserFollows: (user_follows: string[]) => void;
+  setUserFollow: (user_follow: string) => void;
 }
 
 export type GlobalSlice = GlobalState & GlobalActions;
@@ -34,6 +37,7 @@ export const initialGlobalState: GlobalState = {
   totalEquity: "0",
   chef: null,
   pnl: "0",
+  user_follows: []
 };
 
 export const createGlobalSlice: StateCreator<
@@ -67,5 +71,21 @@ export const createGlobalSlice: StateCreator<
   },
   setChef: (chef) => {
     set({ chef });
+  },
+  setUserFollows: (user_follows) => {
+    set({ user_follows });
+  },
+  setUserFollow: (user_follow) => {
+    set((state) => {
+      if (state.user_follows.includes(user_follow)) {
+        return {
+          user_follows: [...state.user_follows]
+        }
+      } else {
+        return {
+          user_follows: [...state.user_follows, user_follow]
+        };
+      }
+    });
   }
 });

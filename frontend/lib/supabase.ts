@@ -22,12 +22,27 @@ export async function getUser(username: string): Promise<User | null> {
     return data;
 }
 
+export async function getFollows(username: string): Promise<string[]> {
+    console.log(`Fetching follows for user with username: ${username}`);
+    const { data, error } = await supabase
+        .from('user_follows')
+        .select('chef_id')
+        .eq('username', username);
+
+    if (error) {
+        console.error(`Error fetching follows: ${error.message}`);
+        return [];
+    }
+    console.log(`Follows fetched successfully: ${JSON.stringify(data.map(({ chef_id }) => chef_id))}`);
+    return data.map(({ chef_id }) => chef_id);
+
+}
 
 export async function getChef(username: string): Promise<Chef | null> {
     console.log(`Fetching chef with username: ${username}`);
 
     const { data, error } = await supabase
-        .from('chefs')
+        .from('chef_profile')
         .select('*')
         .eq('username', username)
         .single();

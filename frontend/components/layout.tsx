@@ -15,7 +15,7 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   // const { data: session, status } = useSession();
-  const { user, setUser } = useEnvironmentStore((store) => store);
+  const { user, setUser, setUserFollows } = useEnvironmentStore((store) => store);
   const { address, isConnected, } = useAccount();
   const { data: balance } = useBalance({
     address: address,
@@ -59,6 +59,14 @@ export default function Layout({
               setUser(data);
               console.log('User data is up-to-date');
             }
+
+            const responseFollows = await fetch(`/api/supabase/get-follows?username=${username}`);
+            const { follows, error } = await responseFollows.json();
+            if (error) {
+              console.error('Error fetching user follows:', error);
+            }
+            console.log('Fetched user follows:', follows);
+            setUserFollows(follows);
           } else {
             console.log('Creating new user for:', username);
             const keypairs = await generateKeypairs();

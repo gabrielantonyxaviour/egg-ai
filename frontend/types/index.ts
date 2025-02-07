@@ -16,11 +16,14 @@ export type User = {
 export type Chef = {
     id: string;
     username: string;
-    name?: string | null;
-    bio?: string | null;
-    image?: string | null;
-    sub_fee?: string | null;
-
+    name: string | null;
+    bio: string | null;
+    image: string | null;
+    sub_fee: number | null;
+    niche: string | null;
+    total_subscribers: number;
+    avg_pnl_percentage: number;
+    avg_calls_per_day: number;
 }
 
 export type TradePlay = {
