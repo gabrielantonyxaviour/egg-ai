@@ -175,7 +175,7 @@ export default function Profile({ close }: { close: () => void }) {
                                     selected={endDate}
                                     onSelect={setEndDate}
                                     disabled={(date) => date < new Date()}
-                                    className="rounded-md"
+                                    className="rounded-md sen"
                                 />
                             </div>
                         </div>

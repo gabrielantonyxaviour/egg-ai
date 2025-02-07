@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { X, Plus, Check, Smile, Trash2 } from 'lucide-react';
+import { X, Plus, Check, Smile, Trash2, CalendarIcon } from 'lucide-react';
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
+import { Textarea } from "@/components/ui/textarea"; import { format } from "date-fns"
 import {
     Popover,
     PopoverContent,
@@ -22,6 +22,8 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 import { DCA, TakeProfit } from '@/types';
 import { assets } from '@/lib/constants';
 import Image from 'next/image';
+import { cn } from '@/lib/utils';
+import { Calendar } from '../ui/calendar';
 
 
 
@@ -36,7 +38,7 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
     const [selectedAsset, setSelectedAsset] = useState<string>('');
     const [selectedChain, setSelectedChain] = useState<string>('');
     const [direction, setDirection] = useState<'buy_long' | 'sell_short'>('buy_long');
-    const [date, setDate] = useState<Date>();
+    const [selectedDate, setSelectedDate] = useState<Date>();
     // Sample asset data - replace with your actual data
 
     const handleAddTakeProfit = () => {
@@ -65,12 +67,12 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
 
     const handleAssetChange = (asset: string) => {
         setSelectedAsset(asset);
-        // const chains = Object.keys(assets[asset]);
-        // if (chains.length === 1) {
-        //     setSelectedChain(chains[0]);
-        // } else {
-        //     setSelectedChain('');
-        // }
+        const chains = Object.keys(assets[asset]);
+        if (chains.length === 1) {
+            setSelectedChain(chains[0]);
+        } else {
+            setSelectedChain('');
+        }
     };
 
     return (
@@ -335,13 +337,51 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
                         <Input type="number" min="1" max="20" step="1" />
                     </div>
 
-                    <div className="space-y-2">
+                    <div className=" flex flex-col space-y-2">
                         <Label>Timeframe</Label>
-                        {/* <DateTimePicker
-                            date={date}
-                            setDate={setDate}
-                            granularity="second"
-                        /> */}
+                        <div className='flex space-x-2'><Popover>
+                            <PopoverTrigger asChild>
+                                <Button
+                                    variant={"outline"}
+                                    className={cn(
+                                        "w-[240px] pl-3 text-left font-normal hover:bg-[#c49963] hover:text-white",
+                                        !selectedDate && "text-muted-foreground"
+                                    )}
+                                >
+                                    {selectedDate ? (
+                                        format(selectedDate, "PPP")
+                                    ) : (
+                                        <span>Pick a date</span>
+                                    )}
+                                    <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                                </Button>
+                            </PopoverTrigger>
+                            <PopoverContent className="w-auto p-0" align="start">
+                                <Calendar
+                                    mode="single"
+                                    selected={selectedDate}
+                                    onSelect={setSelectedDate}
+                                    disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                                    initialFocus
+                                    className='sen'
+                                />
+                            </PopoverContent>
+                        </Popover>
+                            <Input
+                                type="time"
+                                className={cn(
+                                    "h-10 px-3 py-2 rounded-md border border-gray-200",
+                                    "focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent",
+                                    "hover:border-gray-300",
+                                    "text-gray-900 placeholder:text-gray-400",
+                                    "transition-colors duration-200 w-[120px]",
+                                )}
+                            />
+
+
+                        </div>
+
+
                     </div>
 
                     <div className="space-y-2">
