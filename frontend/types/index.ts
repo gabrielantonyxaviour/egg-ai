@@ -16,11 +16,11 @@ export type User = {
 export type Chef = {
     id: string;
     username: string;
-    name: string | null;
-    bio: string | null;
-    image: string | null;
-    sub_fee: number | null;
-    niche: string | null;
+    name: string;
+    bio: string;
+    image: string;
+    sub_fee: number;
+    niche: string[];
     total_subscribers: number;
     avg_pnl_percentage: number;
     avg_calls_per_day: number;

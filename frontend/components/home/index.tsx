@@ -135,13 +135,11 @@ export default function Home() {
                         }}
                     />
                 )}
-                {showWindows[4] && (
+                {searchUsername && (
                     <Chef
                         chef_id={searchUsername}
                         close={() => {
-                            setShowWindows((prev) =>
-                                prev.map((val, index) => (index === 4 ? !val : val))
-                            );
+                            setSearchUsername('')
                         }}
                     />
                 )}

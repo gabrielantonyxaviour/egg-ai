@@ -1,4 +1,4 @@
-import { updateChef } from '@/lib/supabase'
+import { followChef } from '@/lib/supabase'
 export async function POST(request: Request) {
     try {
         const { chef_id, username, confidence_level } = await request.json()
@@ -9,17 +9,19 @@ export async function POST(request: Request) {
                 { status: 400 }
             )
         }
+        console.log({
+            chef_id, username, confidence_level
+        })
+        const success = await followChef({ chef_id, username, confidence_level })
 
-        const chef = await updateChef(body)
-
-        if (!chef) {
+        if (!success) {
             return Response.json(
-                { error: 'Failed to update chef' },
+                { error: 'Failed to follow chef' },
                 { status: 400 }
             )
         }
 
-        return Response.json({ chef })
+        return Response.json({ success })
     } catch (error) {
         return Response.json(
             { error: 'Internal server error' },

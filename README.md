@@ -146,10 +146,11 @@ FRONTEND BOXES
 	2. Refresh prices
 	3. Save changes
 2. Actions - UI DONE
+	- DATA - TODO LATER
 3. Mode - FULLY DONE
-4. Chefs - 
-5. Chef - 
-6. Trade - 
+4. Chefs - TODO LATER
+5. Chef - FULLY DONE
+6. Trade - TODO LATER
 
 For Chef
 1. Create Chef - DONE
@@ -165,13 +166,12 @@ Also setting limit orders for this ONDO long. Entries @ 1.263, 1.177, 4H close u
 Time Left - 20 hours
 
 
-First - 3 hours
+First - 6 hours
 
 1. Chef Profile page with follow feature - DONE
-2. Chef Create Recipe -
-3. Chef Display Recipe
-4. Users display chefs
-5. Trade page
+2. Chef Create Recipe - DONE
+3. Chef Display Recipe - DONE
+4. Users display chefs - 
 
 
 Transactions testing - 3 hours

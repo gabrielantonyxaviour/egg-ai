@@ -27,7 +27,7 @@ export async function getFollows(id: string): Promise<string[]> {
     const { data, error } = await supabase
         .from('user_follows')
         .select('chef_id')
-        .eq('id', id);
+        .eq('username', id);
 
     if (error) {
         console.error(`Error fetching follows: ${error.message}`);
@@ -65,6 +65,20 @@ export async function getChef(username: string): Promise<Chef | null> {
     if (error) {
         console.error(`Error fetching chef: ${error.message}`);
         return null;
+    }
+
+    console.log(`Chef fetched successfully: ${JSON.stringify(data)}`);
+    return data;
+
+}
+export async function getAllChefs(): Promise<Chef[]> {
+    const { data, error } = await supabase
+        .from('chef_profile')
+        .select('*')
+
+    if (error) {
+        console.error(`Error fetching chef: ${error.message}`);
+        return [];
     }
 
     console.log(`Chef fetched successfully: ${JSON.stringify(data)}`);
@@ -218,7 +232,9 @@ export async function followChef({
         return null;
     }
     console.log(`Chef Followed successfully: ${JSON.stringify(data)}`);
-    return data;
+    return {
+        success: true
+    };
 }
 
 

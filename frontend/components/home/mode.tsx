@@ -52,7 +52,7 @@ export default function Mode({ close }: { close: () => void }) {
                             mode: "TREN"
                         })
                     }}
-                    className={`absolute cursor-pointer w-[250px] h-[250px] flex flex-col justify-between items-center -top-[1%] -left-[1%] w-full h-full space-y-2 sen rounded-sm text-sm border border-[2px] border-black py-2 ${user?.mode == "TREN" ? "bg-[#faefe0]" : "bg-[#c49963]"}  text-black`}
+                    className={`absolute cursor-pointer w-[250px] h-[250px] flex flex-col justify-between items-center -top-[1%] -left-[1%] w-full h-full space-y-2 sen rounded-sm text-sm border border-[2px] border-black py-2 ${user?.mode == "TREN" ? "bg-[#faefe0] text-black" : "bg-[#c49963]  text-[#faefe0]"}  `}
                 >
                     <div className="flex space-x-1 items-center justify-center pt-2">
                         <img src={"/tren.png"} alt="chad" className="w-[40px] h-[34px]" />
@@ -99,7 +99,7 @@ export default function Mode({ close }: { close: () => void }) {
                             mode: "CHAD"
                         })
                     }}
-                    className={`absolute cursor-pointer w-[250px] h-[250px] flex flex-col justify-between items-center -top-[1%] -left-[1%] w-full h-full space-y-2 sen rounded-sm text-sm border border-[2px] border-black py-2 ${user?.mode == "TREN" ? "bg-[#c49963]" : "bg-[#faefe0]"} text-black`}
+                    className={`absolute cursor-pointer w-[250px] h-[250px] flex flex-col justify-between items-center -top-[1%] -left-[1%] w-full h-full space-y-2 sen rounded-sm text-sm border border-[2px] border-black py-2 ${user?.mode == "CHAD" ? "bg-[#faefe0] text-black" : "bg-[#c49963]  text-[#faefe0]"}`}
                 >
 
                     <div className="flex space-x-1 items-center justify-center pt-2">
