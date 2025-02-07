@@ -5,8 +5,7 @@ import helloRouter from "./routes/hello.js";
 import { resolve } from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-// import { NgrokService } from "./services/ngrok.service.js";
-import { LocalTunnelService } from "./services/localtunnel.service.js";
+import { NgrokService } from "./services/ngrok.service.js";
 import { TelegramService } from "./services/telegram.service.js";
 import { IService } from "./services/base.service.js";
 import twitterRouter from "./routes/twitter.js";
@@ -88,16 +87,16 @@ app.listen(port, async () => {
 
     // Start local tunnel for development
 
-    const localTunnelService = LocalTunnelService.getInstance();
-    await localTunnelService.start();
-    services.push(localTunnelService);
+    const ngrokService = NgrokService.getInstance();
+    await ngrokService.start();
+    services.push(ngrokService);
 
-    const localTunnelUrl = localTunnelService.getUrl()!;
-    console.log("LocalTunnel URL:", localTunnelUrl);
+    const ngrokUrl = ngrokService.getUrl()!;
+    console.log("NGROK URL:", ngrokUrl);
 
     // Initialize Telegram bot and set webhook
     await telegramService.start();
-    await telegramService.setWebhook(localTunnelUrl);
+    await telegramService.setWebhook(ngrokUrl);
     services.push(telegramService);
 
     const botInfo = await telegramService.getBotInfo();
