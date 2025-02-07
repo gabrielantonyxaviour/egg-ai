@@ -94,7 +94,7 @@ export default function Layout({
             setUser(data);
             console.log('New user created successfully:', data);
           }
-          router.push('/home');
+          // router.push('/home');
         } catch (error) {
           console.error('Error fetching user data:', error);
         }

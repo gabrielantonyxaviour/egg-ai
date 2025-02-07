@@ -1,4 +1,4 @@
-import { CircleDashedIcon, X, TrendingUp, Users, BarChart, Save, Zap } from "lucide-react";
+import { CircleDashedIcon, X, TrendingUp, Users, BarChart, Save, Zap, Check } from "lucide-react";
 import { useEnvironmentStore } from "../context";
 import { useEffect, useState } from "react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -45,14 +45,15 @@ export default function ChefProfile({ chef_id, close }: { chef_id: string; close
 
     }, [chef_id]);
 
-    return !chefData ? <div className="w-full h-full flex items-center justify-center">
-        <CircleDashedIcon className="animate-spin" />
-    </div> : (
-        <div className="w-[600px] h-[700px] absolute top-[22%] left-[32%] bg-black rounded-sm">
-            <div className="absolute w-[600px] h-[700px] flex flex-col -top-[1%] -left-[1%] space-y-6 sen rounded-sm text-sm border-2 border-black p-6 bg-[#faefe0] text-black overflow-y-auto">
-                {/* Header */}
+    return <div className="w-[600px] h-[500px] absolute top-[22%] left-[32%] bg-black rounded-sm">
+        <div className="absolute w-[600px] h-[500px] flex flex-col -top-[1%] -left-[1%] space-y-6 sen rounded-sm text-sm border-2 border-black p-6 bg-[#faefe0] text-black overflow-y-auto">
+            {/* Header */}
+            {!chefData ? <div className="w-full h-full flex items-center justify-center">
+                <CircleDashedIcon className="animate-spin" />
+            </div> : <>
+
                 <div className="flex justify-between items-center w-full">
-                    <p className="font-bold text-lg">Chef Profile</p>
+                    <p className="font-bold text-lg">{chefData.id == chef?.id ? "Your Profile" : "Chef Profile"}</p>
                     <X className="cursor-pointer hover:text-gray-600" onClick={close} />
                 </div>
 
@@ -114,19 +115,32 @@ export default function ChefProfile({ chef_id, close }: { chef_id: string; close
                 <Separator className="bg-[#faefe0]" />
 
                 {/* Subscription */}
-                {!chefData.sub_fee && (
+                {chefData.id == chef?.id && (
+                    <div className="flex flex-col items-center space-y-1">
+                        <div className="relative bg-black w-[200px] h-[34px] rounded-sm mx-auto">       <Button
+                            onClick={async (e) => {
 
-                    <div className="relative bg-black w-[200px] h-[34px] rounded-sm mx-auto">       <Button
-                        onClick={async (e) => {
+                            }}
+                            className="group absolute -top-[4px] -left-[2px] rounded-sm w-full h-[36px] flex py-4 px-6 bg-[#c49963] hover:bg-[#d74b1a] hover:text-white border-[1px] border-black mr-[2px]"
+                        >
+                            {!user_follows.includes(chefData.id) ? <>
+                                <Zap className="h-6 w-6" />
+                                <p>Follow</p>
+                            </> : <>
+                                <Check className="h-6 w-6" />
+                                <p>Subscribed</p>
+                            </>}
 
-                        }}
-                        className="group absolute -top-[4px] -left-[2px] rounded-sm w-full h-[36px] flex py-4 px-6 bg-[#c49963] hover:bg-[#d74b1a] hover:text-white border-[1px] border-black mr-[2px]"
-                    >
-                        <Zap className="h-6 w-6" />
-                        <p>Follow</p>
-                    </Button></div>
+                        </Button></div>
+
+                        {!user_follows.includes(chefData.id) && (
+                            <p className="text-xs">at 10 USDT/month</p>
+                        )}
+                    </div>
+
                 )}
-            </div>
+            </>}
+
         </div>
-    );
+    </div>
 }

@@ -62,7 +62,7 @@ export default function ChefHome() {
             <div className="w-full flex my-auto space-x-4 h-[80%] px-4">
                 {showWindows[0] && (
                     <Chef
-                        username={user.username}
+                        chef_id={user.username}
                         close={() => {
                             setShowWindows((prev) =>
                                 prev.map((val, index) => (index === 0 ? !val : val))
