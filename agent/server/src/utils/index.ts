@@ -81,3 +81,148 @@ export const getCardHTML = (botUsername: string, claimURL: string) => {
 
 </html>`;
 };
+
+
+export function parseJSONObjectFromText(
+    text: string
+): Record<string, any> | null {
+    let jsonData = null;
+    const jsonBlockMatch = text.match(jsonBlockPattern);
+
+    if (jsonBlockMatch) {
+        const parsingText = normalizeJsonString(jsonBlockMatch[1]);
+        try {
+            jsonData = JSON.parse(parsingText);
+        } catch (e) {
+            console.error("Error parsing JSON:", e);
+            console.error("Text is not JSON", text);
+            return extractAttributes(parsingText);
+        }
+    } else {
+        const objectPattern = /{[\s\S]*?}/;
+        const objectMatch = text.match(objectPattern);
+
+        if (objectMatch) {
+            const parsingText = normalizeJsonString(objectMatch[0]);
+            try {
+                jsonData = JSON.parse(parsingText);
+            } catch (e) {
+                console.error("Error parsing JSON:", e);
+                console.error("Text is not JSON", text);
+                return extractAttributes(parsingText);
+            }
+        }
+    }
+
+    if (
+        typeof jsonData === "object" &&
+        jsonData !== null &&
+        !Array.isArray(jsonData)
+    ) {
+        return jsonData;
+    } else if (typeof jsonData === "object" && Array.isArray(jsonData)) {
+        return parseJsonArrayFromText(text);
+    } else {
+        return null;
+    }
+}
+const jsonBlockPattern = /```json\n([\s\S]*?)\n```/;
+
+
+export function parseJsonArrayFromText(text: string) {
+    let jsonData = null;
+
+    // First try to parse with the original JSON format
+    const jsonBlockMatch = text.match(jsonBlockPattern);
+
+    if (jsonBlockMatch) {
+        try {
+            // Only replace quotes that are actually being used for string delimitation
+            const normalizedJson = jsonBlockMatch[1].replace(
+                /(?<!\\)'([^']*)'(?=\s*[,}\]])/g,
+                '"$1"'
+            );
+            jsonData = JSON.parse(normalizedJson);
+        } catch (e) {
+            console.error("Error parsing JSON:", e);
+            console.error("Failed parsing text:", jsonBlockMatch[1]);
+        }
+    }
+
+    // If that fails, try to find an array pattern
+    if (!jsonData) {
+        const arrayPattern = /\[\s*(['"])(.*?)\1\s*\]/;
+        const arrayMatch = text.match(arrayPattern);
+
+        if (arrayMatch) {
+            try {
+                // Only replace quotes that are actually being used for string delimitation
+                const normalizedJson = arrayMatch[0].replace(
+                    /(?<!\\)'([^']*)'(?=\s*[,}\]])/g,
+                    '"$1"'
+                );
+                jsonData = JSON.parse(normalizedJson);
+            } catch (e) {
+                console.error("Error parsing JSON:", e);
+                console.error("Failed parsing text:", arrayMatch[0]);
+            }
+        }
+    }
+
+    if (Array.isArray(jsonData)) {
+        return jsonData;
+    }
+
+    return null;
+}
+
+const normalizeJsonString = (str: string) => {
+    // Remove extra spaces after '{' and before '}'
+    str = str.replace(/\{\s+/, '{').replace(/\s+\}/, '}').trim();
+
+    // "key": unquotedValue → "key": "unquotedValue"
+    str = str.replace(
+        /("[\w\d_-]+")\s*: \s*(?!"|\[)([\s\S]+?)(?=(,\s*"|\}$))/g,
+        '$1: "$2"',
+    );
+
+    // "key": 'value' → "key": "value"
+    str = str.replace(
+        /"([^"]+)"\s*:\s*'([^']*)'/g,
+        (_, key, value) => `"${key}": "${value}"`,
+    );
+
+    // "key": someWord → "key": "someWord"
+    str = str.replace(/("[\w\d_-]+")\s*:\s*([A-Za-z_]+)(?!["\w])/g, '$1: "$2"');
+
+    // Replace adjacent quote pairs with a single double quote
+    str = str.replace(/(?:"')|(?:'")/g, '"');
+    return str;
+};
+
+export function extractAttributes(
+    response: string,
+    attributesToExtract?: string[]
+): { [key: string]: string | undefined } {
+    const attributes: { [key: string]: string | undefined } = {};
+
+    if (!attributesToExtract || attributesToExtract.length === 0) {
+        // Extract all attributes if no specific attributes are provided
+        const matches = response.matchAll(/"([^"]+)"\s*:\s*"([^"]*)"/g);
+        for (const match of matches) {
+            attributes[match[1]] = match[2];
+        }
+    } else {
+        // Extract only specified attributes
+        attributesToExtract.forEach((attribute) => {
+            const match = response.match(
+                new RegExp(`"${attribute}"\\s*:\\s*"([^"]*)"`, "i")
+            );
+            if (match) {
+                attributes[attribute] = match[1];
+            }
+        });
+    }
+
+    return attributes;
+}

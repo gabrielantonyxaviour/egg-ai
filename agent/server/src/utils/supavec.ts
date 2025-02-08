@@ -52,8 +52,21 @@ export async function generateEmbeddings(
         },
         body: JSON.stringify({ query: prompt, file_ids }),
     });
+    let formattedEmbeddings = "Technical Anlaysis Report:\n\n"
 
+    const { success, documents } = await response.json() as { success: boolean; documents: { content: string; file_id: string; score: string; }[] };
+    if (success) {
+        documents.forEach(({ content, file_id, score }, index) => {
+            formattedEmbeddings += `Report ${index + 1}\nScore: ${score}\n`
+            formattedEmbeddings += `${content}\n`
 
-    const { embeddings }: { embeddings: string[] } = await response.json() as { embeddings: string[] };
+        })
+    } else {
+        console.error("Failed to generate retrieval embeddings");
+        return ""
+    }
 
+    return formattedEmbeddings + "\n";
 }
+
+
