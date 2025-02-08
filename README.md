@@ -1,185 +1,105 @@
-Product Name
-Egg AI
+# Egg AI
 
-Pitch
+**Autonomous and specialized AI agent that helps you "follow trade" trade analysts**  
+_AI that does DYOR for you_
 
-a button that prints you money
-nfa dyor - ai agent that does that for you
+## 🎯 Pitch
+> *A button that prints you money*  
+> *NFA DYOR - AI agent that does that for you*
 
-Target Sponsors
+## 🥚 What is Egg AI?
+Egg AI is an AI solution that allows users to follow top crypto traders ("chefs") autonomously with the safety of AI-powered analysis. Instead of blindly copying trades or trying to do your own research, our AI checks each trade call from trusted chefs, analyzes the market, and executes trades based on your preferences.
 
-1. Arbitrum
-2. Gaia and Collab land
-3. Lit 
-4. Autonome
+We've built two ways to trade, letting you choose how much control you want:
 
-Tech
+### 🔥 Tren Egg Mode
+Click a button to print money:
+- No trading experience needed
+- Bot auto follows trades posted by verified chefs
+- AI takes care of risks, goals, and preferences
+- Perfect if you're busy but want to follow top trades
 
-1. Supported chains: Arbitrum, Avalanche
-2. Lit protocol for wallet
-3. Cookie.fun Twitter sentiment
-3. TokenHunterZoro TikTok Sentiment
-4. Gaia to build specialized AI
-5. Collab.land AI agent Starter kit
-6. Supavec for RAG inference
-7. Autonome for custom user specific AI agent deployments
+### 🏆 Chad Egg Mode
+For traders who want more control:
+- Pick which chefs to follow
+- Set your own confidence levels
+- AI still does the DYOR for you
+- Customize your risk and profit targets
+- Pay for premium chef signals if you want (future feature)
 
-An autonomous AI agent that lets you click a button to print money.  
+## 🤖 What It Does
+Our AI analyzes each trade call by looking at:
+- Risk vs reward potential
+- Market conditions and trends
+- Chef's past performance and reputation
+- Social sentiment from X, TikTok, and Instagram
+- How much of your funds to put in
 
-Egg AI is a specialized AI agent that has the knowledge to perform advanced market and trade pattern analytics. Egg AI is upto date with realtime market data, market sentiment and social sentiment from sources like X, TikTok and Instagram. 
+## 🛠 How It's Made
+Egg AI is built to make copy trading smarter and safer using these key components:
 
-Users can choose two modes to run the application:
-1. TREN EGG
-2. CHAD EGG
+### 🔧 Technical Setup
+- **Networks**: Built on Arbitrum and Avalanche. Trades on GMX (Decentralized Perpetual Exchange)
+- **Wallet Security**: Lit Protocol for wallet generation and secure trade execution
+- **AI Agent Kit**: Collab.Land Agent Kit to build autonomous AI agents
+- **Deployment**: Autonome to deploy specific customized AI agents for each user
+- **AI Provider**: Gaia as our AI provider running Qwen 7B parameter model
+- **RAG Engine**: Supavec to generate powerful AI embeddings on technical crypto trading resources
+- **Market Sentiment**: Cookie.Fun for X sentiment on the trade, TokenHunterZoro for TikTok mentions
 
-TREN EGG
-This mode lets users to just click a button and start making money. The user doesn't have to manage risks, set limits or any configurations. Everything is run on auto pilot with the help of AI.
-Pros:
-No trading experience and financial knowledege required
-Cons:
-Higher profit fee cuts, no control over what decision the AI makes.
+## ⚙️ Trade Analysis Flow
+This is where the magic happens. When a chef posts a trade:
 
-CHAD EGG
-This mode lets users to choose a trade analyst (a.k.a chef) to follow trade with custom confidence levels. Follow trading is the method of performing a trade play as shared by a chef with the help of AI. The AI agent does the DYOR for you and decides to play the trade or not.  If you followed a chef with high confidence, the trade play will be made even if the AI agent has relatively lower confidence after it did its research and if you followed the chef with low confidence, the trade play will be performed only if the AI agent has high confidence after its research. The users need to strike a balance in the confidence level based on their trust. This mode also allows users to set custom risk meters and profits goals (wen lambo) in a time frame. 
-Pros:
-More control over the AI decision making. Lower profit fees and higher gains
-Cons: 
-Needs financial knowledege and some research to find good and reliable chefs. Might need to pay to get access to chefs trade calls. 
+### 1️⃣ **Analysis**
+- AI grabs the complete trade details (historic price, liquidity, trade volume, 7-day candlestick, etc.)
+- Performs a market sentiment study (Cookie.Fun and TokenHunterZoro)
+- Considers the chef's track record (average PnL% achieved in past trades)
+- Gives analyzed risk/reward scores (with embeddings from Supavec and response from Gaia)
 
-Just started building this project. Any suggestions/support would mean a lot
+```json
+{
+  "risktoreward": number,      // How much you could make vs lose
+  "longtermscore": number,     // Where the market's heading
+  "marketstrength": number,    // How the market's doing now
+  "chefreputation": number,    // How good the trader is
+  "equitypercent": number      // How much to put in
+}
+```
 
-Follow on X | https://x.com/egg_ai_agent
+### 2️⃣ **Execution**
+- Adjusts position size based on user confidence in chefs
+- Signs the transaction to place the trade using Lit
+- Manages entry and exit automatically
 
+## 🔥 Smart Bits We're Proud Of
 
-1. Gather resources for trades and train the AI and get a list of file ids
-2. Finish fe
-3. Configure /commands see how everything is
-4. Make the AI return trade patterns
-5. Improve trade analytics
+### 🎯 Trade Scoring
+We built a scoring system that looks at:
+- Profit vs loss potential
+- Market trend strength
+- Current market conditions
+- Chef's reputation and success rate
+- Suggested position size
 
+### 🤖 Auto-Trading Logic
+- **High chef confidence + decent AI score** → Trade goes through
+- **Low chef confidence + high AI score** → Trade goes through
+- **High chef confidence + high AI score** → Might increase position size
+- Adjusts automatically for Tren/Chad mode users
 
-AI's decision making
+### 🤝 Custom AI Agents
+Using Autonome, each user gets their own AI agent that:
+- Learns their risk tolerance
+- Tracks which chefs work best for them
+- Adjusts strategy based on their portfolio size
 
-In the first step as soon as any play is posted by any chef, I want the AI to do a basic analysis score with a response something like riskToReward, longTermScore, marketStrength, chefReputation, equityPercent(ai suggested percent of total equity that could be invested into this play) Can you suggest me one more score?
+The coolest part? Whether you're in **Tren Mode** letting the AI handle everything, or **Chad Mode** picking your own chefs and confidence levels, the system constantly checks and balances both the chef's calls and market conditions to keep your trades safe.
 
-Trades should be performed for all followers of the Chef based on the follow confidence, if the metrics are not too favourable but the confidence is high, the trade should go through. if the metrics are favourable but the confidence is low, trade should go through. Come up with a ts function that does this check. as per the equityPercent. If the confidence is too high and the ai score is also high, the ai can slightly increase the equity when performing the trade. but if the confidence is too low and the ai score is high, the equity can be reduced slightly.
+## 🔗 Important Links
 
-After CHAD users, all TREN wallets will make the trade as per the equity percent. There should be threshold for that.
+**Live URL**: https://egg-ai.vercel.app/
+**Pitch Deck**: https://www.canva.com/design/DAGebCcYds4/wUMbyP9W89DYiCpGaO78LA/view?utm_content=DAGebCcYds4&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h1b63e6233e
+**Demo Video**: https://www.canva.com/design/DAGecEPLC6w/BsoYkan_aBuP0UF4vRYwHA/watch?utm_content=DAGecEPLC6w&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=had0fe8cb19
+**Project Dashboard**: https://ethglobal.com/showcase/egg-ai-atkir
+**Follow on X**: https://x.com/egg_ai_agent
 
-
-Caller profile
-
-8. Name 
-9. Image
-10. bio
-11. Sub cost
-12. avg PNL %
-13. Avg Calls per day
-14. Total subs
-15. Socials links
-16. Categories
-	1. Spot
-	2. Futures
-	3. Memecoins
-
-
-User profile
-
-
-1. balance
-2. PNL %
-3. View all trades
-4. Chefs
-	1. if tren, dont show anything
-	2. if chad, show a list of follows with confidence
-	3. if chad, show browse button
-5. if chad, show a risk meter and wen lambo meter.
-
-Browse page
-
-6. list of callers
-
-navbar 
-7. Register chef button
-
-AIl actions
-8. As soon as a cook posts trade 
-	1. do a complete market research and come up with confidence and risk percentage (AI)
-	2. Get all subscribers (CHAD)
-		1. make trade based on confidence. if done, send notifs on telegram
-	3. Get all remaining (TREN)
-		2. Just make trades if the confidence level is good and reputation is good, send notifs on telegram
-	4. As soon as the close signal triggers
-		2. sell on all accounts with position
-		3. validate pnl (AI)
-		4. store the records
-
-Trading bot interface
-
-9. /start
-	1. connect to app with telegram
-	2. once connected, generates a wallet and stores in backend
-10. /home
-	1. Show wallet address and current balance
-		1. ETH on arb
-		2. SEI
-		3. SOL
-	2. Buttons
-		1. Withdraw
-		2. View Trades
-		3. Positions
-		4. Pause
-		5. Green Ball Red ball (TREN and CHAD) 
-		6. x Close on bottom
-
-TODO
-
-11. Sign in flow full testing - DONE
-12. Landing page aka profile page
-
-FRONTEND BOXES
-
-1. Profile - FULLY DONE
-	1. Pause trading
-	2. Refresh prices
-	3. Save changes
-2. Actions - UI DONE
-	- DATA - TODO LATER
-3. Mode - FULLY DONE
-4. Chefs - TODO LATER
-5. Chef - FULLY DONE
-6. Trade - TODO LATER
-
-For Chef
-1. Create Chef - DONE
-2. Profile - DONE
-3. Recipes - DONE
-4. Create - DONE
-
-Looking to go long BTC at this level (95279) lots of confluence here so looking for a bounce (VAL, golden pocket, 4H OB)
-
-Also setting limit orders for this ONDO long. Entries @ 1.263, 1.177, 4H close under 1.11 for stops, TPs in yellow
-
-Time Left - 14 hours
-
-Transactions testing - 3 hours
-
-1. GMX calls testing
-	1. Create Position
-	2. Take profits
-	3. Withdraw position
-
-Preparing AI data - 5 hours
-
-1. Trading PDF resources and creating embeddings
-2. Testing Cookie.fun sentiment, (Twitter Search by Eliza, Tiktok by TokenHunterZorom)
-3. Test Fetching current market data from GMX APIs
-4. Structure everything into a prompt
-
-AI Testing - 2 hours
-
-1. Test the pipeline, get inferences.
-
-Frontend final integrations - 2 hours
-
-Telegram Integration - 4 hours
