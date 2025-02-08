@@ -64,12 +64,12 @@ This is where the magic happens. When a chef posts a trade:
 
 ```json
 {
-  "risktoreward": number;      // How much you could make vs lose
-  "longtermscore": number;     // Where the market's heading
-  "marketstrength": number;    // How the market's doing now
-  "chefreputation": number;    // How good the trader is
-  "equitypercent": number;   // How much to put in
-  "explanation": string;   
+  "risktoreward": number,       // How much you could make vs lose
+  "longtermscore": number,     // Where the market's heading
+  "marketstrength": number,    // How the market's doing now
+  "chefreputation": number,    // How good the trader is
+  "equitypercent": number,     // How much to put in
+  "explanation": string   
 }
 ```
 
