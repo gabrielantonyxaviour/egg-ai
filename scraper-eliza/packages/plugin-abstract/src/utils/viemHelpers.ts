@@ -21,7 +21,7 @@ import {
 import { toAccount } from "viem/accounts";
 import type { ChainEIP712 } from "viem/zksync";
 
-import { getSmartAccountAddressFromInitialSigner } from "./utils.js";
+import { getSmartAccountAddressFromInitialSigner } from "./utils/index.js";
 import {
 	type AbstractWalletActions,
 	globalWalletActions,

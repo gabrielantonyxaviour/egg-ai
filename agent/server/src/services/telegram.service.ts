@@ -7,7 +7,7 @@ import {
   getTokenMetadataPath,
   MintResponse,
   TokenMetadata,
-} from "../utils.js";
+} from "../utils/index.js";
 import fs from "fs";
 import axios, { AxiosResponse, isAxiosError } from "axios";
 import { parse as jsoncParse } from "jsonc-parser";

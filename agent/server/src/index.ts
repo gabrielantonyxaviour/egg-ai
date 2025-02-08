@@ -12,7 +12,8 @@ import twitterRouter from "./routes/twitter.js";
 import discordRouter from "./routes/discord.js";
 import cookieParser from "cookie-parser";
 import githubRouter from "./routes/github.js";
-import { AnyType } from "./utils.js";
+import tradingRouter from "./routes/trading.js";
+import { AnyType } from "./utils/index.js";
 import { isHttpError } from "http-errors";
 
 // Convert ESM module URL to filesystem path
@@ -56,7 +57,8 @@ app.use("/auth/discord", discordRouter);
 // Mount GitHub OAuth routes
 app.use("/auth/github", githubRouter);
 
-app.use('/post-trade-play',)
+app.use('/trading', tradingRouter)
+
 // 404 handler
 app.use((_req: Request, _res: Response, _next: NextFunction) => {
   _res.status(404).json({

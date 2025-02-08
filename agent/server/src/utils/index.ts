@@ -7,58 +7,58 @@ config();
 
 export type AnyType = any;
 export const chainMap: Record<string, string> = {
-  arbSepolia: "421614",
-  arb: "42161",
-  avax: "43114",
-  avaxFuji: "43113"
+    arbSepolia: "421614",
+    arb: "42161",
+    avax: "43114",
+    avaxFuji: "43113"
 };
 
 export const getTokenMetadataPath = () => {
-  const path = resolve(
-    __dirname,
-    "..",
-    "..",
-    process.env.TOKEN_DETAILS_PATH || "token_metadata.example.jsonc"
-  );
-  console.log("tokenMetadataPath:", path);
-  return path;
+    const path = resolve(
+        __dirname,
+        "..",
+        "..",
+        process.env.TOKEN_DETAILS_PATH || "token_metadata.example.jsonc"
+    );
+    console.log("tokenMetadataPath:", path);
+    return path;
 };
 
 export interface TokenMetadata {
-  name: string;
-  symbol: string;
-  description: string;
-  websiteLink: string;
-  twitter: string;
-  discord: string;
-  telegram: string;
-  nsfw: boolean;
-  image: string;
+    name: string;
+    symbol: string;
+    description: string;
+    websiteLink: string;
+    twitter: string;
+    discord: string;
+    telegram: string;
+    nsfw: boolean;
+    image: string;
 }
 
 export interface MintResponse {
-  response: {
-    contract: {
-      fungible: {
-        object: string;
-        name: string;
-        symbol: string;
-        media: string | null;
-        address: string;
-        decimals: number;
-      };
+    response: {
+        contract: {
+            fungible: {
+                object: string;
+                name: string;
+                symbol: string;
+                media: string | null;
+                address: string;
+                decimals: number;
+            };
+        };
     };
-  };
 }
 
 export const getCollablandApiUrl = () => {
-  return (
-    process.env.COLLABLAND_API_URL || "https://api-qa.collab.land/accountkit/v1"
-  );
+    return (
+        process.env.COLLABLAND_API_URL || "https://api-qa.collab.land/accountkit/v1"
+    );
 };
 
 export const getCardHTML = (botUsername: string, claimURL: string) => {
-  return `<!DOCTYPE html>
+    return `<!DOCTYPE html>
 <html lang="en">
 
 <head>

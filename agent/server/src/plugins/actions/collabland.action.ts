@@ -1,4 +1,4 @@
-import { AnyType, getCollablandApiUrl } from "../../utils.js";
+import { AnyType, getCollablandApiUrl } from "../../utils/index.js";
 import { Action, ActionExample, Validator, Handler } from "@ai16z/eliza";
 import axios, { AxiosInstance } from "axios";
 
@@ -36,8 +36,7 @@ export abstract class CollabLandBaseAction implements Action {
     if (axios.isAxiosError(error)) {
       console.dir(error.response?.data, { depth: null });
       throw new Error(
-        `CollabLand API error: ${
-          error.response?.data?.message || error.message
+        `CollabLand API error: ${error.response?.data?.message || error.message
         }`
       );
     }
