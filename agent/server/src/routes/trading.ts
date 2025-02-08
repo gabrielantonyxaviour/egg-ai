@@ -6,8 +6,9 @@ import { processCandles } from "../utils/candle.js";
 import { processSentiment } from "../utils/cookie.js";
 import { parseJSONObjectFromText } from "../utils/index.js";
 import { generateEmbeddings } from "../utils/supavec.js";
+import { getChef } from "src/utils/chef.js";
 
-
+const isProd = JSON.parse(process.env.IS_PROD || "false");
 
 declare module "express" {
     export interface Request {
@@ -31,91 +32,100 @@ export async function verifyPrivyToken(
     res: Response,
     next: NextFunction
 ): Promise<void> {
-    const authHeader = req.headers.authorization;
+    if (!isProd) {
+        next()
+    } else {
+        const authHeader = req.headers.authorization;
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-        res.status(401).json({ error: "Unauthorized" }); // ❌ Don't return inside `async` functions
-        return;
-    }
-
-    const token = authHeader.split(" ")[1];
-
-    try {
-        const decoded = jwt.decode(token, { complete: true }) as { header: { kid: string } } | null;
-        if (!decoded || !decoded.header.kid) {
-            res.status(401).json({ error: "Invalid token" });
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            res.status(401).json({ error: "Unauthorized" }); // ❌ Don't return inside `async` functions
             return;
         }
 
-        const key = await getSigningKey(decoded.header.kid);
+        const token = authHeader.split(" ")[1];
 
-        const verified = jwt.verify(token, key, { algorithms: ["RS256"] }) as JwtPayload;
+        try {
+            const decoded = jwt.decode(token, { complete: true }) as { header: { kid: string } } | null;
+            if (!decoded || !decoded.header.kid) {
+                res.status(401).json({ error: "Invalid token" });
+                return;
+            }
 
-        (req as any).user = verified; // ✅ Fix TypeScript error
+            const key = await getSigningKey(decoded.header.kid);
 
-        return next(); // ✅ Correctly call `next()`
-    } catch (err) {
-        res.status(401).json({ error: "Invalid token" });
-        return;
+            const verified = jwt.verify(token, key, { algorithms: ["RS256"] }) as JwtPayload;
+
+            (req as any).user = verified; // ✅ Fix TypeScript error
+
+            return next(); // ✅ Correctly call `next()`
+        } catch (err) {
+            res.status(401).json({ error: "Invalid token" });
+            return;
+        }
     }
+
 }
-
-
 
 export function verifyTradeUsername(
     req: Request,
     res: Response,
     next: NextFunction
 ): void {
-    // Validate that request body exists
-    if (!req.body) {
-        res.status(400).json({ error: "Missing request body" });
-        return;
+    if (!isProd) {
+        next()
+    } else {
+        if (!req.body) {
+            res.status(400).json({ error: "Missing request body" });
+            return;
+        }
+
+        const tradePlay = req.body as TradePlay;
+
+        // Basic validation of required fields
+        if (!tradePlay.username || !tradePlay.chef_id || !tradePlay.asset) {
+            res.status(400).json({ error: "Missing required fields" });
+            return;
+        }
+
+        // Ensure user is authenticated
+        if (!req.user) {
+            res.status(401).json({ error: "User not authenticated" });
+            return;
+        }
+
+        // Get the authenticated username from Privy JWT
+        const authenticatedUsername = req.user.telegram?.username;
+
+        if (!authenticatedUsername) {
+            res.status(401).json({ error: "No telegram username found in authentication token" });
+            return;
+        }
+
+        // Verify username matches
+        if (tradePlay.username !== authenticatedUsername) {
+            res.status(403).json({
+                error: "Username mismatch",
+                message: "The provided username does not match the authenticated user"
+            });
+            return;
+        }
+
+        // Store validated trade play in request for later use
+        req.tradePlay = tradePlay;
+        next();
     }
 
-    const tradePlay = req.body as TradePlay;
-
-    // Basic validation of required fields
-    if (!tradePlay.username || !tradePlay.chef_id || !tradePlay.asset) {
-        res.status(400).json({ error: "Missing required fields" });
-        return;
-    }
-
-    // Ensure user is authenticated
-    if (!req.user) {
-        res.status(401).json({ error: "User not authenticated" });
-        return;
-    }
-
-    // Get the authenticated username from Privy JWT
-    const authenticatedUsername = req.user.telegram?.username;
-
-    if (!authenticatedUsername) {
-        res.status(401).json({ error: "No telegram username found in authentication token" });
-        return;
-    }
-
-    // Verify username matches
-    if (tradePlay.username !== authenticatedUsername) {
-        res.status(403).json({
-            error: "Username mismatch",
-            message: "The provided username does not match the authenticated user"
-        });
-        return;
-    }
-
-    // Store validated trade play in request for later use
-    req.tradePlay = tradePlay;
-    next();
 }
-
-
 router.post("/play", verifyPrivyToken, verifyTradeUsername, async (req: Request, res: Response): Promise<void> => {
     try {
-        const tradePlay = req.tradePlay!;
+        console.log("Received trade play request:", req.body);
+        const tradePlay = req.body as TradePlay;
 
-
+        console.log("Processing candles data for asset:", tradePlay.asset, "on chain:", tradePlay.chain);
         const proccessedCandlesData = await processCandles(tradePlay.asset, tradePlay.chain);
+        console.log("Processed candles data:", proccessedCandlesData);
+
+        console.log("Processing social sentiment data for asset:", tradePlay.asset);
         const processSocialSentimentData = await processSentiment([
             `%24${tradePlay.asset}%20news`,
             `%24${tradePlay.asset}%20analysis`,
@@ -123,11 +133,16 @@ router.post("/play", verifyPrivyToken, verifyTradeUsername, async (req: Request,
             `%24${tradePlay.asset}%20forecast`,
             `%24${tradePlay.asset}%20degen`
         ]);
+        console.log("Processed social sentiment data:", processSocialSentimentData);
+
+        console.log("Generating embeddings for trade play");
         const processedTechincalAnalysis = await generateEmbeddings(tradePlay, proccessedCandlesData, processSocialSentimentData);
+        console.log("Generated technical analysis:", processedTechincalAnalysis);
 
         const eggAiSystemPrompt = `
-        You are an advanced crypto trade analyst and social sentiment expert. You have been asked to evaluate a future trading position for a user.`
+        You are an advanced crypto trade analyst and social sentiment expert. You have been asked to evaluate a future trading position for a user.`;
 
+        const chefAnalysis = getChef(tradePlay.chef_id);
 
         const playAnalysisPrompt = `
 Evaluate trade opportunity:
@@ -152,6 +167,8 @@ ${JSON.stringify({
             }
         }, null, 2)}
 
+${chefAnalysis}
+
 ${processedTechincalAnalysis}
 
 Please provide a risk assessment with these scores (0-100):
@@ -166,9 +183,9 @@ Please provide a risk assessment with these scores (0-100):
 }
 \`\`\`
 `;
-        const aiEndpoint = process.env.GAIANET_SERVER_URL || ""
+        const aiEndpoint = process.env.GAIANET_SERVER_URL || "";
 
-
+        console.log("Sending request to AI endpoint:", aiEndpoint);
         const analysisResponse = await fetch(`${aiEndpoint}/v1/chat/completions`, {
             method: "POST",
             headers: {
@@ -202,12 +219,12 @@ Please provide a risk assessment with these scores (0-100):
                 "completion_tokens": string;
                 "total_tokens": string;
             }
-        }
+        };
 
-        const parsedResponse = parseJSONObjectFromText(choices[0].message.content)
+        const parsedResponse = parseJSONObjectFromText(choices[0].message.content);
 
-        console.log("Parsed Response:", parsedResponse)
-        console.log("Usage Report:\nPrompt Tokens:", usage.prompt_tokens, "\nCompletion Tokens:", usage.completion_tokens, "\nTotal Tokens:", usage.total_tokens)
+        console.log("Parsed Response:", parsedResponse);
+        console.log("Usage Report:\nPrompt Tokens:", usage.prompt_tokens, "\nCompletion Tokens:", usage.completion_tokens, "\nTotal Tokens:", usage.total_tokens);
 
         res.json({
             id: tradePlay.id,
@@ -215,6 +232,7 @@ Please provide a risk assessment with these scores (0-100):
             response: parsedResponse,
         });
     } catch (error) {
+        console.error("Error processing trade play request:", error);
         res.status(500).json({ error: "Internal server error" });
     }
 });

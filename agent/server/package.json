@@ -27,6 +27,7 @@
     "@langchain/openai": "^0.3.14",
     "@ngrok/ngrok": "^1.4.1",
     "@solana/web3.js": "^1.98.0",
+    "@supabase/supabase-js": "^2.48.1",
     "@types/localtunnel": "^2.0.4",
     "@useorbis/db-sdk": "0.0.60-alpha",
     "agent-twitter-client": "^0.0.18",

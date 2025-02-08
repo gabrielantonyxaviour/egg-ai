@@ -59,6 +59,14 @@ app.use("/auth/github", githubRouter);
 
 app.use('/trading', tradingRouter)
 
+app.use((req, _res, next) => {
+  console.log('Request URL:', req.originalUrl);
+  console.log('Request Method:', req.method);
+  console.log('Request Body:', JSON.stringify(req.body, null, 2));
+
+  next();
+});
+
 // 404 handler
 app.use((_req: Request, _res: Response, _next: NextFunction) => {
   _res.status(404).json({
