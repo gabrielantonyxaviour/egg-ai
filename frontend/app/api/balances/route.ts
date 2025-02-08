@@ -51,9 +51,9 @@ export async function GET(request: Request) {
                 id: 1
             }),
         });
-        const avaxData = await ethResponse.json();
+        const avaxData = await avaxResponse.json();
         console.log('AVAX response data:', avaxData)
-        if (avaxData.result) ethBalance = (parseInt(avaxData.result, 16) / 1e18).toString();
+        if (avaxData.result) avaxBalance = (parseInt(avaxData.result, 16) / 1e18).toString();
         else {
             console.error('Failed to fetch AVAX Balance')
             return Response.json({

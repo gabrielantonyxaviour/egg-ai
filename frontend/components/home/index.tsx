@@ -62,8 +62,8 @@ export default function Home() {
                 setEthBalance(ethBalance)
                 setAvaxBalance(avaxBalance)
                 // setSolBalance(solBalance)
-
-                setTotalEquity((parseFloat(ethBalance) * parseFloat(eth)).toFixed(2) + (parseFloat(avaxBalance) * parseFloat(avax)).toFixed(2))
+                console.log({ ethBalance, avaxBalance })
+                setTotalEquity(((parseFloat(ethBalance) * parseFloat(eth)) + (parseFloat(avaxBalance) * parseFloat(avax))).toFixed(2))
                 // setTotalEquity((parseFloat(ethBalance) * parseFloat(eth) + parseFloat(solBalance) * parseFloat(sol)).toFixed(2))
             } catch (error) {
                 console.error('Failed to fetch data:', error);

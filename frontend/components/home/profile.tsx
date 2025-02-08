@@ -120,7 +120,7 @@ export default function Profile({ close }: { close: () => void }) {
             <div className="flex space-x-2 pt-2 items-center">
                 <h3 className="font-semibold text-base">Balance</h3>
             </div>
-            <div className="flex items-center space-x-6">
+            <div className="flex items-center space-x-6 pt-1">
 
                 <div className="flex items-center space-x-2">
                     <Image src={'/chains/arb.png'} width={25} height={25} alt={'arb'} />
