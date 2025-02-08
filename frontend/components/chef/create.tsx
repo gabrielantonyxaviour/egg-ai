@@ -220,7 +220,7 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
                                                             key={asset}
                                                             value={asset}
                                                             onSelect={() => handleAssetChange(asset)}
-                                                            className='w-full hover:bg-[#c49963]'
+                                                            className='w-full hover:bg-[#c49963] cursor-pointer'
                                                         >
                                                             <div className='ml-2 flex w-full items-center space-x-2'>
                                                                 <p className='sen font-semibold '>{asset}/USD</p>
