@@ -38,7 +38,7 @@ export default function Home() {
             image: "/home/chef.png",
         }
     ];
-    const { user, setEthPrice, setSolPrice, setEthBalance, setSolBalance, setTotalEquity } = useEnvironmentStore(store => store)
+    const { user, setEthPrice, setSolPrice, setEthBalance, setAvaxBalance, setAvaxPrice, setSolBalance, setTotalEquity } = useEnvironmentStore(store => store)
     const [showWindows, setShowWindows] = useState([false, false, false, false, false]);
     const router = useRouter();
     const [searchUsername, setSearchUsername] = useState('')
@@ -49,16 +49,22 @@ export default function Home() {
         (async () => {
             try {
                 const res = await fetch(`/api/alchemy/prices`);
-                const { eth, sol, error } = await res.json();
+                const { eth, avax, error } = await res.json();
+                // const { eth, sol, error } = await res.json();
                 if (error) throw new Error(error);
                 setEthPrice(eth)
-                setSolPrice(sol)
-                const bRes = await fetch(`/api/balances?eth=${user?.evm_address}&sol=${user?.solana_address}&prod=${process.env.NEXT_PUBLIC_IS_PROD}`);
-                const { ethBalance, solBalance } = await bRes.json();
+                setAvaxPrice(avax)
+                // setSolPrice(sol)
+                // const bRes = await fetch(`/api/balances?eth=${user?.evm_address}&sol=${user?.solana_address}&prod=${process.env.NEXT_PUBLIC_IS_PROD}`);
+                const bRes = await fetch(`/api/balances?eth=${user?.evm_address}&prod=${process.env.NEXT_PUBLIC_IS_PROD}`);
+                // const { ethBalance, solBalance } = await bRes.json();
+                const { ethBalance, avaxBalance } = await bRes.json();
                 setEthBalance(ethBalance)
-                setSolBalance(solBalance)
+                setAvaxBalance(avaxBalance)
+                // setSolBalance(solBalance)
 
-                setTotalEquity((parseFloat(ethBalance) * parseFloat(eth) + parseFloat(solBalance) * parseFloat(sol)).toFixed(2))
+                setTotalEquity((parseFloat(ethBalance) * parseFloat(eth)).toFixed(2) + (parseFloat(avaxBalance) * parseFloat(avax)).toFixed(2))
+                // setTotalEquity((parseFloat(ethBalance) * parseFloat(eth) + parseFloat(solBalance) * parseFloat(sol)).toFixed(2))
             } catch (error) {
                 console.error('Failed to fetch data:', error);
             }

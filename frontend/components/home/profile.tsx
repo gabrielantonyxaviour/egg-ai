@@ -9,7 +9,7 @@ import { Calendar } from "@/components/ui/calendar";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "../ui/button";
 export default function Profile({ close }: { close: () => void }) {
-    const { user, ethBalance, solBalance, totalEquity, pnl, setUser } = useEnvironmentStore((store => store))
+    const { user, ethBalance, solBalance, avaxBalance, totalEquity, pnl, setUser } = useEnvironmentStore((store => store))
     const [copiedEVM, setCopiedEVM] = useState<boolean>(false);
     const [copiedSOL, setCopiedSOL] = useState<boolean>(false);
     const [expectedPNL, setExpectedPNL] = useState(5);
@@ -97,8 +97,7 @@ export default function Profile({ close }: { close: () => void }) {
                 </div>
             </div>
             <div className="flex space-x-2 pt-5 items-center">
-                <Image src={'/chains/arb.png'} width={25} height={25} alt={'arb'} />
-                <h3 className="font-semibold text-base">EVM Wallet</h3>
+                <h3 className="font-semibold text-base">Wallet Address</h3>
                 <button
                     onClick={() => handleCopy(user?.evm_address || '', 'EVM')}
                     className=" hover:bg-gray-100 rounded transition-colors"
@@ -111,15 +110,29 @@ export default function Profile({ close }: { close: () => void }) {
                     </span>
                 )}
             </div>
-            <div className="flex items-center">
-                <div className="w-[30px]"></div>
+            <div className="flex items-center pt-1">
+                <div className="w-[5px]"></div>
                 <div className="flex items-center flex-grow">
                     <p className="mr-2 text-sm">{user?.evm_address}</p>
 
                 </div>
-                <p>{parseFloat(ethBalance).toFixed(2)} {"ETH"}</p>
             </div>
-            <div className="flex space-x-2 pt-4 items-center">
+            <div className="flex space-x-2 pt-2 items-center">
+                <h3 className="font-semibold text-base">Balance</h3>
+            </div>
+            <div className="flex items-center space-x-6">
+
+                <div className="flex items-center space-x-2">
+                    <Image src={'/chains/arb.png'} width={25} height={25} alt={'arb'} />
+                    <p className="mr-2 text-sm">{parseFloat(ethBalance).toFixed(2)} {"ETH"}</p>
+                </div>
+                <div className="flex items-center space-x-2">
+                    <Image src={'/chains/avax.png'} width={25} height={25} alt={'arb'} />
+                    <p className="mr-2 text-sm">{parseFloat(avaxBalance).toFixed(2)} {"AVAX"}</p>
+                </div>
+
+            </div>
+            {/* <div className="flex space-x-2 pt-4 items-center">
                 <Image src={'/chains/sol.png'} width={25} height={25} alt={'arb'} />
                 <h3 className="font-semibold text-base">SOL Wallet</h3>
                 <button
@@ -133,7 +146,7 @@ export default function Profile({ close }: { close: () => void }) {
                         Copied!
                     </span>
                 )}
-            </div>
+            </div> 
             <div className="flex items-center">
                 <div className="w-[30px]"></div>
                 <div className="flex items-center flex-grow">
@@ -141,7 +154,7 @@ export default function Profile({ close }: { close: () => void }) {
 
                 </div>
                 <p>{parseFloat(solBalance).toFixed(2)} {"ETH"}</p>
-            </div>
+            </div>*/}
 
             {user?.mode == 'CHAD' &&
                 <>

@@ -6,8 +6,10 @@ interface GlobalState {
   chef: Chef | null;
   ethBalance: string;
   solBalance: string;
+  avaxBalance: string;
   ethPrice: string;
   solPrice: string;
+  avaxPrice: string;
   totalEquity: string;
   pnl: string;
   user_follows: string[];
@@ -18,8 +20,10 @@ interface GlobalActions {
   setChef: (chef: Chef | null) => void;
   setEthBalance: (balance: string) => void;
   setSolBalance: (balance: string) => void;
+  setAvaxBalance: (balance: string) => void;
   setEthPrice: (price: string) => void;
   setSolPrice: (price: string) => void;
+  setAvaxPrice: (price: string) => void;
   setTotalEquity: (equity: string) => void;
   setPnl: (pnl: string) => void;
   setUserFollows: (user_follows: string[]) => void;
@@ -32,8 +36,10 @@ export const initialGlobalState: GlobalState = {
   user: null,
   ethBalance: "0",
   solBalance: "0",
+  avaxBalance: "0",
   ethPrice: "0",
   solPrice: "0",
+  avaxPrice: "0",
   totalEquity: "0",
   chef: null,
   pnl: "0",
@@ -87,5 +93,12 @@ export const createGlobalSlice: StateCreator<
         };
       }
     });
+  },
+  setAvaxBalance: (avaxBalance) => {
+    set({ avaxBalance });
+  },
+  setAvaxPrice: (avaxPrice) => {
+    set({ avaxPrice });
   }
+
 });
