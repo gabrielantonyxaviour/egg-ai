@@ -55,6 +55,7 @@
     "@types/cors": "^2.8.17",
     "@types/express": "^5.0.0",
     "@types/http-errors": "^2.0.4",
+    "@types/jsonwebtoken": "^9.0.8",
     "@types/morgan": "^1.9.9",
     "@types/node": "^20.17.6",
     "@types/node-cache": "^4.2.5",

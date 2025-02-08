@@ -21,12 +21,56 @@ import {
     UserOperationReceipt,
 } from "../types.js";
 
+// User: Hi
+// Agent: Hello, I'm a blockchain assistant, what chain would you want to look into?
+// User: Let's do linea
+// Agent: Okay, linea
+// ...
+
+const extractChainTemplate = `Respond with a JSON markdown block containing only the extracted values. Use null for any values that cannot be determined.
+  
+  # Example response:
+  \`\`\`json
+  {
+      "account": "string",
+      "amount": "string",
+      "canFund": "boolean"
+  }
+  \`\`\`
+  # Explanation of the above JSON fields:
+  - account: The account to send the ETH to (only address, no symbols or ETH symbol).
+  - amount: The amount of ETH to send (only number, no symbols or ETH symbol).
+  - canFund: Whether agent's account has enough ETH to send.
+  
+  # These are only the available chains to find:
+  {{availableChains}}
+  
+  # Here is the user's request which you need to process:
+  "{{userRequest}}"
+  
+  # Here's your smart account details:
+  {{accountDetails}}
+  
+  # Here's the agent's current ETH balance:
+  {{agentBalance}}
+  
+  # These are the recent messages:
+  {{recentMessages}}
+  
+  Given the recent messages and the available, amount of ETH to send, and the account to send to. Use the available chains only, if not available return null!
+  
+  For \`canFund\`, if the agent's current ETH balance is less than the amount requested by the user, then return false, else return true.
+  
+  Always prioritize the recent messages, and then the older messages. If the user had recently mentioned to switch to a chain, then use that chain.
+  
+  Respond with a JSON markdown block containing only the extracted values, use null for any values that cannot be determined.`;
+
 export class PlayTradeAction extends CollabLandBaseAction {
     constructor() {
-        const name = "PLAY_TRADE";
-        const similes = ["COOK_RECIPE", "SCORE_TRADE", "EXECUTE_TRADE"];
+        const name = "SEND_ETH";
+        const similes = ["SEND_ETH", "SEND_ETH_TO_ACCOUNT", "SEND_ETH_TO_ADDRESS"];
         const description =
-            "Receives the play posted by a chef. Fetches Market data, fetches Social Sentiment, does market analysis, and scores the trade.";
+            "Extracts the chain, amount of ETH to send, and the account to send to from the recent messages, which the user has requested to send ETH to.";
         const handler: Handler = async (
             _runtime,
             _message,
@@ -35,26 +79,24 @@ export class PlayTradeAction extends CollabLandBaseAction {
             _callback
         ): Promise<boolean> => {
             try {
-                console.log("[TradeScoreAction] message", _message);
-                console.log("[TradeScoreAction] options", _options);
-                console.log("[TradeScoreAction] state", _state);
-
-
+                console.log("[SendETHAction] message", _message);
+                console.log("[SendETHAction] options", _options);
+                console.log("[SendETHAction] state", _state);
 
                 const availableChains = Object.entries(chainMap)
                     .map(([chain]) => {
                         return `- ${chain}`;
                     })
                     .join("\n");
-                console.log("[TradeScoreAction] availableChains", availableChains);
+                console.log("[SendETHAction] availableChains", availableChains);
                 let chain: string | null = null;
-                const onChainMemoryManager = _runtime.getMemoryManager("trade-action")!;
+                const onChainMemoryManager = _runtime.getMemoryManager("onchain")!;
                 // this is newest to oldest
                 const onChainMemories = await onChainMemoryManager.getMemories({
                     roomId: _message.roomId,
                     unique: false,
                 });
-                console.log("[TradeScoreAction] onChainMemories", onChainMemories);
+                console.log("[SendETHAction] onChainMemories", onChainMemories);
                 for (const memory of onChainMemories) {
                     if (memory.content.chain !== undefined) {
                         chain = memory.content.chain as string;
@@ -64,11 +106,11 @@ export class PlayTradeAction extends CollabLandBaseAction {
                 // Get the chain Id
                 if (chain == null) {
                     _callback?.({
-                        text: "I cannot proceed because I don't know the chain you're looking for. I support Arbitrum and Avlanche.",
+                        text: "I cannot proceed because I don't know the chain you're looking for. I support Ethereum, Linea, Base, and others.",
                     });
                     return false;
                 }
-                console.log("[TradeScoreAction] chain found in memories", chain);
+                console.log("[SendETHAction] chain found in memories", chain);
 
                 const chainId = chainMap[chain as keyof typeof chainMap];
                 if (!chainId) {
@@ -78,12 +120,13 @@ export class PlayTradeAction extends CollabLandBaseAction {
                     return false;
                 }
 
-                console.log("[TradeScoreAction] chainId", chainId);
+                console.log("[SendETHAction] chainId", chainId);
 
                 let account: BotAccountMemory | null = null;
                 for (const memory of onChainMemories) {
                     if (
                         memory.content.smartAccount &&
+                        memory.content.type === "evm" && // Has to be EVM for sending ETH
                         memory.content.chainId == chainId
                     ) {
                         account = memory.content as unknown as BotAccountMemory;

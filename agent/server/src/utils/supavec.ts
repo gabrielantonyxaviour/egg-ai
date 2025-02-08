@@ -57,6 +57,7 @@ export async function generateEmbeddings(
     const { success, documents } = await response.json() as { success: boolean; documents: { content: string; file_id: string; score: string; }[] };
     if (success) {
         documents.forEach(({ content, file_id, score }, index) => {
+            console.log(file_id)
             formattedEmbeddings += `Report ${index + 1}\nScore: ${score}\n`
             formattedEmbeddings += `${content}\n`
 

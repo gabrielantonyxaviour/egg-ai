@@ -1,11 +1,11 @@
 import { Router, Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
-import { TradePlay } from "src/types.js";
-import { processCandles } from "src/utils/candle.js";
-import { processSentiment } from "src/utils/cookie.js";
-import { parseJSONObjectFromText } from "src/utils/index.js";
-import { generateEmbeddings } from "src/utils/supavec.js";
+import { TradePlay } from "../types.js";
+import { processCandles } from "../utils/candle.js";
+import { processSentiment } from "../utils/cookie.js";
+import { parseJSONObjectFromText } from "../utils/index.js";
+import { generateEmbeddings } from "../utils/supavec.js";
 
 
 
