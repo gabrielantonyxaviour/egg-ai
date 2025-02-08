@@ -14,12 +14,16 @@ Egg AI is an AI solution that allows users to follow top crypto traders ("chefs"
 
 We've built two ways to trade, letting you choose how much control you want:
 
+![image](https://github.com/user-attachments/assets/848c9dd4-de60-46c4-b219-f768bf002144)
+
 ### 🔥 Tren Egg Mode
 Click a button to print money:
 - No trading experience needed
 - Bot auto follows trades posted by verified chefs
 - AI takes care of risks, goals, and preferences
 - Perfect if you're busy but want to follow top trades
+
+![image](https://github.com/user-attachments/assets/100c3f50-16bf-41e6-89c5-6784bff96148)
 
 ### 🏆 Chad Egg Mode
 For traders who want more control:
