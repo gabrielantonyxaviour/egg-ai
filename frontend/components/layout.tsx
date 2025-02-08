@@ -22,6 +22,12 @@ export default function Layout({
   });
   const { ready, authenticated, login, user: privyUser, logout, getAccessToken } = usePrivy();
   const router = useRouter()
+
+  useEffect(() => {
+    if (JSON.parse(process.env.NEXT_PUBLIC_IS_VERCEL || "false")) {
+      window.location.href = "https://egg-ai-client.ngrok.app";
+    }
+  }, [])
   useEffect(() => {
     console.log('Privy User:', privyUser);
 
