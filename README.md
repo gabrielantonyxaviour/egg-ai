@@ -3,6 +3,8 @@
 **Autonomous and specialized AI agent that helps you "follow trade" trade analysts**  
 _AI that does DYOR for you_
 
+![image](https://github.com/user-attachments/assets/59ee468f-c2e3-4370-96db-d5774e472fab)
+
 ## 🎯 Pitch
 > *A button that prints you money*  
 > *NFA DYOR - AI agent that does that for you*
