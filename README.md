@@ -98,8 +98,12 @@ The coolest part? Whether you're in **Tren Mode** letting the AI handle everythi
 ## 🔗 Important Links
 
 **Live URL**: https://egg-ai.vercel.app/
+
 **Pitch Deck**: https://www.canva.com/design/DAGebCcYds4/wUMbyP9W89DYiCpGaO78LA/view?utm_content=DAGebCcYds4&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=h1b63e6233e
+
 **Demo Video**: https://www.canva.com/design/DAGecEPLC6w/BsoYkan_aBuP0UF4vRYwHA/watch?utm_content=DAGecEPLC6w&utm_campaign=designshare&utm_medium=link2&utm_source=uniquelinks&utlId=had0fe8cb19
+
 **Project Dashboard**: https://ethglobal.com/showcase/egg-ai-atkir
+
 **Follow on X**: https://x.com/egg_ai_agent
 
