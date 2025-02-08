@@ -599,7 +599,7 @@ export class ElizaService extends BaseService {
         modelProvider: character.modelProvider || ModelProviderName.OPENAI,
         character,
         conversationLength: 4096,
-        plugins: [bootstrapPlugin, collablandPlugin, gateDataPlugin],
+        plugins: [collablandPlugin],
         cacheManager: new CacheManager(new MemoryCacheAdapter()),
         logging: true,
       });

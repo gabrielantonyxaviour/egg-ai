@@ -7,10 +7,10 @@ config();
 
 export type AnyType = any;
 export const chainMap: Record<string, string> = {
-  ethereum: "11155111",
-  base: "84532",
-  linea: "59141",
-  solana: "sol_dev",
+  arbSepolia: "421614",
+  arb: "42161",
+  avax: "43114",
+  avaxFuji: "43113"
 };
 
 export const getTokenMetadataPath = () => {

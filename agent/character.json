@@ -5,6 +5,11 @@
     "direct",
     "telegram"
   ],
+  "clientConfig": {
+    "telegram": {
+      "shouldIgnoreBotMessages": true
+    }
+  },
   "modelProvider": "gaianet",
   "settings": {
     "secrets": {},

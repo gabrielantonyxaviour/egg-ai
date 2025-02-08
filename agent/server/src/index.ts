@@ -56,6 +56,7 @@ app.use("/auth/discord", discordRouter);
 // Mount GitHub OAuth routes
 app.use("/auth/github", githubRouter);
 
+app.use('/post-trade-play',)
 // 404 handler
 app.use((_req: Request, _res: Response, _next: NextFunction) => {
   _res.status(404).json({
