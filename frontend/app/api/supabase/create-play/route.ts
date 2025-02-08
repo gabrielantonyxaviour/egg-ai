@@ -5,15 +5,14 @@ export async function POST(request: Request) {
         console.log('Received request to create play')
         const formData = await request.formData()
         const chef_id = formData.get('chef_id') as string
+        const username = formData.get("username") as string
         const asset = formData.get('asset') as string
         const direction = formData.get('direction') as string
         const chain = formData.get('chain') as string
         const entryPrice = parseFloat(formData.get('entry_price') as string)
         const stopLoss = parseFloat(formData.get('stop_loss') as string)
         const leverage = parseFloat(formData.get('leverage') as string)
-        const tradeType = formData.get('trade_type') as string
         const timeFrame = parseFloat(formData.get('timeframe') as string)
-        const status = formData.get('status') as string
         const researchDescription = formData.get('research_description') as string
         const dex = formData.get('dex') as string
         const image = formData.get('image') as File
@@ -36,7 +35,7 @@ export async function POST(request: Request) {
             leverage: leverage.toString(),
             trade_type: 'future',
             timeframe: timeFrame.toString(),
-            status: 'pending',
+            status: 'ongoing',
             pnl_percentage: null,
             research_description: researchDescription,
             dex,
@@ -46,27 +45,36 @@ export async function POST(request: Request) {
             dca: dcaPoints,
             expected_pnl: expectedPnl
         })
-        const play = await createPlay({
-            chef_id,
-            asset,
-            direction,
-            entry_price: entryPrice.toString(),
-            stop_loss: stopLoss.toString(),
-            leverage: leverage.toString(),
-            trade_type: 'future',
-            timeframe: timeFrame.toString(),
-            status: 'pending',
-            pnl_percentage: null,
-            research_description: researchDescription,
-            dex,
-            image: imageUrl,
-            chain,
-            take_profit: takeProfits,
-            dca: dcaPoints,
-            expected_pnl: expectedPnl
+        const response = await fetch('https://monkfish-relevant-lively.ngrok-free.app/trade/play', {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            method: 'POST',
+            body: JSON.stringify({
+                username, tradePlay: {
+                    chef_id,
+                    asset,
+                    direction,
+                    entry_price: entryPrice.toString(),
+                    stop_loss: stopLoss.toString(),
+                    leverage: leverage.toString(),
+                    trade_type: 'future',
+                    timeframe: timeFrame.toString(),
+                    status: 'ongoing',
+                    pnl_percentage: null,
+                    research_description: researchDescription,
+                    dex,
+                    image: imageUrl,
+                    chain,
+                    take_profit: takeProfits,
+                    dca: dcaPoints,
+                    expected_pnl: expectedPnl
+                }
+            })
         })
+        const { data: play, error } = await response.json()
 
-        if (!play) {
+        if (!error) {
             console.error('Error creating play')
             return Response.json(
                 { error: 'Error creating play' },

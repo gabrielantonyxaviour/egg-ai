@@ -125,15 +125,14 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
         console.log(timeFrame)
         const formData = new FormData()
         formData.append('chef_id', chef?.id || "")
+        formData.append('username', chef?.username || "")
         formData.append('asset', selectedAsset)
         formData.append('direction', direction)
         formData.append('chain', selectedChain)
         formData.append('entry_price', entryPrice.toString());
         formData.append('stop_loss', stopLoss.toString());
         formData.append('leverage', leverage.toString());
-        formData.append('trade_type', 'future');
         formData.append('timeframe', timeFrame.toString());
-        formData.append('status', 'pending');
         formData.append('research_description', researchDescription);
         formData.append('dex', 'GMX');
         formData.append('image', image);
@@ -142,22 +141,34 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
         formData.append('expected_pnl', expectedPnl.length > 0 ? expectedPnl : "0");
         console.log("FormData")
         console.log(formData)
-        const response = await fetch('/api/supabase/create-play', {
-            method: 'POST',
-            body: formData
-        })
-        const { play, error } = await response.json()
 
-        if (error) {
-            console.log(error)
-            setError(error)
-            return
+        try {
+            const response = await fetch('/api/supabase/create-play', {
+                method: 'POST',
+                body: formData
+            })
+            const { play, error } = await response.json()
+
+            if (error) {
+                console.log(error)
+                setError(error)
+                return
+            }
+            console.log("Successfully created play")
+            console.log(play)
+
+            await new Promise(resolve => setTimeout(resolve, 1000));
+            setLoading(2)
+
+            const analysisResponse = await fetch('/api/analyze-play', {
+                method: 'POST',
+                body: formData
+            })
+            const { response: analysisData } = await response.json()
+        } catch (e) {
+
         }
-        console.log("Successfully created play")
-        console.log(play)
 
-        await new Promise(resolve => setTimeout(resolve, 1000));
-        setLoading(2)
     }
     return (
         <div className="relative w-[42%] h-full bg-black rounded-sm">

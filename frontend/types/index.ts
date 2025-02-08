@@ -48,9 +48,20 @@ export type TradePlay = {
     leverage: string;
     image: string;
     status: "pending" | "ongoing" | "completed";
-    pnl_percentage: string | null;
+    pnl_percentage?: string;
     expected_pnl: string;
     research_description: string;
+    analysis?: Analysis;
+}
+
+
+export type Analysis = {
+    risktoreward: string;
+    longtermscore: string;
+    marketstrength: string;
+    chefreputation: string;
+    equitypercent: string;
+    explanation: string;
 }
 
 export type TakeProfit = {

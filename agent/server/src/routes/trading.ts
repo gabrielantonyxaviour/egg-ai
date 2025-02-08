@@ -1,12 +1,13 @@
 import { Router, Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
-import { TradePlay } from "../types.js";
+import { Analysis, TradePlay } from "../types.js";
 import { processCandles } from "../utils/candle.js";
 import { processSentiment } from "../utils/cookie.js";
 import { parseJSONObjectFromText } from "../utils/index.js";
 import { generateEmbeddings } from "../utils/supavec.js";
-import { getChef } from "src/utils/chef.js";
+import { getChef } from "../utils/chef.js";
+import { createPlay } from "../utils/createPlay.js";
 
 const isProd = JSON.parse(process.env.IS_PROD || "false");
 
@@ -79,10 +80,9 @@ export function verifyTradeUsername(
             return;
         }
 
-        const tradePlay = req.body as TradePlay;
-
+        const { username, tradePlay } = req.body as { tradePlay: TradePlay; username: string };
         // Basic validation of required fields
-        if (!tradePlay.username || !tradePlay.chef_id || !tradePlay.asset) {
+        if (!username || !tradePlay.chef_id || !tradePlay.asset) {
             res.status(400).json({ error: "Missing required fields" });
             return;
         }
@@ -102,7 +102,7 @@ export function verifyTradeUsername(
         }
 
         // Verify username matches
-        if (tradePlay.username !== authenticatedUsername) {
+        if (username !== authenticatedUsername) {
             res.status(403).json({
                 error: "Username mismatch",
                 message: "The provided username does not match the authenticated user"
@@ -119,7 +119,7 @@ export function verifyTradeUsername(
 router.post("/play", verifyPrivyToken, verifyTradeUsername, async (req: Request, res: Response): Promise<void> => {
     try {
         console.log("Received trade play request:", req.body);
-        const tradePlay = req.body as TradePlay;
+        const { username, tradePlay } = req.body as { tradePlay: TradePlay; username: string };
 
         console.log("Processing candles data for asset:", tradePlay.asset, "on chain:", tradePlay.chain);
         const proccessedCandlesData = await processCandles(tradePlay.asset, tradePlay.chain);
@@ -221,15 +221,26 @@ Please provide a risk assessment with these scores (0-100):
             }
         };
 
-        const parsedResponse = parseJSONObjectFromText(choices[0].message.content);
+        const parsedResponse = parseJSONObjectFromText(choices[0].message.content) as Analysis;
 
         console.log("Parsed Response:", parsedResponse);
         console.log("Usage Report:\nPrompt Tokens:", usage.prompt_tokens, "\nCompletion Tokens:", usage.completion_tokens, "\nTotal Tokens:", usage.total_tokens);
 
+        tradePlay.analysis = parsedResponse;
+
+        const { error } = await createPlay(tradePlay);
+
+        if (error) {
+            res.status(500).json({ error: "Failed to create trade play" });
+            return;
+        }
+
         res.json({
-            id: tradePlay.id,
-            username: tradePlay.username,
-            response: parsedResponse,
+            data: {
+                id: tradePlay.id,
+                username,
+                response: parsedResponse,
+            }
         });
     } catch (error) {
         console.error("Error processing trade play request:", error);

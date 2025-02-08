@@ -119,10 +119,9 @@ export type DCA = {
 }
 
 export type TradePlay = {
-  id?: string;
-  created_at?: string;
+  id: string;
+  created_at: string;
   chef_id: string;
-  username: string;
   dex: string;
   asset: string;
   chain: string;
@@ -132,11 +131,22 @@ export type TradePlay = {
   take_profit: TakeProfit[];
   stop_loss: string;
   dca: DCA[];
-  timeframe: string;
+  timeframe: string
   leverage: string;
   image: string;
   status: "pending" | "ongoing" | "completed";
-  pnl_percentage: string | null;
+  pnl_percentage?: string;
   expected_pnl: string;
   research_description: string;
-};
+  analysis?: Analysis;
+}
+
+
+export type Analysis = {
+  risktoreward: string;
+  longtermscore: string;
+  marketstrength: string;
+  chefreputation: string;
+  equitypercent: string;
+  explanation: string;
+}
