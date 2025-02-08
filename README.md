@@ -1,22 +1,28 @@
-Target Sponsors
-
-1. Arbitrum
-2. Gaia and Collab land
-3. Lit or Nillion 
-4. TheGraph
-
+Product Name
+Egg AI
 
 Pitch
 
 a button that prints you money
 nfa dyor - ai agent that does that for you
 
-Target Achievements
+Target Sponsors
 
-1. Started a community in collab.land
-2. Partnership with Neil. 
-3. 4 PRs to Gaia and Collab.land
-4. 50 followers on X
+1. Arbitrum
+2. Gaia and Collab land
+3. Lit 
+4. Autonome
+
+Tech
+
+1. Supported chains: Arbitrum, Avalanche
+2. Lit protocol for wallet
+3. Cookie.fun Twitter sentiment
+3. TokenHunterZoro TikTok Sentiment
+4. Gaia to build specialized AI
+5. Collab.land AI agent Starter kit
+6. Supavec for RAG inference
+7. Autonome for custom user specific AI agent deployments
 
 An autonomous AI agent that lets you click a button to print money.  
 
@@ -45,7 +51,6 @@ Just started building this project. Any suggestions/support would mean a lot
 Follow on X | https://x.com/egg_ai_agent
 
 
-
 1. Gather resources for trades and train the AI and get a list of file ids
 2. Finish fe
 3. Configure /commands see how everything is
@@ -55,15 +60,11 @@ Follow on X | https://x.com/egg_ai_agent
 
 AI's decision making
 
-6. TREN EGG
-	1. First fetch all cooks latest calls
-	2. take the first one, and the next and so 
-		1. get complete market data for it using birdeye for memecoins. coinmarketcap for regular coins with birdeye. Every thing necessray to visualize a chart 
-		2. make an X search, get Tiktok data, get instagram data, get cookie data for the ticker 
-		3. Get the chefs call and all this data and structure it for a prompt with pulled data from the embedding.
-		4. AI should return confidence score and risk score. 
-7. CHAD EGG
-	1. 
+In the first step as soon as any play is posted by any chef, I want the AI to do a basic analysis score with a response something like riskToReward, longTermScore, marketStrength, chefReputation, equityPercent(ai suggested percent of total equity that could be invested into this play) Can you suggest me one more score?
+
+Trades should be performed for all followers of the Chef based on the follow confidence, if the metrics are not too favourable but the confidence is high, the trade should go through. if the metrics are favourable but the confidence is low, trade should go through. Come up with a ts function that does this check. as per the equityPercent. If the confidence is too high and the ai score is also high, the ai can slightly increase the equity when performing the trade. but if the confidence is too low and the ai score is high, the equity can be reduced slightly.
+
+After CHAD users, all TREN wallets will make the trade as per the equity percent. There should be threshold for that.
 
 
 Caller profile
@@ -131,13 +132,10 @@ Trading bot interface
 		5. Green Ball Red ball (TREN and CHAD) 
 		6. x Close on bottom
 
-
 TODO
 
 11. Sign in flow full testing - DONE
 12. Landing page aka profile page
-
-
 
 FRONTEND BOXES
 
@@ -158,7 +156,6 @@ For Chef
 3. Recipes - DONE
 4. Create - DONE
 
-
 Looking to go long BTC at this level (95279) lots of confluence here so looking for a bounce (VAL, golden pocket, 4H OB)
 
 Also setting limit orders for this ONDO long. Entries @ 1.263, 1.177, 4H close under 1.11 for stops, TPs in yellow
@@ -175,7 +172,7 @@ Transactions testing - 3 hours
 Preparing AI data - 5 hours
 
 1. Trading PDF resources and creating embeddings
-2. Testing Cookie.fun sentiment, (Twitter Search by Eliza, Tiktok by TokenHunterZorom, Instagram by Eliza LATER)
+2. Testing Cookie.fun sentiment, (Twitter Search by Eliza, Tiktok by TokenHunterZorom)
 3. Test Fetching current market data from GMX APIs
 4. Structure everything into a prompt
 
@@ -183,10 +180,6 @@ AI Testing - 2 hours
 
 1. Test the pipeline, get inferences.
 
-
 Frontend final integrations - 2 hours
 
-
 Telegram Integration - 4 hours
-
-1. 

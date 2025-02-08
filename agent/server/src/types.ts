@@ -59,3 +59,84 @@ export interface IUserOperationReceipt {
   receipt?: ITransactionReceipt;
   logs?: ILog[];
 }
+
+
+export type RawCandle = [number, number, number, number, number]; // [timestamp, open, high, low, close]
+
+export type ProcessedCandle = {
+  timestamp: number;
+  open: number;
+  high: number;
+  low: number;
+  close: number;
+}
+export type ProcessedMarketData = {
+  currentPrice: number;
+  priceChange24h: number;
+  volatility24h: number;
+  volumeProfile: {
+    averageVolume: number;
+    volumeSpikes: number[];
+  };
+  trendMetrics: {
+    direction: 'bullish' | 'bearish' | 'sideways';
+    strength: number;
+    keyLevels: {
+      support: number[];
+      resistance: number[];
+    };
+  };
+}
+
+export type SentimentPost = {
+  authorUsername: string;
+  createdAt: string;
+  engagementsCount: number;
+  impressionsCount: number;
+  likesCount: number;
+  quotesCount: number;
+  repliesCount: number;
+  retweetsCount: number;
+  smartEngagementPoints: number;
+  text: string;
+  matchingScore: number;
+}
+
+export type ProcessedSentiment = {
+  overallSentiment: number;
+  engagementScore: number;
+  topInfluencers: string[];
+  keyPhrases: string[];
+}
+export type TakeProfit = {
+  price: string;
+  percentage: string;
+}
+
+export type DCA = {
+  price: string;
+  percentage: string;
+}
+
+export type TradePlay = {
+  id?: string;
+  created_at?: string;
+  chef_id: string;
+  username: string;
+  dex: string;
+  asset: string;
+  chain: string;
+  direction: string;
+  entry_price: string;
+  trade_type: 'spot' | 'future';
+  take_profit: TakeProfit[];
+  stop_loss: string;
+  dca: DCA[];
+  timeframe: string;
+  leverage: string;
+  image: string;
+  status: "pending" | "ongoing" | "completed";
+  pnl_percentage: string | null;
+  expected_pnl: string;
+  research_description: string;
+};

@@ -20,7 +20,7 @@ export default function Layout({
   const { data: balance } = useBalance({
     address: address,
   });
-  const { ready, authenticated, login, user: privyUser, logout } = usePrivy();
+  const { ready, authenticated, login, user: privyUser, logout, getAccessToken } = usePrivy();
   const router = useRouter()
   useEffect(() => {
     console.log('Privy User:', privyUser);

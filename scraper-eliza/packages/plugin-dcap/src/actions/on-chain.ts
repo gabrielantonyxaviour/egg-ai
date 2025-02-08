@@ -7,7 +7,7 @@ import {
     getTEEMode,
     hasPrivateKey,
     hasTEEMode,
-} from "../utils.js";
+} from "../utils/index.js";
 
 export const dcapOnChainVerifyAction: Action = {
     name: "DCAP_ON_CHAIN",
@@ -44,7 +44,7 @@ export const dcapOnChainVerifyAction: Action = {
         [
             {
                 user: "{{user1}}",
-                content: { 
+                content: {
                     text: "Verify the DCAP attestation on-chain",
                     action: "DCAP_ON_CHAIN"
                 },
@@ -59,7 +59,7 @@ export const dcapOnChainVerifyAction: Action = {
         [
             {
                 user: "{{user1}}",
-                content: { 
+                content: {
                     text: "DCAP_ON_CHAIN",
                     action: "DCAP_ON_CHAIN"
                 },

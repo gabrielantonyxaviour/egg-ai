@@ -7,15 +7,14 @@ import {
   getTokenMetadataPath,
   MintResponse,
   TokenMetadata,
-} from "../utils.js";
+} from "../utils/index.js";
 import fs from "fs";
 import axios, { AxiosResponse, isAxiosError } from "axios";
 import { parse as jsoncParse } from "jsonc-parser";
 import path, { resolve } from "path";
 import { keccak256, getBytes, toUtf8Bytes } from "ethers";
 import { TwitterService } from "./twitter.service.js";
-// import { NgrokService } from "./ngrok.service.js";
-import { LocalTunnelService } from "./localtunnel.service.js";
+import { NgrokService } from "./ngrok.service.js";
 
 // hack to avoid 400 errors sending params back to telegram. not even close to perfect
 const htmlEscape = (_key: AnyType, val: AnyType) => {
@@ -36,8 +35,7 @@ export class TelegramService extends BaseService {
   private bot: Bot;
   private webhookUrl: string;
   private elizaService: ElizaService;
-  // private LocalTunnelService: LocalTunnelService;
-  private localTunnelService: LocalTunnelService;
+  private ngrokService: NgrokService;
   private twitterService?: TwitterService;
 
   private constructor(webhookUrl?: string) {
@@ -100,7 +98,7 @@ export class TelegramService extends BaseService {
       });
       await this.elizaService.start();
       // required when starting server for telegram webooks
-      this.localTunnelService = LocalTunnelService.getInstance();
+      this.ngrokService = NgrokService.getInstance();
       try {
         // try starting the twitter service
         this.twitterService = await TwitterService.getInstance();
@@ -167,7 +165,7 @@ You can view the token page below (it takes a few minutes to be visible)`,
           if (this.twitterService) {
             const twitterBotInfo = this.twitterService.me;
             const twitterClient = this.twitterService.getScraper();
-            const ngrokURL = this.localTunnelService.getUrl();
+            const ngrokURL = this.ngrokService.getUrl();
             await ctx.reply(
               `🐦 Posting a tweet about the new token...\n\n` +
               `Twitter account details:\n<pre lang="json"><code>${JSON.stringify(

@@ -253,9 +253,9 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
                                             <CommandList>
                                                 <CommandGroup>
                                                     {selectedAsset && Object.values(assets[selectedAsset]).filter((address) => address != '').length > 1 && (
-                                                        <CommandItem value="either" onSelect={() => setSelectedChain('either')}>
-                                                            Either
-                                                            {selectedChain === 'either' && (
+                                                        <CommandItem value="any" onSelect={() => setSelectedChain('any')}>
+                                                            Any
+                                                            {selectedChain === 'any' && (
                                                                 <Check className="ml-auto h-4 w-4" />
                                                             )}
                                                         </CommandItem>

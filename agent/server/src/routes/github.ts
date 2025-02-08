@@ -1,15 +1,14 @@
 import { Router, Request, Response } from "express";
 import axios from "axios";
 import crypto from "crypto";
-// import { NgrokService } from "../services/ngrok.service.js";
-import { LocalTunnelService } from "../services/localtunnel.service.js";
+import { NgrokService } from "../services/ngrok.service.js";
 
 const router = Router();
 const states = new Set<string>();
 
 router.post("/init", async (_req: Request, res: Response) => {
   try {
-    const localTunnelURL = await LocalTunnelService.getInstance().getUrl();
+    const ngrokTunnelURL = NgrokService.getInstance().getUrl();
     const state = crypto.randomBytes(16).toString("hex");
     states.add(state);
 
@@ -17,7 +16,7 @@ router.post("/init", async (_req: Request, res: Response) => {
     authUrl.searchParams.set("client_id", process.env.GITHUB_CLIENT_ID!);
     authUrl.searchParams.set(
       "redirect_uri",
-      `${localTunnelURL}/auth/github/callback`
+      `${ngrokTunnelURL}/auth/github/callback`
     );
     authUrl.searchParams.set("scope", "read:user user:email");
     authUrl.searchParams.set("state", state);
@@ -31,7 +30,7 @@ router.post("/init", async (_req: Request, res: Response) => {
 
 router.get("/callback", async (req: Request, res: Response) => {
   try {
-    const localTunnelURL = await LocalTunnelService.getInstance().getUrl();
+    const ngrokTunnelURL = NgrokService.getInstance().getUrl();
     const { code, state } = req.query;
 
     if (!states.has(state as string)) {
@@ -44,7 +43,7 @@ router.get("/callback", async (req: Request, res: Response) => {
         client_id: process.env.GITHUB_CLIENT_ID,
         client_secret: process.env.GITHUB_CLIENT_SECRET,
         code: code,
-        redirect_uri: `${localTunnelURL}/auth/github/callback`,
+        redirect_uri: `${ngrokTunnelURL}/auth/github/callback`,
         state: state,
       },
       {
@@ -57,12 +56,12 @@ router.get("/callback", async (req: Request, res: Response) => {
     states.delete(state as string);
     return res.redirect(
       302,
-      `${localTunnelURL}/auth/github/success?github_token=${tokenResponse.data.access_token}`
+      `${ngrokTunnelURL}/auth/github/success?github_token=${tokenResponse.data.access_token}`
     );
   } catch (error) {
-    const localTunnelURL = await LocalTunnelService.getInstance().getUrl();
+    const ngrokTunnelURL = NgrokService.getInstance().getUrl();
     console.error("[GitHub Callback] Error:", error);
-    return res.redirect(302, `${localTunnelURL}/auth/github/error`);
+    return res.redirect(302, `${ngrokTunnelURL}/auth/github/error`);
   }
 });
 
