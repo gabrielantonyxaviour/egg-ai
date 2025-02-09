@@ -57,8 +57,7 @@ const CountdownTimer = ({ createdAt, timeframe }: {
 };
 
 export default function Recipes({ setOpenDetailedRecipe, close }: { setOpenDetailedRecipe: (id: string) => void; close: () => void }) {
-    const { chef } = useEnvironmentStore(store => store)
-    const [recipes, setRecipes] = useState<TradePlay[]>([]);
+    const { chef, recipes, setRecipes } = useEnvironmentStore(store => store)
     const [loading, setLoading] = useState(true)
     useEffect(() => {
         if (chef == undefined) return;

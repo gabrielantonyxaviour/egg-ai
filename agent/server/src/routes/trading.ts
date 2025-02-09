@@ -33,6 +33,7 @@ export async function verifyPrivyToken(
     res: Response,
     next: NextFunction
 ): Promise<void> {
+    console.log(isProd)
     if (!isProd) {
         next()
     } else {
@@ -58,7 +59,8 @@ export async function verifyPrivyToken(
 
             (req as any).user = verified; // ✅ Fix TypeScript error
 
-            return next(); // ✅ Correctly call `next()`
+            next();
+            return
         } catch (err) {
             res.status(401).json({ error: "Invalid token" });
             return;
@@ -72,6 +74,7 @@ export function verifyTradeUsername(
     res: Response,
     next: NextFunction
 ): void {
+    console.log(isProd)
     if (!isProd) {
         next()
     } else {
@@ -119,7 +122,7 @@ export function verifyTradeUsername(
 router.post("/play", verifyPrivyToken, verifyTradeUsername, async (req: Request, res: Response): Promise<void> => {
     try {
         console.log("Received trade play request:", req.body);
-        const { username, tradePlay } = req.body as { tradePlay: TradePlay; username: string };
+        const { tradePlay } = req.body as { tradePlay: TradePlay; username: string };
 
         console.log("Processing candles data for asset:", tradePlay.asset, "on chain:", tradePlay.chain);
         const proccessedCandlesData = await processCandles(tradePlay.asset, tradePlay.chain);
@@ -226,21 +229,17 @@ Please provide a risk assessment with these scores (0-100):
         console.log("Parsed Response:", parsedResponse);
         console.log("Usage Report:\nPrompt Tokens:", usage.prompt_tokens, "\nCompletion Tokens:", usage.completion_tokens, "\nTotal Tokens:", usage.total_tokens);
 
-        tradePlay.analysis = parsedResponse;
-
-        const { error } = await createPlay(tradePlay);
+        const { error } = await createPlay({ ...tradePlay, analysis: parsedResponse });
 
         if (error) {
             res.status(500).json({ error: "Failed to create trade play" });
             return;
         }
-
+        console.log({
+            data: { ...tradePlay, analysis: parsedResponse }
+        })
         res.json({
-            data: {
-                id: tradePlay.id,
-                username,
-                response: parsedResponse,
-            }
+            data: { ...tradePlay, analysis: parsedResponse }
         });
     } catch (error) {
         console.error("Error processing trade play request:", error);

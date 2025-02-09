@@ -31,21 +31,37 @@ interface CreateRecipeProps {
 }
 
 const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
-    const { chef } = useEnvironmentStore((store) => store)
-    const [entryPrice, setEntryPrice] = useState<number>(187.45);
-    const [leverage, setLeverage] = useState<number>(10);
-    const [stopLoss, setStopLoss] = useState<number>(180.00);
-    const [researchDescription, setResearchDescription] = useState<string>('Taking a long position on AAVE at $187.45 because technical indicators show bullish momentum with MACD crossover and RSI at 62. Protocol metrics are strong with TVL up 12% to $4.2B and daily users at 15,240. Recent institutional inflows of $45M and neutral funding rates suggest room for upside. Main risk is regulatory uncertainty but current price level offers good risk/reward ratio for a long entry.');
+    const { chef, setRecipe } = useEnvironmentStore((store) => store)
+    const [entryPrice, setEntryPrice] = useState<number>(0.2524); // Entry price for DOGE
+    const [leverage, setLeverage] = useState<number>(8); // Adjusted leverage for DOGE
+    const [stopLoss, setStopLoss] = useState<number>(0.2400); // Stop loss below entry
+
+    const [takeProfits, setTakeProfits] = useState<TakeProfit[]>([
+        { price: '0.2700', percentage: '12' }, // Take profit above entry
+        { price: '0.2850', percentage: '18' }, // Another take profit level
+    ]);
+
+    const [dcaPoints, setDcaPoints] = useState<DCA[]>([
+        { price: '0.2480', percentage: '5' }, // DCA below entry
+        { price: '0.2435', percentage: '8' }, // Another DCA level
+    ]);
+
+    const [selectedAsset, setSelectedAsset] = useState<string>('DOGE'); // Asset name
+    const [selectedChain, setSelectedChain] = useState<string>('any'); // Blockchain network
+    const [direction, setDirection] = useState<'buy_long' | 'sell_short'>('buy_long'); // Position type
+    const [selectedDate, setSelectedDate] = useState<Date>(new Date()); // Trade date
+    const [selectedTime, setSelectedTime] = useState<string>('19:00'); // Trade time
+    const [expectedPnl, setExpectedPnl] = useState<string>('20'); // Expected profit & loss
+
+    const [researchDescription, setResearchDescription] = useState<string>(
+        'Taking a long position on DOGE at $0.2524 because technical indicators show bullish momentum with MACD crossover and RSI at 58. ' +
+        'On-chain metrics indicate growing network activity, with transaction volume up 18% to 2.3B DOGE and active addresses increasing by 9% to 350K. ' +
+        'Recent whale accumulation of 400M DOGE and improving liquidity suggest strong upside potential. The main risk is high volatility, ' +
+        'but current price level offers an attractive risk/reward ratio for a long entry.'
+    );
+
     const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string>('');
-    const [selectedTime, setSelectedTime] = useState<string>('12:00');
-    const [expectedPnl, setExpectedPnl] = useState<string>("15");
-    const [takeProfits, setTakeProfits] = useState<TakeProfit[]>([{ price: '200', percentage: '10' }]);
-    const [dcaPoints, setDcaPoints] = useState<DCA[]>([{ price: '185', percentage: '5' }]);
-    const [selectedAsset, setSelectedAsset] = useState<string>('AAVE');
-    const [selectedChain, setSelectedChain] = useState<string>('arb');
-    const [direction, setDirection] = useState<'buy_long' | 'sell_short'>('buy_long');
-    const [selectedDate, setSelectedDate] = useState<Date>(new Date());
     const [loading, setLoading] = useState(0);
     const [error, setError] = useState<string>('');
     // Sample asset data - replace with your actual data
@@ -143,6 +159,7 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
         console.log(formData)
 
         try {
+
             const response = await fetch('/api/supabase/create-play', {
                 method: 'POST',
                 body: formData
@@ -152,21 +169,15 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
             if (error) {
                 console.log(error)
                 setError(error)
+                setLoading(0);
                 return
             }
             console.log("Successfully created play")
             console.log(play)
-
-            await new Promise(resolve => setTimeout(resolve, 1000));
             setLoading(2)
-
-            const analysisResponse = await fetch('/api/analyze-play', {
-                method: 'POST',
-                body: formData
-            })
-            const { response: analysisData } = await response.json()
+            setRecipe
         } catch (e) {
-
+            setLoading(3)
         }
 
     }
@@ -530,8 +541,8 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
                             )}
                         </div>
 
-                        <Button type="submit" className="w-full mt-4" disabled={loading != 0}>
-                            {loading == 1 ? "Loading" : loading == 2 ? 'Successuly posted play' : "Create Trade Play"}
+                        <Button type="submit" className="w-full mt-4" disabled={loading != 0 && loading != 3}>
+                            {loading == 1 ? "Loading" : loading == 2 ? 'Successuly posted play' : loading == 3 ? 'Something went wrong' : "Create Trade Play"}
                         </Button>
                     </form>
                     <ScrollBar orientation='vertical' />

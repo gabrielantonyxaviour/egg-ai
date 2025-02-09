@@ -45,7 +45,7 @@ export async function POST(request: Request) {
             dca: dcaPoints,
             expected_pnl: expectedPnl
         })
-        const response = await fetch('https://monkfish-relevant-lively.ngrok-free.app/trade/play', {
+        const response = await fetch('https://notable-honestly-urchin.ngrok-free.app/trading/play', {
             headers: {
                 'Content-Type': 'application/json',
             },
@@ -72,10 +72,11 @@ export async function POST(request: Request) {
                 }
             })
         })
-        const { data: play, error } = await response.json()
-
-        if (!error) {
+        const responseData = await response.json()
+        const { data: play, error } = responseData;
+        if (error) {
             console.error('Error creating play')
+            console.log(error)
             return Response.json(
                 { error: 'Error creating play' },
                 { status: 500 }

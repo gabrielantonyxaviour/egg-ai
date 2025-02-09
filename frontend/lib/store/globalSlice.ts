@@ -1,5 +1,5 @@
 import { StateCreator } from "zustand";
-import { Chef, User } from "@/types";
+import { Chef, TradePlay, User } from "@/types";
 
 interface GlobalState {
   user: User | null;
@@ -13,6 +13,7 @@ interface GlobalState {
   totalEquity: string;
   pnl: string;
   user_follows: string[];
+  recipes: TradePlay[];
 }
 
 interface GlobalActions {
@@ -28,6 +29,8 @@ interface GlobalActions {
   setPnl: (pnl: string) => void;
   setUserFollows: (user_follows: string[]) => void;
   setUserFollow: (user_follow: string) => void;
+  setRecipes: (tradePlays: TradePlay[]) => void;
+  setRecipe: (tradePlay: TradePlay) => void;
 }
 
 export type GlobalSlice = GlobalState & GlobalActions;
@@ -43,6 +46,7 @@ export const initialGlobalState: GlobalState = {
   totalEquity: "0",
   chef: null,
   pnl: "0",
+  recipes: [],
   user_follows: []
 };
 
@@ -90,6 +94,25 @@ export const createGlobalSlice: StateCreator<
       } else {
         return {
           user_follows: [...state.user_follows, user_follow]
+        };
+      }
+    });
+  },
+  setRecipes: (recipes) => {
+    set({ recipes });
+  },
+  setRecipe: (recipe) => {
+    set((state) => {
+      const recipes = state.recipes;
+      const index = recipes.findIndex((r) => r.id === recipe.id);
+      if (index === -1) {
+        return {
+          recipes: [...recipes, recipe]
+        };
+      } else {
+        recipes[index] = recipe;
+        return {
+          recipes: [...recipes]
         };
       }
     });

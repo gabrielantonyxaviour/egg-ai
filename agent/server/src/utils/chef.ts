@@ -6,6 +6,7 @@ const supabase = createClient(
 );
 
 export async function getChef(chefId: string): Promise<string> {
+    console.log(process.env.SUPABASE_URL);
     console.log(`Fetching chef profile for chefId: ${chefId}`);
 
     const { data: chefProfile, error: profileError } = await supabase

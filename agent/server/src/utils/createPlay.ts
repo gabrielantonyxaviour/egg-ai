@@ -7,12 +7,12 @@ const supabaseAnonKey = process.env.SUPABASE_KEY!;
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 export async function createPlay({
-    chef_id, asset, direction, entry_price, stop_loss, leverage, trade_type, timeframe, status, pnl_percentage, research_description, dex, image, chain, take_profit, dca, expected_pnl
+    chef_id, asset, direction, entry_price, stop_loss, leverage, trade_type, timeframe, status, pnl_percentage, research_description, dex, image, chain, take_profit, dca, expected_pnl, analysis
 }: TradePlay) {
     console.log(`Chef with chef_id: ${chef_id} is posting a play`);
     const { data, error } = await supabase
         .from('trade_plays')
-        .insert({ chef_id, asset, direction, entry_price, stop_loss, leverage, trade_type, timeframe, status, pnl_percentage, research_description, dex, image, chain, take_profit, dca, expected_pnl })
+        .insert({ chef_id, asset, direction, entry_price, stop_loss, leverage, trade_type, timeframe, status, pnl_percentage, research_description, dex, image, chain, take_profit, dca, expected_pnl, analysis })
         .select()
         .single();
     if (error) {
