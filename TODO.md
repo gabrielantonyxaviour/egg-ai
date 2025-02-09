@@ -83,18 +83,16 @@ Looking to go long BTC at this level (95279) lots of confluence here so looking 
 
 Also setting limit orders for this ONDO long. Entries @ 1.263, 1.177, 4H close under 1.11 for stops, TPs in yellow
 
-Time Left - 9 hours
-Work - 16 hours
+Time Left - 7 hours
+Work - 10 hours
 1. Recrod Pitch Demo - 1 hour
 
 1. GMX calls testing - 3 hours
 	1. Create Position
 
-2. Deploy via autonome - 2 hours
-
 3. Frontend final integrations - 2 hours
 
-4. Telegram Integration - 4 hours
+4. Telegram - 4 hours (LATER)
 
 5. Lit protocol integrations - 4 hours
 

@@ -37,7 +37,7 @@ export default function Actions({ close, setOpenResearch }: { close: () => void;
                         </tr>
                     </thead>
                     <tbody>
-                        {actions.map((item, id) => (
+                        {actions && actions.map((item, id) => (
                             <tr
                                 key={id}
                                 className="border-b border-black/20 hover:bg-black/5"
@@ -72,7 +72,7 @@ export default function Actions({ close, setOpenResearch }: { close: () => void;
                     </tbody>
                 </table>
                 {
-                    actions.length === 0 && <div className="w-full flex justify-center pt-12">
+                    (!actions || actions.length === 0) && <div className="w-full flex justify-center pt-12">
                         <p className="text-md font-semibold text-gray-500">No actions found</p>
                     </div>
                 }

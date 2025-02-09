@@ -3,8 +3,8 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 import { ElizaService } from "../services/eliza.service.js";
 import { UUID } from "@ai16z/eliza";
-import { getTradePlay } from "src/utils/getTradePlay.js";
-import { fetchExecutedTrade } from "src/utils/getExecutedTrade.js";
+import { getTradePlay } from "../utils/getTradePlay.js";
+import { fetchExecutedTrade } from "../utils/getExecutedTrade.js";
 
 const isProd = JSON.parse(process.env.IS_PROD || "false");
 

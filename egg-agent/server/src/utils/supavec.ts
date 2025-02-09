@@ -1,4 +1,4 @@
-import { ProcessedMarketData, ProcessedSentiment, TradePlay } from "src/types.js";
+import { ProcessedMarketData, ProcessedSentiment, TradePlay } from "../types.js";
 
 
 
