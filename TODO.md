@@ -110,12 +110,13 @@ If time,
 
 1. Remove all Telegram interface, only API interfacing - DONE
 2. Setup Lit protocol - PENDING
-3. Supabase provider service
+3. Supabase provider service 
 	- Webhook to listen to new trade play creations - PENDING
 	- Webhook to listen to trade expiry (LATER)
 4. Noraml Convo via API to Eliza - DONE
 5. No twitter - DONE
 6. Add env - TELEGRAM_USERNAME - DONE
+7. Launch and Deploy via Autonome 
 
 ### Mother (1 hour)
 
