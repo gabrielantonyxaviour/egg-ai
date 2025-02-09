@@ -1,20 +1,15 @@
 import express, { NextFunction, Request, Response } from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-import helloRouter from "./routes/hello.js";
 import { resolve } from "path";
 import { fileURLToPath } from "url";
 import { dirname } from "path";
-import { NgrokService } from "./services/ngrok.service.js";
-import { TelegramService } from "./services/telegram.service.js";
 import { IService } from "./services/base.service.js";
-import twitterRouter from "./routes/twitter.js";
-import discordRouter from "./routes/discord.js";
+import chatRouter from "./routes/chat.js";
 import cookieParser from "cookie-parser";
-import githubRouter from "./routes/github.js";
-import tradingRouter from "./routes/trading.js";
 import { AnyType } from "./utils/index.js";
 import { isHttpError } from "http-errors";
+import { ElizaService } from "./services/eliza.service.js";
 
 // Convert ESM module URL to filesystem path
 const __filename = fileURLToPath(import.meta.url);
@@ -39,25 +34,9 @@ app.use(cors());
 app.use(express.json());
 app.use(cookieParser());
 
-// Mount hello world test route
-app.use("/hello", helloRouter);
+const elizaService = ElizaService.getInstance()
 
-// Initialize Telegram bot service
-const telegramService = TelegramService.getInstance();
-
-// Mount Telegram webhook endpoint
-app.use("/telegram/webhook", telegramService.getWebhookCallback());
-
-// Mount Twitter OAuth routes
-app.use("/auth/twitter", twitterRouter);
-
-// Mount Discord OAuth routes
-app.use("/auth/discord", discordRouter);
-
-// Mount GitHub OAuth routes
-app.use("/auth/github", githubRouter);
-
-app.use('/trading', tradingRouter)
+app.use('/chat', chatRouter)
 
 app.use((req, _res, next) => {
   console.log('Request URL:', req.originalUrl);
@@ -96,22 +75,10 @@ app.listen(port, async () => {
     console.log(`Server running on PORT: ${port}`);
     console.log("Server Environment:", process.env.NODE_ENV);
 
-    // Start local tunnel for development
+    await elizaService.start();
+    services.push(elizaService);
 
-    const ngrokService = NgrokService.getInstance();
-    await ngrokService.start();
-    services.push(ngrokService);
-
-    const ngrokUrl = ngrokService.getUrl()!;
-    console.log("NGROK URL:", ngrokUrl);
-
-    // Initialize Telegram bot and set webhook
-    await telegramService.start();
-    await telegramService.setWebhook(ngrokUrl);
-    services.push(telegramService);
-
-    const botInfo = await telegramService.getBotInfo();
-    console.log("Telegram Bot URL:", `https://t.me/${botInfo.username}`);
+    console.log("Eliza service and ready to interact at /chat with a verified Telegram Auth JWT Token");
   } catch (e) {
     console.error("Failed to start server:", e);
     process.exit(1);

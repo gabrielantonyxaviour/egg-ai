@@ -83,7 +83,7 @@ Looking to go long BTC at this level (95279) lots of confluence here so looking 
 
 Also setting limit orders for this ONDO long. Entries @ 1.263, 1.177, 4H close under 1.11 for stops, TPs in yellow
 
-Time Left - 16 hours
+Time Left - 12 hours
 Work - 16 hours
 1. Recrod Pitch Demo - 1 hour
 
@@ -102,3 +102,36 @@ If time,
 
 1. make responsive
 2. Close position intergation automation
+
+
+## AI agent todo
+
+### Chick (2 hour)
+
+1. Remove all Telegram interface, only API interfacing
+2. Setup Lit protocol - PENDING
+3. Supabase provider service
+	- Webhook to listen to new trade play creations - PENDING
+	- Webhook to listen to trade expiry (LATER)
+4. Noraml Convo via API to Eliza
+	- Context with Cookie, market data and technical analysis (Supavec)
+5. No twitter
+6. Add env - TELEGRAM_USERNAME, MOTHER_ENDPOINT
+
+### Mother (1 hour)
+
+1. Telegram bot interfacing
+2. API setup for Creating trade play and analysing it
+3. Eliza twitter? (LATER)
+
+## Docker clean up commands
+
+docker system prune -a  # This will remove all unused images, containers, networks and volumes
+docker builder prune    # This will clean up build cache
+
+rm -rf node_modules
+rm -rf */node_modules
+rm -rf .pnpm-store
+
+docker build -t eggai-chick .
+

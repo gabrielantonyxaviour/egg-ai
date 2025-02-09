@@ -1,3 +1,5 @@
+import { UUID } from "@ai16z/eliza";
+
 export interface IAccountInfo {
   pkpAddress: string;
   evm: {
@@ -117,11 +119,24 @@ export type DCA = {
   price: string;
   percentage: string;
 }
+export type Chef = {
+  id: string;
+  username: string;
+  name: string;
+  bio: string;
+  image: string;
+  sub_fee: number;
+  niche: string[];
+  total_subscribers: number;
+  avg_pnl_percentage: number;
+  avg_calls_per_day: number;
+}
 
 export type TradePlay = {
-  id: string;
-  created_at: string;
+  id?: string;
+  created_at?: string;
   chef_id: string;
+  chef?: Chef;
   dex: string;
   asset: string;
   chain: string;
@@ -140,8 +155,16 @@ export type TradePlay = {
   research_description: string;
   analysis?: Analysis;
 }
-
-
+export type ExecutedTrade = {
+  id: UUID;
+  trade_play_id: string;
+  trade_play: TradePlay;
+  created_at: string;
+  username: string;
+  amount: number;
+  pnl_usdt: number;
+  status: "ongoing" | "completed";
+}
 export type Analysis = {
   risktoreward: string;
   longtermscore: string;

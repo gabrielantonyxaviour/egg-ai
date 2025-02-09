@@ -1,5 +1,5 @@
-# Use Node.js 22
-FROM node:22-slim
+# Use Node.js 22.13.1 specifically
+FROM node:22.13.1-slim
 
 # Install build dependencies and SQLite
 RUN apt-get update && apt-get install -y \
@@ -7,33 +7,39 @@ RUN apt-get update && apt-get install -y \
     make \
     g++ \
     sqlite3 \
+    curl \
     && rm -rf /var/lib/apt/lists/*
 
 # Install PNPM globally
-RUN npm install -g pnpm
+RUN npm install -g pnpm@10.2.1
+
+# Setup PNPM store
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="${PNPM_HOME}:${PATH}"
+RUN pnpm config set store-dir "${PNPM_HOME}/store/v3"
 
 # Set working directory
 WORKDIR /app
 
-# Copy workspace files
+# Copy package files first
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
-
-# Copy all package.json files (maintaining directory structure)
 COPY client/package.json ./client/
 COPY server/package.json ./server/
 COPY lit-actions/package.json ./lit-actions/
 
-# Install dependencies
+# Clean install dependencies
 RUN pnpm install --frozen-lockfile
 
-# Rebuild better-sqlite3 for the current Node version
-RUN cd server && pnpm rebuild better-sqlite3
-
-# Copy the rest of the application
+# Copy rest of the application
 COPY . .
 
-# Build all packages
-RUN pnpm build
+# Clean up any existing node_modules and rebuild
+RUN find . -name 'node_modules' -type d -prune -exec rm -rf '{}' + && \
+    pnpm install --frozen-lockfile && \
+    cd server && \
+    NODE_ENV=development pnpm rebuild better-sqlite3 && \
+    cd /app && \
+    pnpm build
 
 # Expose the server port
 EXPOSE 3001
