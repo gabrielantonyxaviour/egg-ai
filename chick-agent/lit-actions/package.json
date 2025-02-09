@@ -5,7 +5,6 @@
   "type": "module",
   "scripts": {
     "preinstall": "npx only-allow pnpm",
-    "predev": "node bin/validate-env",
     "dev": "pnpm run build && pnpm start",
     "build": "node esbuild.js && tsc",
     "start": "node dist/index.js",

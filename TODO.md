@@ -126,6 +126,8 @@ If time,
 
 ## Docker clean up commands
 
+docker stop $(docker ps -a -q)
+docker rm $(docker ps -a -q)
 docker system prune -a  # This will remove all unused images, containers, networks and volumes
 docker builder prune    # This will clean up build cache
 

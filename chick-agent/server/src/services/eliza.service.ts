@@ -5,7 +5,6 @@ import {
   defaultCharacter,
   ModelProviderName,
   elizaLogger,
-  MemoryManager,
 } from "@ai16z/eliza";
 
 elizaLogger.closeByNewLine = false;
@@ -23,7 +22,6 @@ import { composeContext } from "@ai16z/eliza";
 import { getEmbeddingZeroVector } from "@ai16z/eliza";
 import {
   Content,
-  HandlerCallback,
   IAgentRuntime,
   Memory,
   ModelClass,
@@ -36,10 +34,9 @@ import { stringToUuid } from "@ai16z/eliza";
 
 import { generateMessageResponse, } from "@ai16z/eliza";
 import { messageCompletionFooter, } from "@ai16z/eliza";
-import { StorageService } from "../plugins/gated-storage-plugin/services/storage.service.js";
 import { SqliteDatabaseAdapter } from "@ai16z/adapter-sqlite";
 import Database from "better-sqlite3";
-import { ExecutedTrade, TradePlay } from "src/types.js";
+import { ExecutedTrade, TradePlay } from "../types.js";
 
 const messageHandlerTemplate =
   `About {{agentName}}:
@@ -73,21 +70,6 @@ export class MessageManager {
   constructor(runtime: IAgentRuntime) {
     this.runtime = runtime;
   }
-
-  private async sendMessage(
-    ctx: Context,
-    content: string,
-    replyToMessageId?: string
-  ): Promise<string> {
-    // const sentMessage = (await this.bot.api.sendMessage(ctx.chat!.id, chunk, {
-    //   reply_parameters:
-    //     i === 0 && replyToMessageId
-    //       ? { message_id: replyToMessageId }
-    //       : undefined,
-    // })) as Message.TextMessage;
-    return Math.random().toString(36).substring(2, 15) + Math.random().toString(36).substring(2, 15);
-  }
-
 
   // Generate a response using AI
   private async _generateResponse(
@@ -174,44 +156,43 @@ export class MessageManager {
         formattedTrade: ctx.trade ? "Executed Trade Details: \n" + JSON.stringify(ctx.trade, null, 2) : "",
       });
       state = await this.runtime.updateRecentMessageState(state);
-      const shouldRespond = true;
-      if (shouldRespond) {
-        const context = composeContext({
-          state,
-          template: messageHandlerTemplate,
-        });
-        console.log("Composed Message Context")
-        console.log(context)
-        elizaLogger.debug(
-          "[handleMessage] context",
-          JSON.stringify(context, null, 2)
-        );
-        const responseContent = await this._generateResponse(
-          memory,
-          state,
-          context
-        );
 
-        if (!responseContent || !responseContent.text) return;
+      const context = composeContext({
+        state,
+        template: messageHandlerTemplate,
+      });
+      console.log("Composed Message Context")
+      console.log(context)
+      elizaLogger.debug(
+        "[handleMessage] context",
+        JSON.stringify(context, null, 2)
+      );
+      const responseContent = await this._generateResponse(
+        memory,
+        state,
+        context
+      );
 
-        await this.runtime.messageManager.createMemory({
-          id: stringToUuid(
-            messageId
-          ),
-          agentId,
-          userId,
-          roomId,
-          content: {
-            ...content,
-            text: content.text,
-            inReplyTo: stringToUuid(message.id),
-          },
-          createdAt: createdAt * 1000,
-          embedding: getEmbeddingZeroVector(),
-        });
-        state = await this.runtime.updateRecentMessageState(state);
-        return { converstationId: roomId, response: responseContent.text };
-      }
+      if (!responseContent || !responseContent.text) return;
+
+      await this.runtime.messageManager.createMemory({
+        id: stringToUuid(
+          messageId
+        ),
+        agentId,
+        userId,
+        roomId,
+        content: {
+          ...content,
+          text: content.text,
+          inReplyTo: stringToUuid(message.id),
+        },
+        createdAt: createdAt * 1000,
+        embedding: getEmbeddingZeroVector(),
+      });
+      state = await this.runtime.updateRecentMessageState(state);
+      return { converstationId: roomId, response: responseContent.text };
+
     } catch (error) {
       console.error("❌ Error handling message:", error);
       console.error("Error sending message:", error);
@@ -295,12 +276,6 @@ export class ElizaService extends BaseService {
 
   public async start(): Promise<void> {
     try {
-      await StorageService.getInstance().start();
-    } catch (err) {
-      elizaLogger.warn("[eliza] gated storage service is unavailable");
-    }
-    try {
-      //register AI based command handlers here
       elizaLogger.info("Eliza service started successfully");
     } catch (error) {
       console.error("Failed to start Eliza service:", error);

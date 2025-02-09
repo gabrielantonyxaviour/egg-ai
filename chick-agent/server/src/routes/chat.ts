@@ -2,7 +2,7 @@ import { Router, Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 import { ExecutedTrade, TradePlay } from "../types.js";
-import { ElizaService } from "src/services/eliza.service.js";
+import { ElizaService } from "../services/eliza.service.js";
 import { UUID } from "@ai16z/eliza";
 
 const isProd = JSON.parse(process.env.IS_PROD || "false");

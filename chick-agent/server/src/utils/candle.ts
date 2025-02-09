@@ -1,6 +1,6 @@
 // Types for our analysis system
 
-import { ProcessedCandle, ProcessedMarketData, RawCandle } from "src/types.js";
+import { ProcessedCandle, ProcessedMarketData, RawCandle } from "../types.js";
 
 function calculateVolatility(priceChanges: number[]): number {
     const mean = priceChanges.reduce((sum, val) => sum + val, 0) / priceChanges.length;

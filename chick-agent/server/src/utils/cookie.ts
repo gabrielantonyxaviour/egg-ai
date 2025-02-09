@@ -1,6 +1,6 @@
 // Types for our analysis system
 
-import { ProcessedSentiment, SentimentPost } from "src/types.js";
+import { ProcessedSentiment, SentimentPost } from "../types.js";
 function calculateSentimentScore(posts: SentimentPost[]): number {
     return posts.reduce((score, post) =>
         score + (post.matchingScore * post.smartEngagementPoints) / 100, 0

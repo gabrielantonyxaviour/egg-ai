@@ -40,7 +40,7 @@ const updateEnvFile = async (tunnelUrl, envPath = ENV_PATH) => {
 };
 
 const main = async () => {
-  const port = process.env.TUNNEL_PORT || 3000;
+  const port = process.env.TUNNEL_PORT || 3001;
   console.log(`Waiting 5 seconds for Next.js app to start...`);
   await new Promise((resolve) => setTimeout(resolve, 5000));
   console.log(`Starting front-end tunnel on PORT ${port}...`);
