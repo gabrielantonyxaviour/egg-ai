@@ -119,6 +119,7 @@ export type DCA = {
   price: string;
   percentage: string;
 }
+
 export type Chef = {
   id: string;
   username: string;

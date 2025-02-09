@@ -4,6 +4,8 @@ import jwksClient from "jwks-rsa";
 import { ExecutedTrade, TradePlay } from "../types.js";
 import { ElizaService } from "../services/eliza.service.js";
 import { UUID } from "@ai16z/eliza";
+import { getTradePlay } from "src/utils/getTradePlay.js";
+import { fetchExecutedTrade } from "src/utils/getExecutedTrade.js";
 
 const isProd = JSON.parse(process.env.IS_PROD || "false");
 
@@ -105,7 +107,11 @@ export function verifyTradeUsername(
 router.post("/", verifyPrivyToken, verifyTradeUsername, async (req: Request, res: Response): Promise<void> => {
     try {
         console.log("Received trade play request:", req.body);
-        const { conversationId, tradePlay, executedTrade, message } = req.body as { conversationId?: UUID; tradePlay?: TradePlay; executedTrade?: ExecutedTrade; message: { text: string; replyToMessageId?: UUID } }
+        const { conversationId, tradePlayId, executedTradeId, message } = req.body as { conversationId?: UUID; tradePlayId?: UUID; executedTradeId?: UUID; message: { text: string; replyToMessageId?: UUID } }
+
+        const tradePlay = tradePlayId && await getTradePlay(tradePlayId);
+        const executedTrade = executedTradeId && await fetchExecutedTrade(executedTradeId);
+
         if (!conversationId && !tradePlay && !executedTrade) {
             res.status(500).json({ error: "No Valid Id provided for context for the conversation" });
             return;

@@ -37,7 +37,7 @@ export async function getFollows(id: string): Promise<string[]> {
     return data.map(({ chef_id }) => chef_id);
 
 }
-export async function getRecipes(id: string): Promise<string[]> {
+export async function getRecipes(id: string): Promise<TradePlay[]> {
     console.log(`Fetching recipes for chefs with id: ${id}`);
     const { data, error } = await supabase
         .from('trade_plays')
