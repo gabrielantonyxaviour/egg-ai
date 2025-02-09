@@ -45,8 +45,8 @@ Our AI analyzes each trade call by looking at:
 Egg AI is built to make copy trading smarter and safer using these key components:
 
 ### 🔧 Technical Setup
-- **Networks**: Built on Arbitrum and Avalanche. Trades on GMX (Decentralized Perpetual Exchange)
-- **Wallet Security**: Lit Protocol for wallet generation and secure trade execution
+- **Networks**: Built on Arbitrum. Trades on GMX (Decentralized Perpetual Exchange)
+- **Wallet**: Privy telegram auth for wallet generation and onboarding
 - **AI Agent Kit**: Collab.Land Agent Kit to build autonomous AI agents
 - **Deployment**: Autonome to deploy specific customized AI agents for each user
 - **AI Provider**: Gaia as our AI provider running Qwen 7B parameter model
@@ -54,7 +54,7 @@ Egg AI is built to make copy trading smarter and safer using these key component
 - **Market Sentiment**: Cookie.Fun for X sentiment on the trade, TokenHunterZoro for TikTok mentions
 
 ## ⚙️ Trade Analysis Flow
-This is where the magic happens. When a chef posts a trade:
+this is where the magic happens. When a chef posts a trade:
 
 ### 1️⃣ **Analysis**
 - AI grabs the complete trade details (historic price, liquidity, trade volume, 7-day candlestick, etc.)
@@ -75,7 +75,7 @@ This is where the magic happens. When a chef posts a trade:
 
 ### 2️⃣ **Execution**
 - Adjusts position size based on user confidence in chefs
-- Signs the transaction to place the trade using Lit
+- Signs the transaction to place the trade using privy
 - Manages entry and exit automatically
 
 ## 🔥 Smart Bits We're Proud Of
@@ -101,6 +101,24 @@ Using Autonome, each user gets their own AI agent that:
 - Adjusts strategy based on their portfolio size
 
 The coolest part? Whether you're in **Tren Mode** letting the AI handle everything, or **Chad Mode** picking your own chefs and confidence levels, the system constantly checks and balances both the chef's calls and market conditions to keep your trades safe.
+
+## 💰 Bounty Integrations
+
+### Autonome
+
+egg ai uses autonome to deploy chicks (custom specialized ai agents) for the users to manage the users assets, portfolio growth and risk management. the user interacts with the custom ai agents to discuss any posted trade plays or trade positions validated and executed by the ai. users interact with the ai agent through an interace in the ui. (soon telegram bot integration)  
+
+### Arbitrum
+
+the entire application runs on arbitrum. the ai agents send transactions on arbitrum sepolia to the gmx decentralized perpetual exchange to place the trade positions after the process of validation by the egg (mother) ai agent. chicks (child ai agent) perform the transaction on successful validation based on tren or chad mode preference made by the user.
+
+### Gaia and Collab.land
+
+the entire ai framework for the application is built on gaia and collab.land agent kit. egg-agent is built with collab.land agent kit to perform the ai analysis when the chefs (trade analysts) post a trade play on the app. chick-agent is a hosted template uploaded on autonome which will be deployed for each user on signing up a new profile in the app. users interact with their respective chick agents to better understand trade plays and trade positions that are validated and executed by the ai. the client interface for both the agents are via the ui.
+
+### Privy
+
+users sign up and create a new wallet via privy telegram auth smart wallet. the wallet is controlled by the respective chicks (user owned ai agents) to perform trades on ai validation and other factors depending on the CHAD/TREN mode selected by the user.
 
 ## 🔗 Important Links
 
