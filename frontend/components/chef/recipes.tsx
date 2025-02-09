@@ -7,54 +7,7 @@ import { ScrollArea } from "../ui/scroll-area";
 import { useEffect, useState } from "react";
 import { useEnvironmentStore } from "../context";
 import { TradePlay } from "@/types";
-// Countdown Timer Component
-const CountdownTimer = ({ createdAt, timeframe }: {
-    createdAt: string;
-    timeframe: number;
-}) => {
-    const [timeLeft, setTimeLeft] = useState("");
-
-    useEffect(() => {
-        const calculateTimeLeft = () => {
-            const created = new Date(createdAt).getTime();
-            const expiryTime = created + (timeframe * 1000); // Convert seconds to milliseconds
-            const now = new Date().getTime();
-            const difference = expiryTime - now;
-
-            if (difference <= 0) {
-                return "Expired";
-            }
-
-            // Calculate time units
-            const days = Math.floor(difference / (1000 * 60 * 60 * 24));
-            const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-            const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
-            const seconds = Math.floor((difference % (1000 * 60)) / 1000);
-
-            // Format the string
-            const parts = [];
-            if (days > 0) parts.push(`${days}d`);
-            if (hours > 0) parts.push(`${hours}h`);
-            if (minutes > 0) parts.push(`${minutes}m`);
-            parts.push(`${seconds}s`);
-
-            return parts.join(" ");
-        };
-
-        // Initial calculation
-        setTimeLeft(calculateTimeLeft());
-
-        // Update every second
-        const timer = setInterval(() => {
-            setTimeLeft(calculateTimeLeft());
-        }, 1000);
-
-        // Cleanup
-        return () => clearInterval(timer);
-    }, [createdAt, timeframe]);
-
-    return <span>{timeLeft}</span>;
-};
+import { CountdownTimer } from "../countdown-timer";
 
 export default function Recipes({ setOpenDetailedRecipe, close }: { setOpenDetailedRecipe: (id: string) => void; close: () => void }) {
     const { chef, recipes, setRecipes } = useEnvironmentStore(store => store)
@@ -113,9 +66,7 @@ export default function Recipes({ setOpenDetailedRecipe, close }: { setOpenDetai
                         </tr>
                     </thead>
 
-                    {loading ? <div className="w-full h-full flex items-center justify-center">
-                        <CircleDashedIcon className="animate-spin" />
-                    </div> : <tbody>
+                    <tbody>
                         {recipes.map((item, id) => (
                             <tr
                                 key={id}
@@ -141,9 +92,16 @@ export default function Recipes({ setOpenDetailedRecipe, close }: { setOpenDetai
                                 </td>
                             </tr>
                         ))}
-                    </tbody>}
+                    </tbody>
 
                 </table>
+                {loading ? <div className="w-full h-full flex items-center justify-center">
+                    <CircleDashedIcon className="animate-spin" />
+                </div> :
+                    recipes.length == 0 && <div className="w-full flex justify-center pt-12">
+                        <p className="text-md font-semibold text-gray-500">No recipes found</p>
+                    </div>
+                }
             </ScrollArea>
         </div>
     </div>

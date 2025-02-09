@@ -35,6 +35,7 @@ export type TradePlay = {
     id?: string;
     created_at?: string;
     chef_id: string;
+    chef?: Chef;
     dex: string;
     asset: string;
     chain: string;
@@ -53,7 +54,6 @@ export type TradePlay = {
     research_description: string;
     analysis?: Analysis;
 }
-
 
 export type Analysis = {
     risktoreward: string;
@@ -77,9 +77,9 @@ export type DCA = {
 export type ExecutedTrade = {
     id: string;
     trade_play_id: string;
+    trade_play: TradePlay;
     created_at: string;
     username: string;
-    price: number;
     amount: number;
     pnl_usdt: number;
     status: "ongoing" | "completed";

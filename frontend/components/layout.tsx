@@ -15,7 +15,7 @@ export default function Layout({
   children: React.ReactNode;
 }>) {
   // const { data: session, status } = useSession();
-  const { user, setUser, setUserFollows } = useEnvironmentStore((store) => store);
+  const { user, setUser, setUserFollows, setActions } = useEnvironmentStore((store) => store);
   const { address, isConnected, } = useAccount();
   const { data: balance } = useBalance({
     address: address,
@@ -27,8 +27,6 @@ export default function Layout({
     if (JSON.parse(process.env.NEXT_PUBLIC_IS_VERCEL || "false")) {
       window.location.href = "https://egg-ai-client.ngrok.app";
     }
-  }, [])
-  useEffect(() => {
     console.log('Privy User:', privyUser);
 
     if (ready && authenticated && privyUser && privyUser.telegram) {
@@ -73,6 +71,11 @@ export default function Layout({
             }
             console.log('Fetched user follows:', follows);
             setUserFollows(follows);
+
+            const { trades } = await fetch(`/api/supabase/get-executed-trades?username=${username}`).then(res => res.json());
+
+            console.log('Fetched user trades:', trades);
+            setActions(trades);
           } else {
             console.log('Creating new user for:', username);
             const keypairs = await generateKeypairs();

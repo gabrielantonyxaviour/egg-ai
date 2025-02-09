@@ -1,5 +1,5 @@
 import { StateCreator } from "zustand";
-import { Chef, TradePlay, User } from "@/types";
+import { Chef, ExecutedTrade, TradePlay, User } from "@/types";
 
 interface GlobalState {
   user: User | null;
@@ -14,6 +14,7 @@ interface GlobalState {
   pnl: string;
   user_follows: string[];
   recipes: TradePlay[];
+  actions: ExecutedTrade[];
 }
 
 interface GlobalActions {
@@ -31,6 +32,7 @@ interface GlobalActions {
   setUserFollow: (user_follow: string) => void;
   setRecipes: (tradePlays: TradePlay[]) => void;
   setRecipe: (tradePlay: TradePlay) => void;
+  setActions: (actions: ExecutedTrade[]) => void;
 }
 
 export type GlobalSlice = GlobalState & GlobalActions;
@@ -47,7 +49,8 @@ export const initialGlobalState: GlobalState = {
   chef: null,
   pnl: "0",
   recipes: [],
-  user_follows: []
+  user_follows: [],
+  actions: []
 };
 
 export const createGlobalSlice: StateCreator<
@@ -122,6 +125,8 @@ export const createGlobalSlice: StateCreator<
   },
   setAvaxPrice: (avaxPrice) => {
     set({ avaxPrice });
+  },
+  setActions: (actions) => {
+    set({ actions });
   }
-
 });

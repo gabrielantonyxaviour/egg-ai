@@ -1,4 +1,4 @@
-import { Chef, TradePlay, User } from "@/types";
+import { Chef, ExecutedTrade, TradePlay, User } from "@/types";
 import { createClient } from "@supabase/supabase-js";
 
 const supabaseUrl = process.env.SUPABASE_URL!;
@@ -253,4 +253,28 @@ export async function createPlay({
     }
     console.log(`Play created successfully: ${JSON.stringify(data)}`);
     return data;
+}
+
+export async function fetchExecutedTrades(
+    username: string
+): Promise<ExecutedTrade[]> {
+    const { data, error } = await supabase
+        .from('executed_trades')
+        .select(`
+      *,
+      trade_play:trade_plays(
+        *,
+        chef:chefs(
+          username
+        )
+      )
+      `)
+        .eq('username', username)
+        .order('created_at', { ascending: false })
+
+    if (error) {
+        throw new Error(`Error fetching executed trades: ${error.message}`)
+    }
+
+    return data as ExecutedTrade[]
 }

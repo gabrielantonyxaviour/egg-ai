@@ -83,26 +83,22 @@ Looking to go long BTC at this level (95279) lots of confluence here so looking 
 
 Also setting limit orders for this ONDO long. Entries @ 1.263, 1.177, 4H close under 1.11 for stops, TPs in yellow
 
-Time Left - 14 hours
+Time Left - 16 hours
+Work - 16 hours
+1. Recrod Pitch Demo - 1 hour
 
-Transactions testing - 3 hours
-
-1. GMX calls testing
+1. GMX calls testing - 3 hours
 	1. Create Position
-	2. Take profits
-	3. Withdraw position
 
-Preparing AI data - DONE
+2. Deploy via autonome - 2 hours
 
-1. Trading PDF resources and creating embeddings
-2. Testing Cookie.fun sentiment, (Twitter Search by Eliza, Tiktok by TokenHunterZorom)
-3. Test Fetching current market data from GMX APIs
-4. Structure everything into a prompt
+3. Frontend final integrations - 2 hours
 
-AI Testing - 2 hours
+4. Telegram Integration - 4 hours
 
-1. Test the pipeline, get inferences.
+5. Lit protocol integrations - 4 hours
 
-Frontend final integrations - 2 hours
+If time, 
 
-Telegram Integration - 4 hours
+1. make responsive
+2. Close position intergation automation
