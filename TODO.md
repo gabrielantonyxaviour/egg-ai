@@ -108,14 +108,8 @@ docker build -t eggai-chick .
 ## FINAL SPRINT
 
 
-1. Integrate API call to egg ai agent on creating a trade play
-2. Test the working of the supabase listeners execution on trade play creation
 3. Display the deployed ai agent url on ayutonome in ui
-4. remove avax references
 5. chat bot ui for the users integrated with chick ai agent.
-6. one last attempt for autonome
-7. replace the link for autonome
-8. remove pitch lit protocol specifications.
 9. Recpord demo
 10. Submit demo
 11. Make responsive

@@ -258,23 +258,33 @@ export async function createPlay({
 export async function fetchExecutedTrades(
     username: string
 ): Promise<ExecutedTrade[]> {
-    const { data, error } = await supabase
+    const { data: executedTrades, error: tradesError } = await supabase
         .from('executed_trades')
-        .select(`
-      *,
-      trade_play:trade_plays(
-        *,
-        chef:chefs(
-          username
-        )
-      )
-      `)
+        .select('*')
         .eq('username', username)
         .order('created_at', { ascending: false })
 
-    if (error) {
-        throw new Error(`Error fetching executed trades: ${error.message}`)
-    }
+    if (tradesError) throw tradesError
 
-    return data as ExecutedTrade[]
+    // Then get the trade plays with chefs for those trades
+    const { data: tradePlays, error: playsError } = await supabase
+        .from('trade_plays')
+        .select(`
+        *,
+        chef:chefs(
+            username
+        )
+    `)
+        .in('id', executedTrades.map(trade => trade.trade_play_id))
+
+    if (playsError) throw playsError
+
+    // Combine the data
+    const combinedData = executedTrades.map(trade => ({
+        ...trade,
+        trade_play: tradePlays.find(play => play.id === trade.trade_play_id)
+    }))
+
+    console.log(combinedData)
+    return combinedData as ExecutedTrade[]
 }

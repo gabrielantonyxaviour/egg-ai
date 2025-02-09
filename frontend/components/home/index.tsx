@@ -9,13 +9,14 @@ import Actions from "./actions";
 import Mode from "./mode";
 import Chef from "../chef/profile";
 import { useRouter } from "next/navigation";
+import Chat from "./chat";
 
 export default function Home() {
     const nav = [
         {
             id: 1,
             name: "Profile",
-            image: "/home/profile.png",
+            image: "/home/money.png",
         },
         {
             id: 2,
@@ -34,14 +35,20 @@ export default function Home() {
         },
         {
             id: 5,
+            name: "Chat",
+            image: "/home/chick.png",
+        },
+        {
+            id: 6,
             name: "Chef",
             image: "/home/chef.png",
         }
     ];
     const { user, setEthPrice, setSolPrice, setEthBalance, setAvaxBalance, setAvaxPrice, setSolBalance, setTotalEquity } = useEnvironmentStore(store => store)
-    const [showWindows, setShowWindows] = useState([false, false, false, false, false]);
+    const [showWindows, setShowWindows] = useState([false, false, false, false, false, false]);
     const router = useRouter();
     const [searchUsername, setSearchUsername] = useState('')
+    const [selectedTradeId, setSelectedTradeId] = useState('')
 
     useEffect(() => {
         if (user == undefined) { router.push('/'); return; }
@@ -117,8 +124,8 @@ export default function Home() {
                                 prev.map((val, index) => (index === 1 ? !val : val))
                             );
                         }}
-                        setOpenResearch={() => {
-
+                        setSelectedTradeId={(tradeId) => {
+                            setSelectedTradeId(tradeId)
                         }}
                     />
                 )}
@@ -140,6 +147,17 @@ export default function Home() {
                                 prev.map((val, index) => (index === 3 ? !val : val))
                             );
                         }}
+                    />
+                )}
+
+                {selectedTradeId && (
+                    <Chat
+                        close={() => {
+                            setShowWindows((prev) =>
+                                prev.map((val, index) => (index === 4 ? !val : val))
+                            );
+                        }}
+                        selectedTradeId={selectedTradeId}
                     />
                 )}
                 {searchUsername && (

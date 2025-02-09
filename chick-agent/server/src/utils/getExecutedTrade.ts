@@ -6,27 +6,31 @@ const supabaseAnonKey = process.env.SUPABASE_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-
 export async function fetchExecutedTrade(
-    id: string
+  id: string
 ): Promise<ExecutedTrade | undefined> {
-    const { data, error } = await supabase
-        .from('executed_trades')
-        .select(`
-      *,
-      trade_play:trade_plays(
-        *,
-        chef:chefs(
-          username
-        )
-      )
-      `)
-        .eq('id', id).single()
+  console.log(id)
+  const { data: trade, error } = await supabase
+    .from('executed_trades')
+    .select('*')
+    .eq('id', id).single()
 
-    if (error) {
-        throw new Error(`Error fetching executed trades: ${error.message}`)
-        return undefined
-    }
+  if (error) {
+    throw new Error(`Error fetching executed trade: ${error.message}`)
+  }
+  const { data: trade_play, error: playsError } = await supabase
+    .from('trade_plays')
+    .select(`
+    *,
+    chef:chefs(
+      username
+    )
+`)
+    .in('id', [trade.trade_play_id]).single()
 
-    return data as ExecutedTrade
+  if (playsError) {
+    throw new Error(`Error fetching trade plays: ${playsError.message}`)
+  }
+
+  return { ...trade, trade_play } as ExecutedTrade
 }

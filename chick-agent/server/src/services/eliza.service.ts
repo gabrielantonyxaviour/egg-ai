@@ -142,15 +142,16 @@ export class MessageManager {
             : undefined,
       };
       const createdAt = new Date().getTime()
-      const memory = await this.runtime.messageManager.addEmbeddingToMemory({
+      const memory = {
         id: messageId,
         agentId,
         userId,
         roomId,
         content,
         createdAt: createdAt * 1000,
-      });
+      };
       await this.runtime.messageManager.createMemory(memory, true);
+
       let state = await this.runtime.composeState(memory, {
         formattedPlay: ctx.play ? "Speculated Trade Play Details: \n" + JSON.stringify(ctx.play, null, 2) : "",
         formattedTrade: ctx.trade ? "Executed Trade Details: \n" + JSON.stringify(ctx.trade, null, 2) : "",
@@ -161,8 +162,6 @@ export class MessageManager {
         state,
         template: messageHandlerTemplate,
       });
-      console.log("Composed Message Context")
-      console.log(context)
       elizaLogger.debug(
         "[handleMessage] context",
         JSON.stringify(context, null, 2)
@@ -188,7 +187,6 @@ export class MessageManager {
           inReplyTo: stringToUuid(message.id),
         },
         createdAt: createdAt * 1000,
-        embedding: getEmbeddingZeroVector(),
       });
       state = await this.runtime.updateRecentMessageState(state);
       return { converstationId: roomId, response: responseContent.text };

@@ -9,7 +9,7 @@ import { useEffect } from "react";
 import { useEnvironmentStore } from "../context";
 import { CountdownTimer } from "../countdown-timer";
 
-export default function Actions({ close, setOpenResearch }: { close: () => void; setOpenResearch: () => void }) {
+export default function Actions({ close, setSelectedTradeId }: { close: () => void; setSelectedTradeId: (tradeId: string) => void }) {
     const { actions } = useEnvironmentStore(store => store)
 
 
@@ -65,7 +65,10 @@ export default function Actions({ close, setOpenResearch }: { close: () => void;
                                 <td className="py-4 text-center">{item.status}</td>
                                 <td className="py-4 text-center">{item.pnl_usdt ? item.pnl_usdt : "N/A"}</td>
                                 <td className="py-4 text-center font-bold ">
-                                    <ArrowUpRightFromSquare className="cursor-pointer hover:text-gray-700 mx-auto" width={16} onClick={setOpenResearch} />
+                                    <ArrowUpRightFromSquare className="cursor-pointer hover:text-gray-700 mx-auto" width={16} onClick={() => {
+                                        if (item.trade_play.id)
+                                            setSelectedTradeId(item.trade_play.id)
+                                    }} />
                                 </td>
                             </tr>
                         ))}
