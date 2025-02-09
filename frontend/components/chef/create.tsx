@@ -175,7 +175,7 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
             console.log("Successfully created play")
             console.log(play)
             setLoading(2)
-            setRecipe
+            setRecipe(play)
         } catch (e) {
             setLoading(3)
         }
@@ -542,7 +542,7 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
                         </div>
 
                         <Button type="submit" className="w-full mt-4" disabled={loading != 0 && loading != 3}>
-                            {loading == 1 ? "Loading" : loading == 2 ? 'Successuly posted play' : loading == 3 ? 'Something went wrong' : "Create Trade Play"}
+                            {loading == 1 ? "Loading" : loading == 2 ? 'Successfully posted play ✅' : loading == 3 ? 'Something went wrong' : "Create Trade Play"}
                         </Button>
                     </form>
                     <ScrollBar orientation='vertical' />
