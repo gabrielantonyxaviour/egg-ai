@@ -108,15 +108,14 @@ If time,
 
 ### Chick (2 hour)
 
-1. Remove all Telegram interface, only API interfacing
+1. Remove all Telegram interface, only API interfacing - DONE
 2. Setup Lit protocol - PENDING
 3. Supabase provider service
 	- Webhook to listen to new trade play creations - PENDING
 	- Webhook to listen to trade expiry (LATER)
-4. Noraml Convo via API to Eliza
-	- Context with Cookie, market data and technical analysis (Supavec)
-5. No twitter
-6. Add env - TELEGRAM_USERNAME, MOTHER_ENDPOINT
+4. Noraml Convo via API to Eliza - DONE
+5. No twitter - DONE
+6. Add env - TELEGRAM_USERNAME - DONE
 
 ### Mother (1 hour)
 

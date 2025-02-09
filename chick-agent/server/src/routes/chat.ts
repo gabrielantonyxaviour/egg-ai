@@ -78,20 +78,11 @@ export function verifyTradeUsername(
             return;
         }
 
-        const { username, tradePlay } = req.body as { tradePlay: TradePlay; username: string };
-        // Basic validation of required fields
-        if (!username || !tradePlay.chef_id || !tradePlay.asset) {
-            res.status(400).json({ error: "Missing required fields" });
-            return;
-        }
-
-        // Ensure user is authenticated
         if (!req.user) {
             res.status(401).json({ error: "User not authenticated" });
             return;
         }
 
-        // Get the authenticated username from Privy JWT
         const authenticatedUsername = req.user.telegram?.username;
 
         if (!authenticatedUsername) {
@@ -99,8 +90,7 @@ export function verifyTradeUsername(
             return;
         }
 
-        // Verify username matches
-        if (username !== authenticatedUsername) {
+        if (process.env.TELEGRAM_USERNAME !== authenticatedUsername) {
             res.status(403).json({
                 error: "Username mismatch",
                 message: "The provided username does not match the authenticated user"
