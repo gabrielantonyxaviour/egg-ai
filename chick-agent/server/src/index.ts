@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import { AnyType } from "./utils/index.js";
 import { isHttpError } from "http-errors";
 import { ElizaService } from "./services/eliza.service.js";
+import { NgrokService } from "./services/ngrok.service.js";
 import { SupabaseService } from "./services/supabase.service.js";
 
 // Convert ESM module URL to filesystem path
@@ -79,8 +80,18 @@ app.listen(port, async () => {
 
     await elizaService.start();
     await supabaseService.start()
+
     services.push(elizaService);
-    services.push(supabaseService)
+    services.push(supabaseService);
+
+    if (process.env.NGROK_AUTH_TOKEN) {
+      const ngrokService = NgrokService.getInstance();
+      await ngrokService.start();
+      const ngrokUrl = ngrokService.getUrl()!;
+      console.log("NGROK URL:", ngrokUrl);
+      services.push(ngrokService);
+    }
+
 
     console.log("Eliza service and ready to interact at /chat with a verified Telegram Auth JWT Token");
     console.log("Supabase service listening for any new trade data");

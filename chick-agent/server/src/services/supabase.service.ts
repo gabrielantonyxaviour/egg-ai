@@ -1,8 +1,8 @@
 import { BaseService } from "./base.service.js";
 import { createClient, RealtimeChannel, SupabaseClient } from '@supabase/supabase-js'
 import { ethers } from "ethers"
-import { ARB_SEPOLIA_EXCHANGE_ROUTER, EXCHANGE_ROUTER_ABI, INITIAL_COLLATERAL_TOKEN, MARKET_TOKEN, ORDER_VAULT } from "src/constants.js";
-import { TradePlay } from "src/types.js";
+import { ARB_SEPOLIA_EXCHANGE_ROUTER, EXCHANGE_ROUTER_ABI, INITIAL_COLLATERAL_TOKEN, MARKET_TOKEN, ORDER_VAULT } from "../constants.js";
+import { TradePlay } from "../types.js";
 
 export class SupabaseService extends BaseService {
     private static instance: SupabaseService;
