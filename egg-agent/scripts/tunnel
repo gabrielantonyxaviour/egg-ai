@@ -52,7 +52,7 @@
 //       throw new Error("PORT is required");
 //     }
 
-//     await new Promise(resolve => setTimeout(resolve, 3001));
+//     await new Promise(resolve => setTimeout(resolve, 3003));
 
 //     session = await new ngrok.SessionBuilder()
 //       .authtoken(process.env.NGROK_AUTH_TOKEN)
@@ -72,7 +72,7 @@
 
 //     const client = await session
 //       .httpEndpoint()
-//       .listenAndForward("http://localhost:3001");
+//       .listenAndForward("http://localhost:3003");
 
 //     listeners.push(client);
 //     console.log("[NGROK] Frontend tunnel:", client.url());
@@ -171,7 +171,7 @@ const main = async () => {
       throw new Error("PORT is required");
     }
 
-    await new Promise(resolve => setTimeout(resolve, 3001));
+    await new Promise(resolve => setTimeout(resolve, 3003));
 
     // Create backend tunnel
     const backendTunnel = await createTunnel(parseInt(process.env.PORT), {
@@ -182,7 +182,7 @@ const main = async () => {
     console.log("[Localtunnel] Backend tunnel:", backendTunnel.url);
 
     // Create frontend tunnel
-    const frontendTunnel = await createTunnel(3001, {
+    const frontendTunnel = await createTunnel(3003, {
       // Optional: you can specify a subdomain for consistent URLs
       // subdomain: 'your-frontend-subdomain'
     });

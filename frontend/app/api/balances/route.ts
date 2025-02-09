@@ -6,12 +6,15 @@ export async function GET(request: Request) {
 
     console.log('Received request with parameters:', { eth, prod })
 
-    const ethRpc = !prod ? `https://arb-sepolia.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}` : `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}`
+    const ethRpc = !prod ? `https://endpoints.omniatech.io/v1/arbitrum/sepolia/public` : `https://arb-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}`
     // const solRpc = !prod ? `https://solana-devnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}` : `https://solana-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}`
     const avaxRpc = !prod ? `https://avax-fuji.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}` : `https://avax-mainnet.g.alchemy.com/v2/${process.env.ALCHEMY_API_KEY || ""}`
     let ethBalance = "0";
     // let solBalance = "0";
     let avaxBalance = "0";
+
+    console.log("ETH RPC")
+    console.log(ethRpc)
     try {
         console.log('Fetching ETH balance from:', ethRpc)
         const ethResponse = await fetch(ethRpc, {
@@ -33,6 +36,8 @@ export async function GET(request: Request) {
             console.error('Failed to fetch ETH Balance')
             return Response.json({
                 error: "Failed to fetch ETH Balance",
+                ethBalance: "0",
+                avaxBalance: "0"
             }, {
                 status: 500
             })
@@ -58,6 +63,8 @@ export async function GET(request: Request) {
             console.error('Failed to fetch AVAX Balance')
             return Response.json({
                 error: "Failed to AVAX ETH Balance",
+                ethBalance: "0",
+                avaxBalance: "0"
             }, {
                 status: 500
             })

@@ -38,17 +38,19 @@ export class SupabaseService extends BaseService {
                         // Handle the new trade data
                         const { id, chef_id, analysis, asset, dex, chain, direction, research_description, entry_price, trade_type, expected_pnl } = payload.new as TradePlay
                         if (!analysis) return
-                        console.log("RECEIVED NEW TRADE")
+                        console.log("\nRECEIVED NEW TRADE!!!\n\n")
                         console.log("TRADE PLAY DETAILS")
                         console.log("Chef ID: ", chef_id)
                         console.log("Asset: ", asset)
                         console.log("DEX: ", dex)
                         console.log("Chain: ", chain == 'both' ? 'ARB or AVAX' : chain)
                         console.log("Trade Direction: ", direction)
-                        console.log("Analysis: ", research_description)
                         console.log("Entry Price: ", entry_price)
                         console.log("Trade Type: ", trade_type)
                         console.log("Expected PNL: ", expected_pnl)
+                        console.log("Research Description: ", research_description)
+                        console.log("\nAnalysis: \n", JSON.stringify(analysis, null, 2))
+                        console.log('\n\n')
                         // Get profile from username.
                         if (!this.supabase) return;
                         const username = process.env.TELEGRAM_USERNAME || ""
@@ -63,7 +65,7 @@ export class SupabaseService extends BaseService {
                             console.error(`Error fetching user: ${error.message}`);
                             return null;
                         }
-                        console.log(`User fetched successfully: ${JSON.stringify(user)}`);
+                        console.log(`\nUser fetched successfully:\n ${JSON.stringify(user, null, 2)}`);
 
                         const { data: isFollowing, error: isFollowingError } = await this.supabase
                             .from('follows')
@@ -76,11 +78,11 @@ export class SupabaseService extends BaseService {
                             console.error('Error checking follow status:', error);
                         }
 
-                        if (user.mode == 'TREN') console.log("💊User is in TREN mode💊\nTrades are auto validated and assessed by AI ")
-                        if (user.mode == 'CHAD') console.log("💪🏻User is in CHAD mode💪🏻\nTrades are performed only if the user follows the chef with additional ai validation")
+                        if (user.mode == 'TREN') console.log("\n💊User is in TREN mode💊\nTrades are auto validated and assessed by AI \n")
+                        if (user.mode == 'CHAD') console.log("\n💪🏻User is in CHAD mode💪🏻\nTrades are performed only if the user follows the chef with additional ai validation\n")
 
                         if (!isFollowing && user.mode == 'CHAD') {
-                            console.log("User is in CHAD mode but not following the chef. Trade will not be executed")
+                            console.log("\nUser is in CHAD mode but not following the chef. Trade will not be executed\n")
                             return
                         }
 
@@ -101,7 +103,6 @@ export class SupabaseService extends BaseService {
                         });
 
                         const ethData: any = await ethResponse.json();
-                        console.log('ETH response data:', ethData)
                         if (ethData.result) ethBalance = (parseInt(ethData.result, 16) / 1e18).toString();
                         else {
                             console.error('Failed to fetch ETH Balance')
@@ -111,9 +112,10 @@ export class SupabaseService extends BaseService {
                                 status: 500
                             })
                         }
-
+                        console.log("\nBalanace of the user wallet on Arbitrum Sepolia\n")
+                        console.log(parseFloat(ethBalance).toFixed(4) + " ETH\n\n")
                         if (parseFloat(ethBalance) < 0.007) {
-                            console.log("Insufficient funds to perform the trade")
+                            console.log("\nInsufficient funds to perform the trade")
                             return
                         }
                         // Verify if good score and can proceed with the trade.
@@ -131,21 +133,21 @@ export class SupabaseService extends BaseService {
                             (parseInt(chefreputation) > 60) &&
                             (parseInt(equitypercent) > 5);
 
-                        console.log("Explanation:\n" + explanation)
+                        console.log("\nExplanation:\n" + explanation)
                         if (!shouldTrade) {
-                            console.log("Trade analysis score is unfavourable. But performing to demo the flow...");
+                            console.log("\n\nTrade analysis score is unfavourable. But performing to demo the flow...\n\n");
                         } else {
-                            console.log("Trade anlaysis score is good, proceeding with the trade");
+                            console.log("\n\Trade anlaysis score is good, proceeding with the trade\n\n");
                         }
 
                         // Get amount, constants and trade data preoared
-                        let amount = parseInt(equitypercent) * parseFloat(ethBalance)
+                        let amount = (parseFloat(equitypercent) * parseFloat(ethBalance)) / 100
                         const provider = new ethers.JsonRpcProvider(rpcUrl)
                         const wallet = new ethers.Wallet(user.evm_p_key || "", provider);
                         const exchangeRouter = new ethers.Contract(ARB_SEPOLIA_EXCHANGE_ROUTER, EXCHANGE_ROUTER_ABI, wallet);
 
                         if (amount < 0.005) {
-                            console.log("Minimum Amount required to place a trade is 0.005 ETH")
+                            console.log("\n\nMinimum Amount required to place a trade is 0.005 ETH\n\n")
                             amount = 0.005
                         }
                         const { hash } = await exchangeRouter.multicall(
@@ -182,7 +184,7 @@ export class SupabaseService extends BaseService {
                             { value: ethers.parseEther(amount.toString()) }
                         );
 
-                        console.log("Successfully created a trade " + asset + "/USD futures position with " + amount + " ETH")
+                        console.log("\n\nSuccessfully created a trade " + asset + "/USD futures position with " + amount + " ETH\n\n")
 
                         console.log("\nTx hash:\nhttps://sepolia.arbiscan.io/tx/" + hash + "\n\n")
 
@@ -195,7 +197,7 @@ export class SupabaseService extends BaseService {
                                 amount: amount,
                                 pnl_usdt: 0,
                                 tx_hash: hash,
-                                status: "ongoing"
+                                status: "open"
                             })
                             .select()
                             .single();
@@ -205,7 +207,7 @@ export class SupabaseService extends BaseService {
                             return null;
                         }
 
-                        console.log(`Trade created successfully!! ✅`);
+                        console.log(`\n\nTrade created successfully!! ✅`);
                         return
                     }
                 )

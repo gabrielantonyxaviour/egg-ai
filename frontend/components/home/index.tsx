@@ -44,12 +44,13 @@ export default function Home() {
     const [searchUsername, setSearchUsername] = useState('')
 
     useEffect(() => {
-        if (user == undefined) router.push('/');
+        if (user == undefined) { router.push('/'); return; }
 
         (async () => {
             try {
                 const res = await fetch(`/api/alchemy/prices`);
                 const { eth, avax, error } = await res.json();
+                console.log({ eth, avax, error })
                 // const { eth, sol, error } = await res.json();
                 if (error) throw new Error(error);
                 setEthPrice(eth)
