@@ -1,7 +1,6 @@
 import { Router, Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
-import { ExecutedTrade, TradePlay } from "../types.js";
 import { ElizaService } from "../services/eliza.service.js";
 import { UUID } from "@ai16z/eliza";
 import { getTradePlay } from "src/utils/getTradePlay.js";
@@ -134,7 +133,10 @@ router.post("/", verifyPrivyToken, verifyTradeUsername, async (req: Request, res
             return;
         }
 
-        res.json(response);
+        res.json(response ? response : {
+            conversationId: conversationId ? conversationId : "",
+            response: "Error in processing the request"
+        });
     } catch (error) {
         console.error("Error processing trade play request:", error);
         res.status(500).json({ error: "Internal server error" });

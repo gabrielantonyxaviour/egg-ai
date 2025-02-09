@@ -23,9 +23,7 @@ WORKDIR /app
 
 # Copy package files first
 COPY pnpm-workspace.yaml package.json pnpm-lock.yaml ./
-COPY client/package.json ./client/
 COPY server/package.json ./server/
-COPY lit-actions/package.json ./lit-actions/
 
 # Clean install dependencies
 RUN pnpm install --frozen-lockfile
