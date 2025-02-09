@@ -1,8 +1,8 @@
 
 Target Sponsors
 
-1. Arbitrum
-2. Gaia and Collab land
+1. Arbitrum 
+2. Gaia and Collab land 
 3. Lit 
 4. Autonome
 
@@ -93,8 +93,6 @@ Work - 10 hours
 3. Frontend final integrations - 2 hours
 
 4. Telegram - 4 hours (LATER)
-
-5. Lit protocol integrations - 4 hours
 
 If time, 
 

@@ -10,6 +10,7 @@ import cookieParser from "cookie-parser";
 import { AnyType } from "./utils/index.js";
 import { isHttpError } from "http-errors";
 import { ElizaService } from "./services/eliza.service.js";
+import { SupabaseService } from "./services/supabase.service.js";
 
 // Convert ESM module URL to filesystem path
 const __filename = fileURLToPath(import.meta.url);
@@ -35,6 +36,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 const elizaService = ElizaService.getInstance()
+const supabaseService = SupabaseService.getInstance()
 
 app.use('/chat', chatRouter)
 
@@ -76,9 +78,12 @@ app.listen(port, async () => {
     console.log("Server Environment:", process.env.NODE_ENV);
 
     await elizaService.start();
+    await supabaseService.start()
     services.push(elizaService);
+    services.push(supabaseService)
 
     console.log("Eliza service and ready to interact at /chat with a verified Telegram Auth JWT Token");
+    console.log("Supabase service listening for any new trade data");
   } catch (e) {
     console.error("Failed to start server:", e);
     process.exit(1);

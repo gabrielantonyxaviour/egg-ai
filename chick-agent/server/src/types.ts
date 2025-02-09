@@ -164,6 +164,7 @@ export type ExecutedTrade = {
   username: string;
   amount: number;
   pnl_usdt: number;
+  tx_hash: string;
   status: "ongoing" | "completed";
 }
 export type Analysis = {

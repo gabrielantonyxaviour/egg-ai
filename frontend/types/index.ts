@@ -10,8 +10,8 @@ export type User = {
     profit_goal?: number | null;
     solana_address?: string | null;
     solana_p_key?: string | null;
+    agent_url?: string | null;
 };
-
 
 export type Chef = {
     id: string;
@@ -82,5 +82,6 @@ export type ExecutedTrade = {
     username: string;
     amount: number;
     pnl_usdt: number;
+    tx_hash: string;
     status: "ongoing" | "completed";
 }
