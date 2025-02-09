@@ -108,17 +108,30 @@ The coolest part? Whether you're in **Tren Mode** letting the AI handle everythi
 
 egg ai uses autonome to deploy chicks (custom specialized ai agents) for the users to manage the users assets, portfolio growth and risk management. the user interacts with the custom ai agents to discuss any posted trade plays or trade positions validated and executed by the ai. users interact with the ai agent through an interace in the ui. (soon telegram bot integration)  
 
+Line of code
+
 ### Arbitrum
 
 the entire application runs on arbitrum. the ai agents send transactions on arbitrum sepolia to the gmx decentralized perpetual exchange to place the trade positions after the process of validation by the egg (mother) ai agent. chicks (child ai agent) perform the transaction on successful validation based on tren or chad mode preference made by the user.
+
+Line of code
+https://github.com/gabrielantonyxaviour/egg-ai/blob/main/chick-agent/server/src/services/supabase.service.ts#L151
+https://github.com/gabrielantonyxaviour/egg-ai/blob/main/frontend/lib/config.ts#L7
 
 ### Gaia and Collab.land
 
 the entire ai framework for the application is built on gaia and collab.land agent kit. egg-agent is built with collab.land agent kit to perform the ai analysis when the chefs (trade analysts) post a trade play on the app. chick-agent is a hosted template uploaded on autonome which will be deployed for each user on signing up a new profile in the app. users interact with their respective chick agents to better understand trade plays and trade positions that are validated and executed by the ai. the client interface for both the agents are via the ui.
 
+Line of code
+https://github.com/gabrielantonyxaviour/egg-ai/tree/main/chick-agent
+https://github.com/gabrielantonyxaviour/egg-ai/tree/main/egg-agent
+
 ### Privy
 
 users sign up and create a new wallet via privy telegram auth smart wallet. the wallet is controlled by the respective chicks (user owned ai agents) to perform trades on ai validation and other factors depending on the CHAD/TREN mode selected by the user.
+
+Line of code
+https://github.com/gabrielantonyxaviour/egg-ai/blob/main/frontend/components/providers/wallet-provider.tsx#L14
 
 ## 🔗 Important Links
 
