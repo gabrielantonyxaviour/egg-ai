@@ -32,31 +32,32 @@ interface CreateRecipeProps {
 
 const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
     const { chef, setRecipe } = useEnvironmentStore((store) => store)
-    const [entryPrice, setEntryPrice] = useState<number>(0.2524); // Entry price for DOGE
-    const [leverage, setLeverage] = useState<number>(8); // Adjusted leverage for DOGE
-    const [stopLoss, setStopLoss] = useState<number>(0.2400); // Stop loss below entry
+    const [entryPrice, setEntryPrice] = useState<number>(2628); // Entry price for ETH
+    const [leverage, setLeverage] = useState<number>(3); // Adjusted leverage for ETH
+    const [stopLoss, setStopLoss] = useState<number>(2500); // Stop loss below entry
 
     const [takeProfits, setTakeProfits] = useState<TakeProfit[]>([
-        { price: '0.2700', percentage: '12' }, // Take profit above entry
-        { price: '0.2850', percentage: '18' }, // Another take profit level
+        { price: '2750', percentage: '30' }, // Take profit above entry
+        { price: '2850', percentage: '100' }, // Another take profit level
     ]);
 
     const [dcaPoints, setDcaPoints] = useState<DCA[]>([
-        { price: '0.2480', percentage: '5' }, // DCA below entry
-        { price: '0.2435', percentage: '8' }, // Another DCA level
+        { price: '2628', percentage: '30' }, // DCA below entry
+        { price: '2600', percentage: '30' }, // Another DCA level
+        { price: '2575', percentage: '40' }, // Another DCA level
     ]);
 
-    const [selectedAsset, setSelectedAsset] = useState<string>('DOGE'); // Asset name
+    const [selectedAsset, setSelectedAsset] = useState<string>('ETH'); // Asset name
     const [selectedChain, setSelectedChain] = useState<string>('any'); // Blockchain network
     const [direction, setDirection] = useState<'buy_long' | 'sell_short'>('buy_long'); // Position type
     const [selectedDate, setSelectedDate] = useState<Date>(new Date()); // Trade date
     const [selectedTime, setSelectedTime] = useState<string>('19:00'); // Trade time
-    const [expectedPnl, setExpectedPnl] = useState<string>('20'); // Expected profit & loss
+    const [expectedPnl, setExpectedPnl] = useState<string>('12'); // Expected profit & loss
 
     const [researchDescription, setResearchDescription] = useState<string>(
-        'Taking a long position on DOGE at $0.2524 because technical indicators show bullish momentum with MACD crossover and RSI at 58. ' +
-        'On-chain metrics indicate growing network activity, with transaction volume up 18% to 2.3B DOGE and active addresses increasing by 9% to 350K. ' +
-        'Recent whale accumulation of 400M DOGE and improving liquidity suggest strong upside potential. The main risk is high volatility, ' +
+        'Taking a long position on ETH at $2628 because technical indicators show bullish momentum with MACD crossover and RSI at 60. ' +
+        'On-chain metrics indicate growing network activity, with transaction volume up 15% to 5.2M ETH and active addresses increasing by 7% to 1.1M. ' +
+        'Recent whale accumulation of 120K ETH and improving liquidity suggest strong upside potential. The main risk is macroeconomic uncertainty, ' +
         'but current price level offers an attractive risk/reward ratio for a long entry.'
     );
 

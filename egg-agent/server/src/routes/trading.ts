@@ -181,7 +181,7 @@ Please provide a risk assessment with these scores (0-100):
     "longtermscore": "number" // Consider trend strength, social processSocialSentimentData, and macro factors
     "marketstrength": "number" // Evaluate momentum, volume profile, and price action
     "chefreputation": "number" // Based on historical accuracy and analysis quality
-    "equitypercent": "number" // Recommended position size considering all risk factors 
+    "equitypercent": "number" // Recommended position size considering all risk factors between 5% to 20%
     "explanation": "string" // Your explanation for the your anlaysis
 }
 \`\`\`

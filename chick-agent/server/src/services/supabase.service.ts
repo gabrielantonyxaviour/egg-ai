@@ -77,7 +77,7 @@ export class SupabaseService extends BaseService {
                         }
 
                         if (user.mode == 'TREN') console.log("💊User is in TREN mode💊\nTrades are auto validated and assessed by AI ")
-                        if (user.mode == 'TREN') console.log("💪🏻User is in CHAD mode💪🏻\nTrades are performed only if the user follows the chef with additional ai validation")
+                        if (user.mode == 'CHAD') console.log("💪🏻User is in CHAD mode💪🏻\nTrades are performed only if the user follows the chef with additional ai validation")
 
                         if (!isFollowing && user.mode == 'CHAD') {
                             console.log("User is in CHAD mode but not following the chef. Trade will not be executed")
