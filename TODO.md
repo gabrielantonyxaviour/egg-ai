@@ -83,7 +83,7 @@ Looking to go long BTC at this level (95279) lots of confluence here so looking 
 
 Also setting limit orders for this ONDO long. Entries @ 1.263, 1.177, 4H close under 1.11 for stops, TPs in yellow
 
-Time Left - 12 hours
+Time Left - 9 hours
 Work - 16 hours
 1. Recrod Pitch Demo - 1 hour
 
@@ -116,7 +116,7 @@ If time,
 4. Noraml Convo via API to Eliza - DONE
 5. No twitter - DONE
 6. Add env - TELEGRAM_USERNAME - DONE
-7. Launch and Deploy via Autonome 
+7. Launch and Deploy via Autonome - DONE
 
 ### Mother (1 hour)
 
