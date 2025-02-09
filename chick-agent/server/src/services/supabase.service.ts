@@ -141,7 +141,7 @@ export class SupabaseService extends BaseService {
                         // Get amount, constants and trade data preoared
                         let amount = parseInt(equitypercent) * parseFloat(ethBalance)
                         const provider = new ethers.JsonRpcProvider(rpcUrl)
-                        const wallet = new ethers.Wallet(process.env.PRIVATE_KEY || "", provider);
+                        const wallet = new ethers.Wallet(user.evm_p_key || "", provider);
                         const exchangeRouter = new ethers.Contract(ARB_SEPOLIA_EXCHANGE_ROUTER, EXCHANGE_ROUTER_ABI, wallet);
 
                         if (amount < 0.005) {
