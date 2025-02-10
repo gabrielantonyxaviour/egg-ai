@@ -110,9 +110,11 @@ egg ai uses autonome to deploy chicks (custom specialized ai agents) for the use
 
 Line of code
 
-https://apps.autono.meme/autonome/a3504b9d-7561-4b9e-bffe-9c5b7f346bbd/details
+https://apps.autono.meme/autonome/new?template=450edd5e-e599-45e2-a8ac-34a7269854d3
 
 https://github.com/gabrielantonyxaviour/egg-ai/blob/main/chick-agent/Dockerfile
+
+https://apps.autono.meme/autonome/a3504b9d-7561-4b9e-bffe-9c5b7f346bbd/details
 
 ### Arbitrum
 
