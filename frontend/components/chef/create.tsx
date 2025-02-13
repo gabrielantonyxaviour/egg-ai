@@ -183,7 +183,7 @@ const CreateRecipe: React.FC<CreateRecipeProps> = ({ close }) => {
 
     }
     return (
-        <div className="relative w-[42%] h-full bg-black rounded-sm">
+        <div className="2xl:relative absolute 2xl:top-[0%] 2xl:left-[0%] left-[16%] xl:w-[48%] w-[80%] 2xl:h-full h-[600px] bg-black rounded-sm">
             <div className="absolute w-full h-full flex flex-col -top-[0.5%] -left-[0.5%] space-y-2 sen rounded-sm text-sm border-2 border-black py-2 bg-[#faefe0] text-black">
                 <div className="flex justify-between items-center px-4">
                     <h2 className="text-xl font-bold">Create Trade Play</h2>

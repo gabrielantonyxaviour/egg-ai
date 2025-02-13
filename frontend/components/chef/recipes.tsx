@@ -40,7 +40,7 @@ export default function Recipes({ setOpenDetailedRecipe, close }: { setOpenDetai
         })()
 
     }, [chef])
-    return <div className="relative w-[68%] h-full bg-black rounded-sm">
+    return <div className="2xl:relative absolute 2xl:top-[0%] 2xl:left-[0%] left-[16%] w-[80%] 2xl:h-full h-[600px] bg-black rounded-sm">
         <div className="absolute w-full h-full flex flex-col -top-[0.5%] -left-[0.5%] space-y-2 sen rounded-sm text-sm border-2 border-black py-2 bg-[#faefe0] text-black">
             <div className="flex justify-between items-center px-4">
                 <h2 className="text-xl font-bold">Your Recipes</h2>
@@ -73,7 +73,9 @@ export default function Recipes({ setOpenDetailedRecipe, close }: { setOpenDetai
                                 className="border-b border-black/20 hover:bg-black/5"
                             >
                                 <td className="py-4 text-center pl-3">{id + 1}</td>
-                                <td className="py-4 text-center">{item.chain}</td>
+                                <td className="py-4 text-center">
+                                    <img src={`/chains/${item.chain}.png`} alt={item.asset} className="w-6 h-6 mx-auto my-auto" />
+                                </td>
                                 <td className="py-4 text-center">{item.asset}</td>
                                 <td className="py-4 text-center">{item.direction}</td>
                                 <td className="py-4 text-center"> <CountdownTimer

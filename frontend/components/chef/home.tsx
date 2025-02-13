@@ -37,11 +37,11 @@ export default function ChefHome() {
 
     return user == undefined || chef == undefined ? <div></div> : (
         <div className="flex justify-between h-screen">
-            <div className="flex flex-col h-full justify-center space-y-12  px-6">
+            <div className="flex flex-col h-full justify-center space-y-8 xl:space-y-12  px-6">
                 {nav.map((i) => (
                     <div
                         key={i.id}
-                        className="relative bg-black w-[130px] h-[100px] rounded-sm"
+                        className="relative bg-black xl:w-[125px] xl:h-[100px] w-[100px] h-[80px] rounded-sm"
                     >
                         <div
                             onClick={() => {
@@ -49,13 +49,13 @@ export default function ChefHome() {
                                     prev.map((val, index) => (index === i.id - 1 ? !val : val))
                                 );
                             }}
-                            className={`absolute flex flex-col items-center -top-[4px] -left-[4px] w-[130px] h-[100px] space-y-2 sen  rounded-sm text-sm border border-[2px] border-black p-2 cursor-pointer ${showWindows[i.id - 1]
+                            className={`absolute flex flex-col items-center -top-[4px] -left-[4px] w-full h-full space-y-2 sen  rounded-sm text-sm border border-[2px] border-black p-2 cursor-pointer ${showWindows[i.id - 1]
                                 ? "bg-[#faefe0] text-black font-bold"
                                 : "bg-[#c49963] text-white"
                                 }`}
                         >
-                            <Image src={i.image} width={50} height={50} alt={i.name} />
-                            <p>{i.name}</p>
+                            <img src={i.image} alt={i.name} className="w-[30px] h-[30px] xl:w-[50px] xl:h-[50px]" />
+                            <p className="lg:text-sm md:text-xs hidden md:block">{i.name}</p>
                         </div>
                     </div>
                 ))}
@@ -91,10 +91,6 @@ export default function ChefHome() {
                         }}
                     />
                 )}
-
-
-
-
             </div>
         </div>
     )

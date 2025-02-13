@@ -47,8 +47,8 @@ export default function ChefProfile({ chef_id, close }: { chef_id: string; close
 
     }, [chef_id]);
 
-    return <div className="w-[600px] h-[500px] absolute top-[22%] left-[32%] bg-black rounded-sm">
-        <div className="absolute w-[600px] h-[500px] flex flex-col -top-[1%] -left-[1%] space-y-6 sen rounded-sm text-sm border-2 border-black p-6 bg-[#faefe0] text-black overflow-y-auto">
+    return <div className=" w-[600px] h-[400px] xl:h-[500px] absolute top-[18%] lg:top-[22%] left-[24%] lg:left-[32%] bg-black rounded-sm">
+        <div className="absolute w-full h-full flex flex-col -top-[1%] -left-[1%] space-y-6 sen rounded-sm text-sm border-2 border-black p-6 bg-[#faefe0] text-black overflow-y-auto">
             {/* Header */}
             {!chefData || !user ? <div className="w-full h-full flex items-center justify-center">
                 <CircleDashedIcon className="animate-spin" />
