@@ -1,7 +1,5 @@
 import { ProcessedMarketData, ProcessedSentiment, TradePlay } from "../types.js";
 
-
-
 function generateEmbeddingsPrompt(
     tradePlay: TradePlay,
     marketData: ProcessedMarketData,

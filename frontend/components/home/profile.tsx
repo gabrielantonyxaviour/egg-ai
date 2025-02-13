@@ -8,6 +8,7 @@ import { Slider } from "@/components/ui/slider";
 import { Calendar } from "@/components/ui/calendar";
 import { Progress } from "@/components/ui/progress";
 import { Button } from "../ui/button";
+import { ScrollArea } from "../ui/scroll-area";
 export default function Profile({ close }: { close: () => void }) {
     const { user, ethBalance, solBalance, avaxBalance, totalEquity, pnl, setUser } = useEnvironmentStore((store => store))
     const [copiedEVM, setCopiedEVM] = useState<boolean>(false);
@@ -73,182 +74,142 @@ export default function Profile({ close }: { close: () => void }) {
 
         setRiskLevel(smoothedRisk);
     }, [expectedPNL, endDate]);
-    return <div className={`w-[35%] ${user?.mode == "CHAD" ? "h-[90%]" : "h-[42%]"} relative bg-black rounded-sm`}>
-        <div
-            onClick={() => { }}
-            className={`absolute flex flex-col p-6 h-full  -top-[4px] -left-[4px] w-full sen rounded-sm text-sm border border-[2px] border-black bg-[#faefe0] text-black`}
-        >
-            <p className="text-3xl nouns">SUP FREN 🍳</p>
-            <p>gains are calling, put the fries in the bag!</p>
-            <div className="flex justify-around pt-4">
-                <div className="">
-                    <p className="font-semibold text-base pb-1">Total Equity</p>
-                    <p className="text-2xl nouns">{totalEquity} <span className="text-sm font-bold sen">USDT</span></p>
-                </div>
-                <div className="">
-                    <p className="font-semibold text-base pb-1">Average PNL</p>
-                    <p className="text-2xl nouns">{pnl}% <span className="text-sm font-bold sen">(7 DAYS)</span></p>
-                </div>
-                <div className="">
-                    <h3 className="font-semibold text-base pb-1">Current Mode</h3>
-                    <div className="flex space-x-1 items-center justify-center">                    <img src={user?.mode == "CHAD" ? '/chad.png' : "/tren.png"} alt="chad" className="w-[25px] h-[21px]" />
-                        <p className="nouns spacing-2 tracking-wide text-lg">{user?.mode}</p></div>
-
-                </div>
-            </div>
-            <div className="flex space-x-2 pt-5 items-center">
-                <h3 className="font-semibold text-base">Wallet Address</h3>
-                <button
-                    onClick={() => handleCopy(user?.evm_address || '', 'EVM')}
-                    className=" hover:bg-gray-100 rounded transition-colors"
-                >
-                    <Copy size={12} />
-                </button>
-                {copiedEVM && (
-                    <span className="text-sm text-black ml-2">
-                        Copied!
-                    </span>
-                )}
-            </div>
-            <div className="flex items-center pt-1">
-                <div className="w-[5px]"></div>
-                <div className="flex items-center flex-grow">
-                    <p className="mr-2 text-sm">{user?.evm_address}</p>
-
-                </div>
-            </div>
-            <div className="flex space-x-2 pt-2 items-center">
-                <h3 className="font-semibold text-base">Balance</h3>
-            </div>
-            <div className="flex items-center space-x-6 pt-1">
-
-                <div className="flex items-center space-x-2">
-                    <Image src={'/chains/arb.png'} width={25} height={25} alt={'arb'} />
-                    <p className="mr-2 text-sm">{parseFloat(ethBalance).toFixed(2)} {"ETH"}</p>
-                </div>
-                <div className="flex items-center space-x-2">
-                    <Image src={'/chains/avax.png'} width={25} height={25} alt={'arb'} />
-                    <p className="mr-2 text-sm">{parseFloat(avaxBalance).toFixed(2)} {"AVAX"}</p>
-                </div>
-
-            </div>
-            {/* <div className="flex space-x-2 pt-4 items-center">
-                <Image src={'/chains/sol.png'} width={25} height={25} alt={'arb'} />
-                <h3 className="font-semibold text-base">SOL Wallet</h3>
-                <button
-                    onClick={() => handleCopy(user?.solana_address || "", 'SOL')}
-                    className=" hover:bg-gray-100 rounded transition-colors"
-                >
-                    <Copy size={12} />
-                </button>
-                {copiedSOL && (
-                    <span className="text-sm text-black ml-2">
-                        Copied!
-                    </span>
-                )}
-            </div> 
-            <div className="flex items-center">
-                <div className="w-[30px]"></div>
-                <div className="flex items-center flex-grow">
-                    <p className="mr-2 text-sm">{user?.solana_address}</p>
-
-                </div>
-                <p>{parseFloat(solBalance).toFixed(2)} {"ETH"}</p>
-            </div>*/}
-
-            {user?.mode == 'CHAD' &&
-                <>
-                    {/* Left side - PNL and Calendar */}
-                    <div className="w-full pt-4">
-                        <div>
-                            <div className="flex items-center pl-[64px] space-x-2">
-                                <p className="font-semibold text-sm">Expected PNL</p>
-                                <p className="text-sm">{expectedPNL}%</p>
-                            </div>
-                            <Slider
-                                value={[expectedPNL]}
-                                onValueChange={(value) => setExpectedPNL(value[0])}
-                                min={5}
-                                max={500}
-                                step={1}
-                                className="w-3/4 mx-auto h-3 py-3"
-                            />
-                        </div>
-
-
+    return <div className="w-full max-w-md bg-black rounded-sm relative">
+        <div className="absolute inset-0 -top-1 -left-1 sen rounded-sm border-2 border-black bg-[#faefe0] text-black p-6">
+            <ScrollArea className="h-full w-full">
+                <div className="space-y-4">
+                    <div>
+                        <p className="text-3xl nouns">SUP FREN 🍳</p>
+                        <p>gains are calling, put the fries in the bag!</p>
                     </div>
 
-                    <div className="w-3/4 mx-auto flex pt-3 h-[280px]">
-                        {/* Timeframe Calendar */}
-                        <div className="w-3/4">
-                            <p className="font-semibold text-sm">Timeframe</p>
-                            <div className="transform scale-75 origin-top-left">
-                                <Calendar
-                                    mode="single"
-                                    selected={endDate}
-                                    onSelect={setEndDate}
-                                    disabled={(date) => date < new Date()}
-                                    className="rounded-md sen"
+                    <div className="grid grid-cols-2 2xl:grid-cols-3 gap-4">
+                        <div className="flex flex-col items-center">
+                            <p className="font-semibold text-base pb-1">Total Equity</p>
+                            <p className="text-2xl nouns">{totalEquity} <span className="text-sm font-bold sen">USDT</span></p>
+                        </div>
+                        <div className="flex flex-col items-center">
+                            <p className="font-semibold text-base pb-1">Average PNL</p>
+                            <p className="text-2xl nouns">{pnl}% <span className="text-sm font-bold sen">(7 DAYS)</span></p>
+                        </div>
+                        <div className="col-span-2 2xl:col-span-1 flex flex-col items-center">
+                            <h3 className="font-semibold text-base pb-1">Current Mode</h3>
+                            <div className="flex justify-start items-center space-x-1">
+                                <img
+                                    src={user?.mode === "CHAD" ? '/chad.png' : "/tren.png"}
+                                    alt="mode"
+                                    className="w-[25px] h-[21px]"
+                                />
+                                <p className="nouns tracking-wide text-lg">{user?.mode}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div className="space-y-1">
+                        <div className="flex items-center space-x-2">
+                            <h3 className="font-semibold text-base">Wallet Address</h3>
+                            <button
+                                onClick={() => handleCopy(user?.evm_address || '', 'EVM')}
+                                className="hover:bg-gray-100 rounded transition-colors p-1"
+                            >
+                                <Copy size={12} />
+                            </button>
+                            {copiedEVM && <span className="text-sm">Copied!</span>}
+                        </div>
+                        <p className="text-sm break-all">{user?.evm_address}</p>
+                    </div>
+
+                    <div className="space-y-1">
+                        <h3 className="font-semibold text-base">Balance</h3>
+                        <div className="flex flex-wrap gap-4">
+                            <div className="flex items-center space-x-2">
+                                <Image src="/chains/arb.png" width={25} height={25} alt="arb" />
+                                <p className="text-sm">{parseFloat(ethBalance).toFixed(2)} ETH</p>
+                            </div>
+                            <div className="flex items-center space-x-2">
+                                <Image src="/chains/avax.png" width={25} height={25} alt="avax" />
+                                <p className="text-sm">{parseFloat(avaxBalance).toFixed(2)} AVAX</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    {user?.mode === 'CHAD' && (
+                        <div className="space-y-4">
+                            <div>
+                                <div className="flex items-center space-x-2 mb-2">
+                                    <p className="font-semibold text-sm">Expected PNL</p>
+                                    <p className="text-sm">{expectedPNL}%</p>
+                                </div>
+                                <Slider
+                                    value={[expectedPNL]}
+                                    onValueChange={(value) => setExpectedPNL(value[0])}
+                                    min={5}
+                                    max={500}
+                                    step={1}
+                                    className="w-full"
                                 />
                             </div>
-                        </div>
-                        {/* Right side - Risk Meter */}
-                        <div className="w-1/4 flex flex-col justify-start items-center">
-                            <p className="font-semibold text-sm mb-2">Risk Meter</p>
-                            <div className="flex pt-3">
-                                <div className="w-48 relative top-[84px]">
-                                    <Progress
-                                        value={riskLevel}
-                                        className={`w-[9px] w-48 -rotate-90 border-[1px] border-[#c49963] `}
-                                    />
+
+                            <div className="flex flex-col md:flex-row gap-4">
+                                <div className="flex-1">
+                                    <p className="font-semibold text-sm mb-2">Timeframe</p>
+                                    <div className="transform scale-75 origin-top-left">
+                                        <Calendar
+                                            mode="single"
+                                            selected={endDate}
+                                            onSelect={setEndDate}
+                                            disabled={(date) => date < new Date()}
+                                            className="rounded-md sen"
+                                        />
+                                    </div>
                                 </div>
 
+                                <div className="w-24">
+                                    <p className="font-semibold text-sm mb-2">Risk Meter</p>
+                                    <div className="relative h-48">
+                                        <Progress
+                                            value={riskLevel}
+                                            className="absolute top-1/2 left-1/2 w-48 -translate-x-1/2 -translate-y-1/2 -rotate-90 border border-[#c49963]"
+                                        />
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-center">
+                                <Button
+                                    onClick={async () => {
+                                        if (!user) return;
+                                        if (user.profit_goal == expectedPNL && user.profit_timeline == endDate?.toISOString()) return;
+                                        if (expectedPNL == 0) return;
+                                        if (!endDate) return;
+
+                                        await fetch('/api/supabase/update-user', {
+                                            method: 'POST',
+                                            headers: { 'Content-Type': 'application/json' },
+                                            body: JSON.stringify({
+                                                ...user,
+                                                profit_goal: expectedPNL,
+                                                profit_timeline: endDate?.toISOString(),
+                                            }),
+                                        });
+
+                                        setUser({
+                                            ...user,
+                                            profit_goal: expectedPNL,
+                                            profit_timeline: endDate ? endDate.getTime() : undefined
+                                        });
+                                    }}
+                                    className="group rounded-sm py-2 px-4 bg-[#c49963] hover:bg-[#d74b1a] hover:text-white border border-black flex items-center space-x-2"
+                                >
+                                    <Save className="h-5 w-5" />
+                                    <span>Save Changes</span>
+                                </Button>
                             </div>
                         </div>
-                    </div>
-
-
-                    <div className="relative bg-black w-[140px] h-[34px] rounded-sm mx-auto">       <Button
-                        onClick={async (e) => {
-                            if (!user) return;
-                            if (user.profit_goal == expectedPNL && user.profit_timeline == endDate?.toISOString()) return;
-                            if (expectedPNL == 0) return;
-                            if (!endDate) return;
-                            await fetch(`/api/supabase/update-user`, {
-                                method: 'POST',
-                                headers: {
-                                    'Content-Type': 'application/json',
-                                },
-                                body: JSON.stringify({
-                                    ...user,
-                                    profit_goal: expectedPNL,
-                                    profit_timeline: endDate?.toISOString(),
-
-                                }),
-                            });
-
-                            setUser({
-                                ...user,
-                                profit_goal: expectedPNL,
-                                profit_timeline: endDate ? endDate.getTime() : undefined
-                            });
-
-                        }}
-                        className="group absolute -top-[4px] -left-[2px] rounded-sm w-full h-[36px] flex py-4 px-6 bg-[#c49963] hover:bg-[#d74b1a] hover:text-white border-[1px] border-black mr-[2px]"
-                    >
-                        <Save className="h-6 w-6" />
-                        <p>Save Changes</p>
-                    </Button></div>
-
-                </>
-
-
-            }
-
-
+                    )}
+                </div>
+            </ScrollArea>
         </div>
-
-
-    </div >
+    </div>
 
 }

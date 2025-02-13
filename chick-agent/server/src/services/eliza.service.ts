@@ -19,7 +19,6 @@ import { resolve } from "path";
 const __dirname = path.dirname(new URL(import.meta.url).pathname);
 
 import { composeContext } from "@ai16z/eliza";
-import { getEmbeddingZeroVector } from "@ai16z/eliza";
 import {
   Content,
   IAgentRuntime,

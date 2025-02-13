@@ -113,17 +113,17 @@ export default function Layout({
   }, [privyUser]);
 
   return (
-    <div className="h-screen w-screen">
-      <div className="fixed w-screen flex justify-end space-x-4 p-4">
+    <div className="min-h-screen w-full">
+      <div className="fixed w-full flex flex-col sm:flex-row justify-end items-end sm:items-center gap-2 sm:gap-4 p-2 sm:p-4">
         {isConnected && address != null && balance && (
-          <>
-            <div className="relative w-[130px] bg-black h-[40px] rounded-sm">
-              <Button
-                onClick={() => {
-                  window.open("https://arbiscan.io/", "_blank");
-                }}
-                className="absolute -top-[4px] -left-[4px] w-full h-full flex p-5 space-x-2 bg-[#d74b1a] hover:bg-[#d74b1a] border-black mr-[2px]"
-              >
+          <div className="relative w-[130px] bg-black h-10 rounded-sm">
+            <Button
+              onClick={() => {
+                window.open("https://arbiscan.io/", "_blank");
+              }}
+              className="absolute -top-1 -left-1 w-full h-full flex items-center justify-center space-x-2 bg-[#d74b1a] hover:bg-[#d74b1a] border-black"
+            >
+              <div className="flex items-center gap-2">
                 <Image
                   src={"/chains/arbitrum.png"}
                   width={25}
@@ -131,54 +131,64 @@ export default function Layout({
                   alt="arbitrum"
                   className="rounded-full"
                 />
-                <p>
+                <p className="text-sm sm:text-base">
                   {parseFloat(balance?.formatted).toFixed(2)} {"ETH"}
                 </p>
-              </Button>
-            </div>
-          </>
+              </div>
+            </Button>
+          </div>
         )}
-        <div className="relative bg-black w-[160px] h-[40px] rounded-sm">
-          {user ? <Button
-            onClick={(e) => {
-              logout();
-              setUser(null);
-            }}
-            className="group absolute -top-[4px] -left-[2px] rounded-sm w-full h-full flex p-5 bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border-[1px] border-black mr-[2px]"
-          >
-            <Image
-              src={"/telegram.svg"}
-              width={30}
-              height={30}
-              alt="telegram"
-              onError={(e) => {
-                e.currentTarget.src = "/telegram.svg";
+
+        <div className="relative bg-black w-[160px] h-10 rounded-sm">
+          {user ? (
+            <Button
+              onClick={() => {
+                logout();
+                setUser(null);
               }}
-              className="rounded-full group-hover:filter group-hover:invert"
-            />
-            <p>{user.username}</p>
-          </Button> : <Button
-            disabled={authenticated || (privyUser != undefined && privyUser.telegram != undefined)}
-            onClick={(e) => {
-              login();
-            }}
-            className="group absolute -top-[4px] -left-[2px] rounded-sm w-full h-full flex p-5 bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border-[1px] border-black mr-[2px]"
-          >
-            {
-              !ready ? <CircleDashedIcon className="h-6 w-6 animate-spin" /> : <>  <Image
-                src="/telegram.svg"
-                width={30}
-                height={30}
-                alt="telegram"
-                className="rounded-full group-hover:filter group-hover:invert"
-              />
-                <p className="sen">Connect</p></>
-            }
-          </Button>}
+              className="group absolute -top-1 -left-1 rounded-sm w-full h-full flex items-center justify-center bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border border-black"
+            >
+              <div className="flex items-center gap-2">
+                <Image
+                  src={"/telegram.svg"}
+                  width={30}
+                  height={30}
+                  alt="telegram"
+                  onError={(e) => {
+                    e.currentTarget.src = "/telegram.svg";
+                  }}
+                  className="rounded-full group-hover:filter group-hover:invert"
+                />
+                <p className="text-sm sm:text-base truncate max-w-20">{user.username}</p>
+              </div>
+            </Button>
+          ) : (
+            <Button
+              disabled={authenticated || (privyUser != undefined && privyUser.telegram != undefined)}
+              onClick={() => {
+                login();
+              }}
+              className="group absolute -top-1 -left-1 rounded-sm w-full h-full flex items-center justify-center bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border border-black"
+            >
+              {!ready ? (
+                <CircleDashedIcon className="h-6 w-6 animate-spin" />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <Image
+                    src="/telegram.svg"
+                    width={30}
+                    height={30}
+                    alt="telegram"
+                    className="rounded-full group-hover:filter group-hover:invert"
+                  />
+                  <p className="sen text-sm sm:text-base">Connect</p>
+                </div>
+              )}
+            </Button>
+          )}
         </div>
       </div>
       {children}
-
     </div>
   );
 }

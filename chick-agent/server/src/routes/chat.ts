@@ -103,6 +103,7 @@ export function verifyTradeUsername(
     }
 
 }
+
 router.post("/", verifyPrivyToken, verifyTradeUsername, async (req: Request, res: Response): Promise<void> => {
     try {
         console.log("Received trade play request:", req.body);
