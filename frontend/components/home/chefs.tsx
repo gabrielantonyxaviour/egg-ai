@@ -19,10 +19,10 @@ export default function Chefs({ setSearchUsername, close }: { setSearchUsername:
         })()
     }, [])
 
-    return <div className="w-[700px] h-[600px] absolute top-[26%] left-[32%] bg-black rounded-sm">
+    return <div className="w-[700px] h-[600px] absolute top-[18%] 2xl:top-[26%] left-[32%] bg-black rounded-sm">
         <div
             onClick={() => { }}
-            className={`absolute w-[600px] h-[400px] flex flex-col items-center -top-[1%] -left-[1%] w-full h-full space-y-2 sen rounded-sm text-sm border border-[2px] border-black py-2 bg-[#faefe0] text-black`}
+            className={`absolute w-full h-full flex flex-col items-center -top-[1%] -left-[1%] w-full h-full space-y-2 sen rounded-sm text-sm border border-[2px] border-black py-2 bg-[#faefe0] text-black`}
         >
             <div className="flex justify-between items-center w-full px-2">
                 <p className="px-4 py-1 font-bold text-lg">

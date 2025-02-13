@@ -13,7 +13,7 @@ export default function Actions({ close, setSelectedTradeId }: { close: () => vo
     const { actions } = useEnvironmentStore(store => store)
 
 
-    return <div className="relative w-[68%] h-full  bg-black rounded-sm">
+    return <div className="2xl:relative absolute 2xl:top-[0%] 2xl:left-[0%] left-[24%] w-[68%] 2xl:h-full h-[600px]  bg-black rounded-sm">
         <div className="absolute w-full h-full flex flex-col -top-[0.5%] -left-[0.5%] space-y-2 sen rounded-sm text-sm border-2 border-black py-2 bg-[#faefe0] text-black">
             <div className="flex justify-between items-center w-full px-6">
                 <p className="font-bold text-lg">Trade Actions</p>
