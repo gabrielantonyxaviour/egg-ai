@@ -153,9 +153,7 @@ export default function Home() {
                 {selectedTradeId && (
                     <Chat
                         close={() => {
-                            setShowWindows((prev) =>
-                                prev.map((val, index) => (index === 4 ? !val : val))
-                            );
+                            setSelectedTradeId('')
                         }}
                         selectedTradeId={selectedTradeId}
                     />

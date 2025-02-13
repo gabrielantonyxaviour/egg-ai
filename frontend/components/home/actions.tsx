@@ -67,7 +67,7 @@ export default function Actions({ close, setSelectedTradeId }: { close: () => vo
                                 <td className="py-4 text-center font-bold ">
                                     <ArrowUpRightFromSquare className="cursor-pointer hover:text-gray-700 mx-auto" width={16} onClick={() => {
                                         if (item.trade_play.id)
-                                            setSelectedTradeId(item.trade_play.id)
+                                            setSelectedTradeId(item.id)
                                     }} />
                                 </td>
                             </tr>
