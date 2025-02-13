@@ -5,12 +5,13 @@
     "direct",
     "telegram"
   ],
+  "modelEndpointOverride": "https://api.venice.ai/api/v1",
   "clientConfig": {
     "telegram": {
       "shouldIgnoreBotMessages": true
     }
   },
-  "modelProvider": "gaianet",
+  "modelProvider": "openai",
   "settings": {
     "secrets": {},
     "voice": {

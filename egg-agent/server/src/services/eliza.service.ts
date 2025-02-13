@@ -593,7 +593,7 @@ export class ElizaService extends BaseService {
     try {
       this.runtime = new AgentRuntime({
         databaseAdapter: db,
-        token: process.env.OPENAI_API_KEY || "",
+        token: process.env.VENICE_AI_API_KEY || "",
         modelProvider: character.modelProvider || ModelProviderName.OPENAI,
         character,
         conversationLength: 4096,
