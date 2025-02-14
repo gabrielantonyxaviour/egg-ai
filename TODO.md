@@ -102,8 +102,7 @@ rm -rf node_modules
 rm -rf */node_modules
 rm -rf .pnpm-store
 
-docker build -t eggai-chick .
-
+docker buildx build --platform=linux/amd64  -t eggai/eggai-chick . 
 
 ## FINAL SPRINT
 

@@ -84,14 +84,13 @@ app.listen(port, async () => {
     services.push(elizaService);
     services.push(supabaseService);
 
-    if (process.env.NGROK_AUTH_TOKEN) {
+    if (process.env.NODE_ENV == "dev") {
       const ngrokService = NgrokService.getInstance();
       await ngrokService.start();
       const ngrokUrl = ngrokService.getUrl()!;
       console.log("NGROK URL:", ngrokUrl);
       services.push(ngrokService);
     }
-
 
     console.log("Eliza service and ready to interact at /chat with a verified Telegram Auth JWT Token");
     console.log("Supabase service listening for any new trade data");
