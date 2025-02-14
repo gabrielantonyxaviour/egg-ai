@@ -341,7 +341,10 @@ export class Admin {
       await this.toolRegistryContract.registerTools(
         pkpTokenId,
         [ipfsCid],
-        enableTools
+        enableTools,
+        {
+          gasLimit: 300000,
+        }
       );
 
     return {

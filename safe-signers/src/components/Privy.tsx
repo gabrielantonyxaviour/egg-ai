@@ -95,10 +95,10 @@ function PrivyApp() {
             console.log('Safe client:', safeClient)
 
             const transactionHash = await safeClient?.sendTransaction({
-              to: deploymentTransaction.to,
+              to: deploymentTransaction.to as `0x${string}`,
               value: BigInt(deploymentTransaction.value),
               data: deploymentTransaction.data as `0x${string}`,
-              chainId: arbitrumSepolia.id,
+              chain: arbitrumSepolia,
             });
             console.log('Transaction hash:', transactionHash)
 
