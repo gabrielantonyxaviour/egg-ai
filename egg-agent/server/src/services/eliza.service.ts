@@ -7,6 +7,7 @@ import {
   elizaLogger,
   MemoryManager,
 } from "@ai16z/eliza";
+import OpenAI from "openai";
 
 elizaLogger.closeByNewLine = false;
 elizaLogger.verbose = true;
@@ -166,10 +167,14 @@ export class MessageManager {
   public bot: Bot<Context>;
   private runtime: IAgentRuntime;
   private imageService: IImageDescriptionService;
-
+  private openai: OpenAI;
   constructor(bot: Bot<Context>, runtime: IAgentRuntime) {
     this.bot = bot;
     this.runtime = runtime;
+    this.openai = new OpenAI({
+      apiKey: process.env.VENICE_AI_API_KEY || "",
+      baseURL: "https://api.venice.ai/api/v1",
+    });
   }
 
   // Process image messages and generate descriptions
@@ -211,6 +216,29 @@ export class MessageManager {
     }
 
     return null; // No image found
+  }
+
+  async generateRawResponse(systemPrompt: string, userPrompt: string): Promise<string> {
+    const completion = await this.openai.chat.completions.create({
+      messages: [{
+        role: "system",
+        content: systemPrompt
+      }, {
+        role: "user",
+        content: userPrompt
+      }],
+      model: "llama-3.2-3b"
+    })
+
+    elizaLogger.debug("COMPLETION  RESPONES")
+    elizaLogger.debug("Received response from VeniceAI model.");
+
+    const messageContent = JSON.parse(completion as any).choices[0].message.content;
+    if (!messageContent) {
+      console.error("❌ No response from generateMessageResponse");
+      return '';
+    }
+    return messageContent;
   }
 
   // Decide if the bot should respond to the message

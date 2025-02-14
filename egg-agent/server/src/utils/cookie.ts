@@ -27,9 +27,11 @@ async function processSentiment(searchTerms: string[]): Promise<ProcessedSentime
                 'x-api-key': process.env.COOKIE_API_KEY || ""
             }
         })
-
         const { ok } = await response.json() as { ok: SentimentPost[] };
         posts.push(...ok);
+        console.log(response)
+        // const response = await fetch(`https://cryptopanic.com/api/v1/posts/?auth_token=${process.env.CRYPTO_PANIC_API_KEY}&currencies=${term}&public=true&panic_score=true&kind=news`)
+        // const {results }=await response.json()
     }
 
     // Calculate weighted engagement score

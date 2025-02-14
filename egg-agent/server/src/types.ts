@@ -150,3 +150,13 @@ export type Analysis = {
   equitypercent: string;
   explanation: string;
 }
+
+interface SentimentScore {
+  score: number;  // Range from -1 to 1
+  engagement: number;  // Total interactions
+  controversy: number;  // Ratio of opposing reactions
+}
+export type CryptoPanicPost = {
+  text: string;
+  sentiment: SentimentScore;
+}

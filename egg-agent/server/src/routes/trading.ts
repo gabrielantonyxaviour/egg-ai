@@ -3,11 +3,12 @@ import jwt, { JwtPayload } from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 import { Analysis, TradePlay } from "../types.js";
 import { processCandles } from "../utils/candle.js";
-import { processSentiment } from "../utils/cookie.js";
+// import { processSentiment } from "../utils/cookie.js";
 import { parseJSONObjectFromText } from "../utils/index.js";
 import { generateEmbeddings } from "../utils/supavec.js";
 import { getChef } from "../utils/chef.js";
 import { createPlay } from "../utils/createPlay.js";
+import { processSentimentCryptoPanic } from "../utils/cryptopanic.js";
 
 const isProd = JSON.parse(process.env.IS_PROD || "false");
 
@@ -129,13 +130,15 @@ router.post("/play", verifyPrivyToken, verifyTradeUsername, async (req: Request,
         console.log("Processed candles data:", proccessedCandlesData);
 
         console.log("Processing social sentiment data for asset:", tradePlay.asset);
-        const processSocialSentimentData = await processSentiment([
-            `%24${tradePlay.asset}%20news`,
-            `%24${tradePlay.asset}%20analysis`,
-            `%24${tradePlay.asset}%20processSocialSentimentData`,
-            `%24${tradePlay.asset}%20forecast`,
-            `%24${tradePlay.asset}%20degen`
-        ]);
+        // const processSocialSentimentData = await processSentiment([
+        //     `%24${tradePlay.asset}%20news`,
+        //     `%24${tradePlay.asset}%20analysis`,
+        //     `%24${tradePlay.asset}%20processSocialSentimentData`,
+        //     `%24${tradePlay.asset}%20forecast`,
+        //     `%24${tradePlay.asset}%20degen`
+        // ]);
+
+        const processSocialSentimentData = await processSentimentCryptoPanic(tradePlay.asset)
         console.log("Processed social sentiment data:", processSocialSentimentData);
 
         console.log("Generating embeddings for trade play");
