@@ -201,6 +201,7 @@ Please provide a risk assessment with these scores (0-100):
                 Authorization: `Bearer ${process.env.VENICE_AI_API_KEY}`,
             },
             body: JSON.stringify({
+                model: "llama-3.3-70b",
                 messages: [{
                     role: 'system',
                     content: eggAiSystemPrompt
