@@ -88,7 +88,7 @@ export class MessageManager {
         role: "system",
         content: context
       }],
-      model: "llama-3.2-3b"
+      model: "llama-3.3-70b"
     })
 
     elizaLogger.debug("COMPLETION  RESPONES")
