@@ -2,9 +2,9 @@ import { Router, Request, Response, NextFunction } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import jwksClient from "jwks-rsa";
 import { ElizaService } from "../services/eliza.service.js";
-import { UUID } from "@ai16z/eliza";
 import { getTradePlay } from "../utils/getTradePlay.js";
 import { fetchExecutedTrade } from "../utils/getExecutedTrade.js";
+import { validateAndParseResponse } from "../utils/index.js";
 
 const isProd = JSON.parse(process.env.IS_PROD || "false");
 
@@ -107,7 +107,8 @@ export function verifyTradeUsername(
 router.post("/", verifyPrivyToken, verifyTradeUsername, async (req: Request, res: Response): Promise<void> => {
     try {
         console.log("Received trade play request:", req.body);
-        const { conversationId, tradePlayId, executedTradeId, message } = req.body as { conversationId?: UUID; tradePlayId?: UUID; executedTradeId?: UUID; message: { text: string; replyToMessageId?: UUID } }
+        const { text } = req.body;
+        const { tradePlayId, executedTradeId, conversationId, message } = validateAndParseResponse(text);
 
         const tradePlay = tradePlayId && await getTradePlay(tradePlayId);
         const executedTrade = executedTradeId && await fetchExecutedTrade(executedTradeId);

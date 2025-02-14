@@ -186,7 +186,8 @@ Please provide a risk assessment with these scores (0-100):
 }
 \`\`\`
 `;
-        const aiEndpoint = process.env.GAIANET_SERVER_URL || "";
+        // const aiEndpoint = process.env.GAIANET_SERVER_URL || "";
+        const aiEndpoint = "https://api.venice.ai/api";
 
         console.log("Sending request to AI endpoint:", aiEndpoint);
         const analysisResponse = await fetch(`${aiEndpoint}/v1/chat/completions`, {
@@ -194,6 +195,7 @@ Please provide a risk assessment with these scores (0-100):
             headers: {
                 "Content-Type": "application/json",
                 accept: "application/json",
+                Authorization: `Bearer ${process.env.VENICE_AI_API_KEY}`,
             },
             body: JSON.stringify({
                 messages: [{

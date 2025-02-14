@@ -23,15 +23,13 @@ import {
   Content,
   IAgentRuntime,
   Memory,
-  ModelClass,
   State,
   UUID,
   CacheManager,
   MemoryCacheAdapter,
 } from "@ai16z/eliza";
 import { stringToUuid } from "@ai16z/eliza";
-
-import { generateMessageResponse, } from "@ai16z/eliza";
+import OpenAI from "openai";
 import { messageCompletionFooter, } from "@ai16z/eliza";
 import { SqliteDatabaseAdapter } from "@ai16z/adapter-sqlite";
 import Database from "better-sqlite3";
@@ -65,9 +63,14 @@ type Context = {
 
 export class MessageManager {
   private runtime: IAgentRuntime;
+  private openai: OpenAI;
 
   constructor(runtime: IAgentRuntime) {
     this.runtime = runtime;
+    this.openai = new OpenAI({
+      apiKey: process.env.VENICE_AI_API_KEY || "",
+      baseURL: "https://api.venice.ai/api/v1"
+    })
   }
 
   // Generate a response using AI
@@ -78,16 +81,29 @@ export class MessageManager {
   ): Promise<Content | null> {
     const { userId, roomId } = message;
     elizaLogger.debug("[_generateResponse] check1");
-    const response = await generateMessageResponse({
-      runtime: this.runtime,
-      context,
-      modelClass: ModelClass.MEDIUM,
-    });
-    elizaLogger.debug("[_generateResponse] check2");
-    if (!response) {
+    elizaLogger.debug("Initializing VeniceAI model.");
+
+    const completion = await this.openai.chat.completions.create({
+      messages: [{
+        role: "system",
+        content: context
+      }],
+      model: "llama-3.2-3b"
+    })
+
+    elizaLogger.debug("COMPLETION  RESPONES")
+    elizaLogger.debug("Received response from VeniceAI model.");
+
+    const messageContent = JSON.parse(completion as any).choices[0].message.content;
+    if (!messageContent) {
       console.error("❌ No response from generateMessageResponse");
       return null;
     }
+    const response = {
+      text: messageContent as string
+    }
+    elizaLogger.debug("[_generateResponse] check2");
+
     elizaLogger.debug("[_generateResponse] check3");
     // store the response in the database
 

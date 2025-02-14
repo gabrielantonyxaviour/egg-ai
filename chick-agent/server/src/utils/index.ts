@@ -3,6 +3,7 @@
 import { resolve } from "path";
 const __dirname = new URL(".", import.meta.url).pathname;
 import { config } from "dotenv";
+import { UUID } from "@ai16z/eliza";
 config();
 
 export type AnyType = any;
@@ -225,4 +226,70 @@ export function extractAttributes(
     }
 
     return attributes;
+}
+
+
+
+interface ResponseMessage {
+    text: string;
+    replyToMessageId?: UUID;
+}
+
+interface ParsedResponse {
+    conversationId?: UUID;
+    tradePlayId?: UUID;
+    executedTradeId?: UUID;
+    message: ResponseMessage;
+}
+
+// Utility function to validate UUID format
+function isValidUUID(uuid: string): boolean {
+    const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    return uuidRegex.test(uuid);
+}
+
+// Main validation function
+export function validateAndParseResponse(responseText: string): ParsedResponse {
+    let parsed: any;
+
+    // Try to parse JSON
+    try {
+        parsed = JSON.parse(responseText);
+    } catch (error) {
+        throw new Error('Invalid JSON format');
+    }
+
+    // Validate message object
+    if (!parsed.message || typeof parsed.message.text !== 'string') {
+        throw new Error('Invalid message format: missing or invalid text field');
+    }
+
+    // Validate optional replyToMessageId if present
+    if (parsed.message.replyToMessageId !== undefined) {
+        if (!isValidUUID(parsed.message.replyToMessageId)) {
+            throw new Error('Invalid replyToMessageId format');
+        }
+    }
+
+    // Check if at least one ID field is present
+    const hasConversationId = Boolean(parsed.conversationId);
+    const hasTradePlayId = Boolean(parsed.tradePlayId);
+    const hasExecutedTradeId = Boolean(parsed.executedTradeId);
+
+    if (!hasConversationId && !hasTradePlayId && !hasExecutedTradeId) {
+        throw new Error('At least one ID field (conversationId, tradePlayId, or executedTradeId) must be present');
+    }
+
+    // Validate UUID format for present IDs
+    if (hasConversationId && !isValidUUID(parsed.conversationId)) {
+        throw new Error('Invalid conversationId format');
+    }
+    if (hasTradePlayId && !isValidUUID(parsed.tradePlayId)) {
+        throw new Error('Invalid tradePlayId format');
+    }
+    if (hasExecutedTradeId && !isValidUUID(parsed.executedTradeId)) {
+        throw new Error('Invalid executedTradeId format');
+    }
+
+    return parsed as ParsedResponse;
 }
