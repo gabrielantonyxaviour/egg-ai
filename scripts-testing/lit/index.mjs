@@ -1,5 +1,5 @@
 import { ethers } from 'ethers';
-import { deployments, EXCHANGE_ROUTER_ABI, MARKET_TOKEN_BYTECODE, READER_ABI } from './constants.mjs';
+import { deployments, EXCHANGE_ROUTER_ABI, MARKET_TOKEN_BYTECODE, READER_ABI } from '../constants.mjs';
 import dotenv from 'dotenv'
 
 dotenv.config()
