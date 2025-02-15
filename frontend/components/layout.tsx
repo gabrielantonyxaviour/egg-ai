@@ -4,17 +4,17 @@ import Image from "next/image";
 import { useAccount, useBalance } from "wagmi";
 import { useEnvironmentStore } from "./context";
 import { useEffect, useState } from "react";
-import { CircleDashedIcon } from "lucide-react";
-import { usePrivy } from "@privy-io/react-auth";
+import { ArrowLeftSquare, CircleDashedIcon } from "lucide-react";
 import generateKeypairs from "@/lib/gen-wallet";
 import { User } from "@/types";
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 import { ORIGIN, registerWebAuthn, signInWithDiscord, signInWithGoogle } from "@/lib/lit";
 import useAuthenticate from "@/hooks/useAuthenticate";
 import useAccounts from "@/hooks/useAccounts";
 import useSession from "@/hooks/useSession";
 import { AUTH_METHOD_TYPE } from "@lit-protocol/constants";
-import ConnectModal from "./conect-modal";
+import ConnectModal from "./lit/conect-modal";
+import OnboardingModal from "./lit/onboarding-modal";
 export default function Layout({
   children,
 }: Readonly<{
@@ -26,9 +26,9 @@ export default function Layout({
   const { data: balance } = useBalance({
     address: address,
   });
-  const [showConnectWalletModal, setShowConnectWalletModal] = useState(false);
-  const { ready, authenticated, login, user: privyUser, logout, getAccessToken } = usePrivy();
-  const router = useRouter()
+  const [showConnectWalletModal, setShowConnectWalletModal] = useState(0);
+  const [loadingStatus, setLoadingStatus] = useState(0);
+  const router = useRouter();
   const redirectUri = ORIGIN;
 
   const {
@@ -40,8 +40,10 @@ export default function Layout({
     error: authError,
   } = useAuthenticate(redirectUri);
   const {
+    fetchAccounts,
     createAccount,
     setCurrentAccount,
+    accounts,
     currentAccount,
     loading: accountsLoading,
     error: accountsError,
@@ -84,53 +86,62 @@ export default function Layout({
   }
 
   useEffect(() => {
-    // If user is authenticated and has at least one account, initialize session
+    console.log("Auth loading", authLoading);
+    console.log("Accounts loading", accountsLoading);
+    console.log("Session loading", sessionLoading);
+    console.log("Auth method", authMethod);
+    console.log("Current account", currentAccount);
+    console.log("Session sigs", sessionSigs);
+    console.log("Accounts", accounts);
+    if (authLoading || accountsLoading || sessionLoading) {
+      if (authLoading) setLoadingStatus(1);
+      if (accountsLoading) setLoadingStatus(2);
+      if (sessionLoading) setLoadingStatus(3);
+    } else {
+      if (loadingStatus != 0) {
+        if (authMethod && accounts.length > 0) {
+          setLoadingStatus(4);
+        }
+        else if (authMethod && accounts.length === 0) {
+          setLoadingStatus(5);
+        }
+      }
+    }
+  }, [authLoading, accountsLoading, sessionLoading])
+
+  useEffect(() => {
+    // If user is authenticated, fetch accounts
+    if (authMethod) {
+      router.replace(window.location.pathname, undefined,);
+      fetchAccounts(authMethod);
+    }
+  }, [authMethod, fetchAccounts]);
+
+  useEffect(() => {
+    // If user is authenticated and has selected an account, initialize session
     if (authMethod && currentAccount) {
       initSession(authMethod, currentAccount);
     }
   }, [authMethod, currentAccount, initSession]);
+
   useEffect(() => {
     if (JSON.parse(process.env.NEXT_PUBLIC_IS_VERCEL || "false")) {
       window.location.href = "https://egg-ai-client.ngrok.app";
     }
-    console.log('Privy User:', privyUser);
+    (async () => {
 
-    if (ready && authenticated && privyUser && privyUser.telegram) {
-      const { username, firstName, lastName, telegramUserId, photoUrl } = privyUser.telegram;
+      if (currentAccount && sessionSigs) {
+        console.log("Logged in with account")
+        console.log(JSON.stringify(currentAccount, null, 2));
 
-      (async () => {
         try {
-          console.log('Fetching user data for username:', username);
-          const response = await fetch(`/api/supabase/get-user?username=${username}`);
+          console.log('Fetching user data for pkp with tokenId:', currentAccount.tokenId);
+          const response = await fetch(`/api/supabase/get-user?username=${currentAccount.tokenId}`);
           const { user: data } = await response.json();
           console.log('Fetched user data:', data);
 
           if (data) {
-            if (data.image != photoUrl || data.name != firstName + " " + lastName) {
-              console.log('Updating user data for:', username);
-              setUser({
-                ...data,
-                name: firstName + " " + lastName,
-                image: photoUrl,
-              });
-              await fetch(`/api/supabase/update-user`, {
-                method: 'POST',
-                headers: {
-                  'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                  ...data,
-                  name: firstName + " " + lastName,
-                  image: photoUrl,
-                }),
-              });
-              console.log('User data updated successfully');
-            } else {
-              setUser(data);
-              console.log('User data is up-to-date');
-            }
-
-            const responseFollows = await fetch(`/api/supabase/get-follows?username=${username}`);
+            const responseFollows = await fetch(`/api/supabase/get-follows?username=${currentAccount.tokenId}`);
             const { follows, error } = await responseFollows.json();
             if (error) {
               console.error('Error fetching user follows:', error);
@@ -138,45 +149,34 @@ export default function Layout({
             console.log('Fetched user follows:', follows);
             setUserFollows(follows);
 
-            const { trades } = await fetch(`/api/supabase/get-executed-trades?username=${username}`).then(res => res.json());
+            const { trades } = await fetch(`/api/supabase/get-executed-trades?username=${currentAccount.tokenId}`).then(res => res.json());
 
             console.log('Fetched user trades:', trades);
             setActions(trades);
-          } else {
-            console.log('Creating new user for:', username);
-            const keypairs = await generateKeypairs();
-            const newUser: User = {
-              username: username!,
-              name: firstName + " " + lastName,
-              image: photoUrl,
-              paused: null,
-              evm_address: keypairs.evm.address,
-              evm_p_key: keypairs.evm.privateKey,
-              mode: 'TREN',
-              profit_timeline: null,
-              profit_goal: null,
-              solana_address: keypairs.solana.publicKey,
-              solana_p_key: keypairs.solana.privateKey
-            };
-            const response = await fetch(`/api/supabase/create-user`, {
-              method: 'POST',
-              headers: {
-                'Content-Type': 'application/json',
-              },
-              body: JSON.stringify(newUser),
-            });
-            const { user: data } = await response.json();
+
             setUser(data);
-            console.log('New user created successfully:', data);
+            router.push('/home');
+          } else {
+            // Display Create user form
+
+            // Ask for name and email
+
+            // Display the pkp address and ask to fund the wallet.
           }
-          // router.push('/home');
         } catch (error) {
           console.error('Error fetching user data:', error);
         }
-      })();
+      } else if (authMethod && accounts.length > 0) {
+        setLoadingStatus(4);
 
-    }
-  }, [privyUser]);
+      }
+      else if (authMethod && accounts.length === 0) {
+        setLoadingStatus(5);
+
+      }
+    })();
+
+  }, [currentAccount, sessionSigs]);
 
   return (
     <div className="min-h-screen w-full">
@@ -204,12 +204,10 @@ export default function Layout({
             </Button>
           </div>
         )}
-
         <div className="relative bg-black w-[160px] h-10 rounded-sm">
           {user ? (
             <Button
               onClick={() => {
-                logout();
                 setUser(null);
               }}
               className="group absolute -top-1 -left-1 rounded-sm w-full h-full flex items-center justify-center bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border border-black"
@@ -230,15 +228,19 @@ export default function Layout({
             </Button>
           ) : (
             <Button
-              disabled={showConnectWalletModal}
               onClick={() => {
                 // login();
-                setShowConnectWalletModal(true);
+                if (showConnectWalletModal != 0) setShowConnectWalletModal(0);
+                else
+                  setShowConnectWalletModal(1);
               }}
               className="group absolute -top-1 -left-1 rounded-sm w-full h-full flex items-center justify-center bg-[#d74b1a] hover:bg-[#faefe0] hover:text-black border border-black"
             >
-              {showConnectWalletModal ? (
-                <CircleDashedIcon className="h-6 w-6 animate-spin" />
+              {showConnectWalletModal != 0 ? (
+                <div className="flex items-center gap-2">
+                  <ArrowLeftSquare size={25} />
+                  <p className="sen text-sm sm:text-base">Close Auth</p>
+                </div>
               ) : (
                 <div className="flex items-center gap-2">
                   <Image
@@ -256,9 +258,20 @@ export default function Layout({
         </div>
       </div>
       {children}
-      {showConnectWalletModal && <ConnectModal isOpen={showConnectWalletModal} onClose={() => {
-        setShowConnectWalletModal(false);
-      }} />}
+      {showConnectWalletModal != 0 && <ConnectModal mode={showConnectWalletModal} onClose={() => {
+        setShowConnectWalletModal(0);
+      }} onModeToggle={() => {
+        setShowConnectWalletModal(showConnectWalletModal == 1 ? 2 : 1);
+      }} handleGoogleLogin={handleGoogleLogin} handleDiscordLogin={handleDiscordLogin}
+        authWithEthWallet={authWithEthWallet}
+        registerWithWebAuthn={registerWithWebAuthn}
+        authWithWebAuthn={authWithWebAuthn}
+        authWithStytch={authWithStytch}
+        error={error}
+      />}
+      {
+        loadingStatus != 0 && <OnboardingModal loadingStatus={loadingStatus} accounts={accounts} setCurrentAccount={setCurrentAccount} />
+      }
     </div>
   );
 }

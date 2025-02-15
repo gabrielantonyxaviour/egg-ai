@@ -42,16 +42,14 @@ export default function AccountSelection({
             {accounts.map((account, index) => (
               <div
                 key={`account-${index}`}
-                className={`account-item ${
-                  selectedValue === index.toString() && 'account-item--selected'
-                }`}
+                className={`account-item ${selectedValue === index.toString() && 'account-item--selected'
+                  }`}
               >
                 <RadioGroup.Item
                   className="account-item__radio"
                   value={index.toString()}
                   id={account.ethAddress}
                 >
-                  {' '}
                   <RadioGroup.Indicator className="account-item__indicator" />
                 </RadioGroup.Item>
                 <label
