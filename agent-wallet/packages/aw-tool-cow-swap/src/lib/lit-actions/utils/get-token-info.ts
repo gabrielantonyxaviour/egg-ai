@@ -15,13 +15,13 @@ export async function getTokenInfo(
   ethers.utils.getAddress(sellToken);
 
   // Check code
-  const codeIn = await provider.getCode(buyToken);
+  const codeIn = await provider.getCode(sellToken);
   if (codeIn === '0x') {
-    throw new Error(`No contract found at ${buyToken}`);
-  }
-  const codeOut = await provider.getCode(sellToken);
-  if (codeOut === '0x') {
     throw new Error(`No contract found at ${sellToken}`);
+  }
+  const codeOut = await provider.getCode(buyToken);
+  if (codeOut === '0x') {
+    throw new Error(`No contract found at ${buyToken}`);
   }
 
   const buyTokenterface = new ethers.utils.Interface([
@@ -42,14 +42,14 @@ export async function getTokenInfo(
 
   // Parallel calls
   const [decimalsIn, decimalsOut] = await Promise.all([
-    buyTokenContract.decimals(),
     sellTokenContract.decimals(),
+    buyTokenContract.decimals(),
   ]);
   console.log('Token decimals:', decimalsIn, decimalsOut);
 
   const [balanceIn, balanceOut] = await Promise.all([
-    buyTokenContract.balanceOf(address),
     sellTokenContract.balanceOf(address),
+    buyTokenContract.balanceOf(address),
   ]);
   console.log(
     'Token balances (in/out):',
@@ -58,18 +58,18 @@ export async function getTokenInfo(
   );
 
   const _amountIn = ethers.utils.parseUnits(amountIn, decimalsIn);
-  // if (_amountIn.gt(balanceIn)) {
-  //   throw new Error('Insufficient buyToken balance');
-  // }
+  if (_amountIn.gt(balanceIn)) {
+    throw new Error('Insufficient sellToken balance');
+  }
   return {
     buyToken: {
       decimals: decimalsIn,
       balance: balanceIn,
-      amount: _amountIn,
       contract: buyTokenContract,
     },
     sellToken: {
       decimals: decimalsOut,
+      amount: _amountIn,
       balance: balanceOut,
       contract: sellTokenContract,
     },

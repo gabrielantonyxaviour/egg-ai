@@ -4,19 +4,22 @@ import {
   getPkpToolRegistryContract,
   NETWORK_CONFIG,
 } from '@lit-protocol/aw-tool';
-
-// import {
-//   SwapAdvancedSettings,
-//   TradeParameters,
-//   TradingSdk,
-//   SupportedChainId,
-//   OrderKind,
-//   SigningScheme,
-// } from "@cowprotocol/cow-sdk";
+import {
+  SwapAdvancedSettings,
+  TradeParameters,
+  TradingSdk,
+  SupportedChainId,
+  OrderKind,
+  SigningScheme,
+} from "@cowprotocol/cow-sdk";
 import Safe from "@safe-global/protocol-kit"
 import { createLitProvider } from './utils/lit-provider';
 import { getTokenInfo } from './utils/get-token-info';
-// import { getGasData } from './utils/get-gas-data';
+import { constants } from "../../constants"
+import { VoidSigner } from "@ethersproject/abstract-signer";
+import { JsonRpcProvider } from "@ethersproject/providers";
+import { createPublicClient, http } from 'viem';
+import { sepolia, arbitrum } from "viem/chains"
 
 declare global {
   // Required Inputs
@@ -58,6 +61,31 @@ declare global {
       params.safeAddress
     )
 
+    const traderParams = {
+      chainId: parseInt(params.chainId) as SupportedChainId,
+      signer: new VoidSigner(
+        params.safeAddress,
+        new JsonRpcProvider(params.rpcUrl)
+      ),
+      appCode: "egg-ai",
+    };
+    const cowSdk = new TradingSdk(traderParams, { enableLogging: false });
+
+    const parameters: TradeParameters = {
+      kind: OrderKind.BUY,
+      sellToken: params.sellToken,
+      sellTokenDecimals: tokenInfo.sellToken.decimals,
+      buyToken: params.buyToken,
+      buyTokenDecimals: tokenInfo.buyToken.decimals,
+      amount: params.amount,
+    };
+    const advancedParameters: SwapAdvancedSettings = {
+      quoteRequest: {
+        // Specify the signing scheme
+        signingScheme: SigningScheme.PRESIGN,
+      },
+    };
+
     const toolPolicy = await fetchToolPolicyFromRegistry(
       pkpToolRegistryContract,
       pkp.tokenId,
@@ -83,7 +111,7 @@ declare global {
             safeAddress: params.safeAddress,
             buyToken: params.buyToken,
             sellToken: params.sellToken,
-            amount: tokenInfo.buyToken.amount.toString(),
+            amount: tokenInfo.sellToken.amount.toString(),
           },
         },
       });
@@ -100,89 +128,74 @@ declare global {
         safeAddress: params.safeAddress,
       }
     )
-    // const gasData = await getGasData(provider, pkp.ethAddress);
-    const storeInterface = new ethers.utils.Interface([
-      'function store(uint256)',
-      'function retrieve() view returns (uint256)',
+
+    const publicClient = createPublicClient({
+      chain: params.chainId == "11155111" ? sepolia : arbitrum,
+      transport: http(params.rpcUrl),
+    });
+    const tokenInterface = new ethers.utils.Interface([
+      'function approve(address spender, uint256 amount) external returns (bool)',
     ]);
-    // const storeContract = new ethers.Contract('0x891ff4ebB5Db6ad420b721C28cc847dD9389F2F4', storeInterface, provider)
-    // const gasLimit = (await storeContract.estimateGas.store(1, { from: pkp.ethAddress })).mul(120).div(100)
 
-    const txData = storeInterface.encodeFunctionData('store', [1]);
-    // const storeTx = {
-    //   to: '0x891ff4ebB5Db6ad420b721C28cc847dD9389F2F4',
-    //   value: "0x0",
-    //   data: txData,
-    // gasLimit: gasLimit.toHexString(),
-    // maxFeePerGas: gasData.maxFeePerGas,
-    // maxPriorityFeePerGas: gasData.maxPriorityFeePerGas,
-    // nonce: gasData.nonce,
-    // chainId: params.chainId,
-    // type: 2,
-    //   operationType: 0
-    // }
-
-    const storeTx = {
-      to: '0x891ff4ebB5Db6ad420b721C28cc847dD9389F2F4',
+    const txData = tokenInterface.encodeFunctionData('approve', [constants[params.chainId].GPv2VaultRelayer, tokenInfo.sellToken.amount]);
+    const approveTx = {
+      to: params.sellToken,
       value: "0x0",
       data: txData,
       operationType: 0
     }
 
     let safeTx = await safe.createTransaction({
-      transactions: [storeTx], onlyCalls: true,
+      transactions: [approveTx], onlyCalls: true,
     })
 
     safeTx = await safe.signTransaction(safeTx)
 
-    const safeTxHash = await safe.executeTransaction(safeTx)
-    console.log(safeTxHash)
+    const { hash: safeApproveTxHash } = await safe.executeTransaction(safeTx)
+    console.log("Approve Transaction ")
+    console.log(safeApproveTxHash)
+
+    await publicClient.waitForTransactionReceipt({
+      hash: safeApproveTxHash as `0x${string}`,
+    });
+
+    const orderId = await cowSdk.postSwapOrder(parameters, advancedParameters);
+    console.log(`Order ID: [${orderId}]`);
+
+    const preSignTransaction = await cowSdk.getPreSignTransaction({
+      orderId,
+      account: params.safeAddress,
+    });
+
+    const safePreSignTx = {
+      to: preSignTransaction.to,
+      value: preSignTransaction.value,
+      data: preSignTransaction.data,
+      operationType: 0,
+    };
+
+    let presignSafeTx = await safe.createTransaction({
+      transactions: [safePreSignTx],
+      onlyCalls: true,
+    });
+    presignSafeTx = await safe.signTransaction(presignSafeTx);
+
+    const { hash: safePresignTxHash } = await safe.executeTransaction(presignSafeTx);
+    console.log("Presign Transaction ")
+    console.log(safePresignTxHash)
+
+    await publicClient.waitForTransactionReceipt({
+      hash: safePresignTxHash as `0x${string}`,
+    });
 
     Lit.Actions.setResponse({
       response: JSON.stringify({
         status: 'success',
-        safeTxHash
+        approveTx: safeApproveTxHash,
+        presignTx: safePresignTxHash
       }),
     });
-    // const provider = new ethers.providers.JsonRpcProvider(params.rpcUrl);
-    // const signer = new VoidSigner(params.pkpEthAddress, provider);
-    // // Add your tool execution logic here
-    // const traderParams = {
-    //   chainId: parseInt(params.chainId) as SupportedChainId,
-    //   signer: signer,
-    //   appCode: "egg-ai",
-    // };
-    // const cowSdk = new TradingSdk(traderParams, { enableLogging: false });
 
-    // const parameters: TradeParameters = {
-    //   kind: params.isBuy ? OrderKind.BUY : OrderKind.SELL,
-    //   sellToken: params.sellToken,
-    //   sellTokenDecimals: params.sellTokenDecimals,
-    //   buyToken: params.buyToken,
-    //   buyTokenDecimals: params.buyTokenDecimals,
-    //   amount: params.amount
-    // }
-    // const advancedParameters: SwapAdvancedSettings = {
-    //   quoteRequest: {
-    //     signingScheme: SigningScheme.PRESIGN,
-    //   },
-    // };
-    // const orderId = await cowSdk.postSwapOrder(parameters, advancedParameters);
-    // console.log(`Order ID: [${orderId}]`);
-
-    // // Get pre-sign transaction
-    // const preSignTransaction = await cowSdk.getPreSignTransaction({
-    //   orderId,
-    //   account: params.pkpEthAddress,
-    // });
-
-
-    // Lit.Actions.setResponse({
-    //   response: JSON.stringify({
-    //     response: 'Success!',
-    //     status: 'success',
-    //   }),
-    // });
   } catch (err: any) {
     console.error('Error:', err);
     Lit.Actions.setResponse({

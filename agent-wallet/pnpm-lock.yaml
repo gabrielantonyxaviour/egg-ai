@@ -230,6 +230,12 @@ importers:
       '@cowprotocol/cow-sdk':
         specifier: ^5.10.0
         version: 5.10.0(ethers@5.7.2)(ipfs-only-hash@4.0.0)(multiformats@11.0.2)
+      '@ethersproject/abstract-signer':
+        specifier: ^5.7.0
+        version: 5.7.0
+      '@ethersproject/providers':
+        specifier: ^5.7.2
+        version: 5.7.2
       '@lit-protocol/aw-tool':
         specifier: workspace:*
         version: link:../aw-tool

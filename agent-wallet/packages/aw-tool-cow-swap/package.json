@@ -6,6 +6,8 @@
   },
   "dependencies": {
     "@cowprotocol/cow-sdk": "^5.10.0",
+    "@ethersproject/abstract-signer": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
     "@lit-protocol/aw-tool": "workspace:*",
     "@safe-global/protocol-kit": "^5.2.2",
     "ethers": "^5.7.2",
