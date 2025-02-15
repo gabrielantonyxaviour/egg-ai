@@ -232,7 +232,7 @@ export default function Layout({
   return (
     <div className="min-h-screen w-full">
       <div className="fixed w-full flex flex-col sm:flex-row justify-end items-end sm:items-center gap-2 sm:gap-4 p-2 sm:p-4 sen">
-        {currentAccount != undefined && (
+        {user && (
           <><div className="relative w-[150px] bg-black h-10 rounded-sm">
             <Button
               onClick={() => {
@@ -346,7 +346,13 @@ export default function Layout({
         loadingStatus != 0 && <OnboardingModal sessionSigs={sessionSigs} currentAccount={currentAccount} loadingStatus={loadingStatus} accounts={accounts} setCurrentAccount={setCurrentAccount} signUp={() => {
           setLoadingStatus(0)
           setShowConnectWalletModal(2)
-        }} />
+        }}
+          completeLogin={() => {
+            setLoadingStatus(0)
+            setShowConnectWalletModal(0)
+          }}
+
+        />
       }
     </div>
   );

@@ -14,7 +14,7 @@ import { Label } from "@/components/ui/label";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { AlertCircle } from "lucide-react";
 import { ScrollArea, ScrollBar } from '../ui/scroll-area';
-import { createPublicClient, FeeCapTooHighError, formatEther, http } from 'viem';
+import { createPublicClient, FeeCapTooHighError, formatEther, http, isAddress } from 'viem';
 import { mainnet } from 'viem/chains'
 import { LitContracts } from '@lit-protocol/contracts-sdk';
 import { litDevnet, toolIpfsCids } from '@/lib/constants';
@@ -32,12 +32,14 @@ interface OnboardingModalProps {
     sessionSigs: SessionSigs | undefined;
     setCurrentAccount: any;
     signUp: () => void;
+    completeLogin: () => void;
 }
 
-export default function OnboardingModal({ loadingStatus, accounts, setCurrentAccount, currentAccount, sessionSigs, error, signUp }: OnboardingModalProps) {
+export default function OnboardingModal({ loadingStatus, accounts, setCurrentAccount, currentAccount, sessionSigs, error, signUp, completeLogin }: OnboardingModalProps) {
     const [selectedValue, setSelectedValue] = useState("0")
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
+    const [recoveryAddress, setRecoveryAddress] = useState('')
     const [copied, setCopied] = useState(false);
     const [refreshed, setRefreshed] = useState(false)
     const [litBalance, setLitBalance] = useState(0);
@@ -254,7 +256,7 @@ export default function OnboardingModal({ loadingStatus, accounts, setCurrentAcc
                 },
                 body: JSON.stringify({
                     pkpEthAddress: currentAccount.ethAddress,
-                    additionalSigner: process.env.NEXT_PUBLIC_AI_AGENT_ADDRESS
+                    additionalSigner: isAddress(recoveryAddress) ? recoveryAddress : process.env.NEXT_PUBLIC_AI_AGENT_ADDRESS,
                 }),
             })
 
@@ -403,6 +405,16 @@ export default function OnboardingModal({ loadingStatus, accounts, setCurrentAcc
                                         required
                                     />
                                 </div>
+                                <div className="space-y-2">
+                                    <Label htmlFor="email">Safe Recovery Address</Label>
+                                    <Input
+                                        id="recovery"
+                                        type="text"
+                                        placeholder="Enter your EOA (optional)"
+                                        value={recoveryAddress}
+                                        onChange={(e) => setRecoveryAddress(e.target.value)}
+                                    />
+                                </div>
 
                                 <div className="space-y-2">
                                     <div className="flex items-center space-x-1">  <Label htmlFor="pkp">Lit PKP Wallet</Label>
@@ -471,6 +483,7 @@ export default function OnboardingModal({ loadingStatus, accounts, setCurrentAcc
                             className="w-full"
                             type='button'
                             onClick={() => {
+                                completeLogin()
                                 router.push('/home')
                             }}
                         >
