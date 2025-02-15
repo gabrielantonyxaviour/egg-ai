@@ -38,9 +38,6 @@
     },
     {
       "path": "./packages/aw-tool-safe-cow-swap"
-    },
-    {
-      "path": "./packages/aw-tool-aw-tool-safe-init"
     }
   ]
 }

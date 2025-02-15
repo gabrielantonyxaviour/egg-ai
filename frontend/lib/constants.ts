@@ -1,10 +1,13 @@
 import { AssetData } from "@/types";
+import { defineChain } from "viem";
 
 export const COLOR_1 = "#faefe0"; // Light Brown
 export const COLOR_2 = '#c49963' // Brown
 export const COLOR_3 = '#d74b1a' // Red
 export const COLOR_4 = '#568428' // Green
 export const COLOR_5 = '#e0be1a' // Yellow
+
+export const toolIpfsCids = ["QmW5KMbaKLVgh2oLegtWVSyY6rBkPCdJJHTGSF3q2qE4fr", "QmZJovPgBBBmuLKRtdVwdV47opNSmLiV2AZCNTtWzeog1Q"]
 
 export const assets: AssetData = {
     "AAVE": {
@@ -264,3 +267,23 @@ export const assets: AssetData = {
         "avax": ""
     }
 }
+
+
+
+export const litDevnet = defineChain({
+    id: 175188,
+    name: 'Chronicle Yellowstone - Lit Protocol Testnet',
+    nativeCurrency: { name: 'tstLPX', symbol: 'tstLPX', decimals: 18 },
+    rpcUrls: {
+        default: {
+            http: ['https://yellowstone-rpc.litprotocol.com'],
+        },
+    },
+    blockExplorers: {
+        default: {
+            name: 'Yellowstone Explorer',
+            url: 'https://yellowstone-explorer.litprotocol.com',
+        },
+    },
+    testnet: true,
+})

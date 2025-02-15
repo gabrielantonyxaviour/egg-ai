@@ -1,1 +1,0 @@
-export { AwToolSafeInit } from './lib/tool';

@@ -55,6 +55,7 @@ export default function useSession() {
 
   return {
     initSession,
+    setSessionSigs,
     sessionSigs,
     loading,
     error,

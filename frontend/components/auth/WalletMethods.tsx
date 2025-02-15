@@ -23,7 +23,7 @@ const WalletMethods = ({ authWithEthWallet, setView }: WalletMethodsProps) => {
                     Connect your web3 wallet
                 </CardTitle>
                 <CardDescription>
-                    Connect your wallet then sign a message to verify you're the owner
+                    Connect your wallet then sign a message to verify you&apos;re the owner
                     of the address.
                 </CardDescription>
             </CardHeader>

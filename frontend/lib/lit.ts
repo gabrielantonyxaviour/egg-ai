@@ -32,7 +32,10 @@ export interface ToolRegistryConfig {
   contractAddress: string;
 }
 export const DOMAIN = process.env.NEXT_PUBLIC_DOMAIN || 'localhost';
-export const ORIGIN = `https://${DOMAIN}`
+export const ORIGIN =
+  process.env.NEXT_PUBLIC_VERCEL_ENV === 'production'
+    ? `https://${DOMAIN}`
+    : `http://${DOMAIN}:3004`;
 
 export const SELECTED_LIT_NETWORK = ((process.env
   .NEXT_PUBLIC_LIT_NETWORK as string) ||

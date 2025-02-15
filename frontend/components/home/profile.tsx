@@ -10,7 +10,7 @@ import { Progress } from "@/components/ui/progress";
 import { Button } from "../ui/button";
 import { ScrollArea } from "../ui/scroll-area";
 export default function Profile({ close }: { close: () => void }) {
-    const { user, ethBalance, solBalance, avaxBalance, totalEquity, pnl, setUser } = useEnvironmentStore((store => store))
+    const { user, arbSafeBalance, avaxSafeBalance, totalEquity, pnl, setUser } = useEnvironmentStore((store => store))
     const [copiedEVM, setCopiedEVM] = useState<boolean>(false);
     const [copiedSOL, setCopiedSOL] = useState<boolean>(false);
     const [expectedPNL, setExpectedPNL] = useState(5);
@@ -107,16 +107,17 @@ export default function Profile({ close }: { close: () => void }) {
 
                     <div className="space-y-1">
                         <div className="flex items-center space-x-2">
-                            <h3 className="font-semibold text-base">Wallet Address</h3>
+                            <Image src="/safe.png" width={25} height={25} alt="sol" />
+                            <h3 className="font-semibold text-base">Safe Multi Sig Address</h3>
                             <button
-                                onClick={() => handleCopy(user?.evm_address || '', 'EVM')}
+                                onClick={() => handleCopy(user?.safe_address || '', 'EVM')}
                                 className="hover:bg-gray-100 rounded transition-colors p-1"
                             >
                                 <Copy size={12} />
                             </button>
                             {copiedEVM && <span className="text-sm">Copied!</span>}
                         </div>
-                        <p className="text-sm break-all">{user?.evm_address}</p>
+                        <p className="text-sm break-all">{user?.safe_address}</p>
                     </div>
 
                     <div className="space-y-1">
@@ -124,11 +125,11 @@ export default function Profile({ close }: { close: () => void }) {
                         <div className="flex flex-wrap gap-4">
                             <div className="flex items-center space-x-2">
                                 <Image src="/chains/arb.png" width={25} height={25} alt="arb" />
-                                <p className="text-sm">{parseFloat(ethBalance).toFixed(2)} ETH</p>
+                                <p className="text-sm">{parseFloat(arbSafeBalance).toFixed(2)} ETH</p>
                             </div>
                             <div className="flex items-center space-x-2">
                                 <Image src="/chains/avax.png" width={25} height={25} alt="avax" />
-                                <p className="text-sm">{parseFloat(avaxBalance).toFixed(2)} AVAX</p>
+                                <p className="text-sm">{parseFloat(avaxSafeBalance).toFixed(2)} AVAX</p>
                             </div>
                         </div>
                     </div>

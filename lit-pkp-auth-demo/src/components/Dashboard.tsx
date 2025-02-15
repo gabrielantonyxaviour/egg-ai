@@ -83,10 +83,10 @@ export default function Dashboard({
     console.log("Tool Registry Contract")
     console.log(toolRegistryContract.address)
     console.log("Tx Params")
-    console.log({
-      tokenId: currentAccount.tokenId
-      , delegatee: delegatee
-    })
+    console.log([
+      currentAccount.tokenId
+      , [currentAccount.ethAddress]
+    ])
     const tx = await toolRegistryContract.addDelegatees(
       currentAccount.tokenId
       , [currentAccount.ethAddress], {
@@ -118,7 +118,6 @@ export default function Dashboard({
     await litContracts.connect();
 
     console.log("Lit Contracts connected");
-
     const addPermittedActionTxOne = await litContracts.addPermittedAction({
       ipfsId: toolIpfsCids[0],
       authMethodScopes: [AUTH_METHOD_SCOPE.SignAnything],
@@ -195,8 +194,7 @@ export default function Dashboard({
       [toolIpfsCids[1]],
       [delegatee], {
       gasLimit: 500000
-    }
-    );
+    });
 
     console.log("Transaction sent:", tx);
 

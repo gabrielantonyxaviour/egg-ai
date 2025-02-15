@@ -1,14 +1,17 @@
 import { StateCreator } from "zustand";
 import { Chef, ExecutedTrade, TradePlay, User } from "@/types";
+import { IRelayPKP, SessionSigs } from "@lit-protocol/types";
 
 interface GlobalState {
   user: User | null;
   chef: Chef | null;
-  ethBalance: string;
-  solBalance: string;
-  avaxBalance: string;
+  currentPkpAccount: IRelayPKP | null;
+  currentSessionSigs: SessionSigs | null;
+  arbPkpBalance: string;
+  avaxPkpBalance: string;
+  arbSafeBalance: string;
+  avaxSafeBalance: string;
   ethPrice: string;
-  solPrice: string;
   avaxPrice: string;
   totalEquity: string;
   pnl: string;
@@ -20,13 +23,15 @@ interface GlobalState {
 interface GlobalActions {
   setUser: (user: User | null) => void;
   setChef: (chef: Chef | null) => void;
-  setEthBalance: (balance: string) => void;
-  setSolBalance: (balance: string) => void;
-  setAvaxBalance: (balance: string) => void;
+  setArbPkpBalance: (balance: string) => void;
+  setAvaxPkpBalance: (balance: string) => void;
+  setArbSafeBalance: (balance: string) => void;
+  setAvaxSafeBalance: (balance: string) => void;
   setEthPrice: (price: string) => void;
-  setSolPrice: (price: string) => void;
   setAvaxPrice: (price: string) => void;
   setTotalEquity: (equity: string) => void;
+  setCurrentPkpAccount: (pkp: IRelayPKP) => void;
+  setCurrentSessionSigs: (sessionSigs: SessionSigs) => void;
   setPnl: (pnl: string) => void;
   setUserFollows: (user_follows: string[]) => void;
   setUserFollow: (user_follow: string) => void;
@@ -39,11 +44,13 @@ export type GlobalSlice = GlobalState & GlobalActions;
 
 export const initialGlobalState: GlobalState = {
   user: null,
-  ethBalance: "0",
-  solBalance: "0",
-  avaxBalance: "0",
+  currentPkpAccount: null,
+  currentSessionSigs: null,
+  arbPkpBalance: "0",
+  avaxPkpBalance: "0",
+  arbSafeBalance: "0",
+  avaxSafeBalance: "0",
   ethPrice: "0",
-  solPrice: "0",
   avaxPrice: "0",
   totalEquity: "0",
   chef: null,
@@ -63,18 +70,23 @@ export const createGlobalSlice: StateCreator<
   setUser: (user) => {
     set({ user });
   },
-  setEthBalance: (ethBalance) => {
-    set({ ethBalance });
-  },
-  setSolBalance: (solBalance) => {
-    set({ solBalance });
-  },
   setEthPrice: (ethPrice) => {
     set({ ethPrice });
-  }
-  ,
-  setSolPrice: (solPrice) => {
-    set({ solPrice });
+  },
+  setAvaxPrice: (avaxPrice) => {
+    set({ avaxPrice });
+  },
+  setArbPkpBalance: (arbPkpBalance) => {
+    set({ arbPkpBalance });
+  },
+  setAvaxPkpBalance: (avaxPkpBalance) => {
+    set({ avaxPkpBalance });
+  },
+  setArbSafeBalance: (arbSafeBalance) => {
+    set({ arbSafeBalance });
+  },
+  setAvaxSafeBalance: (avaxSafeBalance) => {
+    set({ avaxSafeBalance });
   },
   setTotalEquity: (totalEquity) => {
     set({ totalEquity });
@@ -120,13 +132,13 @@ export const createGlobalSlice: StateCreator<
       }
     });
   },
-  setAvaxBalance: (avaxBalance) => {
-    set({ avaxBalance });
-  },
-  setAvaxPrice: (avaxPrice) => {
-    set({ avaxPrice });
-  },
   setActions: (actions) => {
     set({ actions });
+  },
+  setCurrentPkpAccount: (currentPkpAccount) => {
+    set({ currentPkpAccount });
+  },
+  setCurrentSessionSigs: (currentSessionSigs) => {
+    set({ currentSessionSigs });
   }
 });

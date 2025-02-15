@@ -10,6 +10,9 @@ import Mode from "./mode";
 import Chef from "../chef/profile";
 import { useRouter } from "next/navigation";
 import Chat from "./chat";
+import { createPublicClient, formatEther, http } from "viem";
+import { arbitrumSepolia, avalancheFuji } from "viem/chains";
+import useAccounts from "@/hooks/useAccounts";
 
 export default function Home() {
     const nav = [
@@ -44,7 +47,7 @@ export default function Home() {
             image: "/home/chef.png",
         }
     ];
-    const { user, setEthPrice, setSolPrice, setEthBalance, setAvaxBalance, setAvaxPrice, setSolBalance, setTotalEquity } = useEnvironmentStore(store => store)
+    const { user, setEthPrice, setArbPkpBalance, setAvaxPkpBalance, setArbSafeBalance, setAvaxSafeBalance, setAvaxPrice, setTotalEquity, currentPkpAccount, currentSessionSigs } = useEnvironmentStore(store => store)
     const [showWindows, setShowWindows] = useState([false, false, false, false, false, false]);
     const router = useRouter();
     const [searchUsername, setSearchUsername] = useState('')
@@ -57,22 +60,45 @@ export default function Home() {
             try {
                 const res = await fetch(`/api/alchemy/prices`);
                 const { eth, avax, error } = await res.json();
+                console.log("PRICES!")
                 console.log({ eth, avax, error })
-                // const { eth, sol, error } = await res.json();
                 if (error) throw new Error(error);
                 setEthPrice(eth)
                 setAvaxPrice(avax)
-                // setSolPrice(sol)
-                // const bRes = await fetch(`/api/balances?eth=${user?.evm_address}&sol=${user?.solana_address}&prod=${process.env.NEXT_PUBLIC_IS_PROD}`);
-                const bRes = await fetch(`/api/balances?eth=${user?.evm_address}&prod=${process.env.NEXT_PUBLIC_IS_PROD}`);
-                // const { ethBalance, solBalance } = await bRes.json();
-                const { ethBalance, avaxBalance } = await bRes.json();
-                setEthBalance(ethBalance)
-                setAvaxBalance(avaxBalance)
-                // setSolBalance(solBalance)
-                console.log({ ethBalance, avaxBalance })
-                setTotalEquity(((parseFloat(ethBalance) * parseFloat(eth)) + (parseFloat(avaxBalance) * parseFloat(avax))).toFixed(2))
-                // setTotalEquity((parseFloat(ethBalance) * parseFloat(eth) + parseFloat(solBalance) * parseFloat(sol)).toFixed(2))
+                console.log('Creating Arbitrum public client');
+                const arbPublicClient = createPublicClient({
+                    chain: arbitrumSepolia,
+                    transport: http()
+                });
+                console.log('Fetching Arbitrum balance for address:', currentPkpAccount?.ethAddress);
+                const balance = parseFloat(formatEther(await arbPublicClient.getBalance({
+                    address: currentPkpAccount?.ethAddress as `0x${string}`,
+                })));
+                console.log('Fetched Arbitrum balance:', balance);
+                setArbPkpBalance(balance.toString());
+
+                console.log('Creating Avalanche public client');
+                const avaxPublicClient = createPublicClient({
+                    chain: avalancheFuji,
+                    transport: http()
+                });
+                console.log('Fetching Avalanche balance for address:', currentPkpAccount?.ethAddress);
+                const balance2 = parseFloat(formatEther(await avaxPublicClient.getBalance({
+                    address: currentPkpAccount?.ethAddress as `0x${string}`,
+                })));
+                console.log('Fetched Avalanche balance:', balance2);
+                setAvaxPkpBalance(balance2.toString());
+                const safeArbBalance = parseFloat(formatEther(await arbPublicClient.getBalance({
+                    address: user.safe_address as `0x${string}`,
+                })));
+                console.log('Fetched Arbitrum safe balance:', safeArbBalance);
+                const safeAvaxBalance = parseFloat(formatEther(await avaxPublicClient.getBalance({
+                    address: user.safe_address as `0x${string}`,
+                })));
+                console.log('Fetched Avalanche safe balance:', safeAvaxBalance);
+                setAvaxSafeBalance(safeAvaxBalance.toString());
+                setArbSafeBalance(safeArbBalance.toString());
+                setTotalEquity(((safeArbBalance * parseFloat(eth)) + (safeAvaxBalance * parseFloat(avax))).toFixed(2))
             } catch (error) {
                 console.error('Failed to fetch data:', error);
             }

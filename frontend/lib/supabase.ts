@@ -11,7 +11,7 @@ export async function getUser(username: string): Promise<User | null> {
     const { data, error } = await supabase
         .from('users')
         .select('*')
-        .eq('username', username)
+        .eq('id', username)
         .single();
 
     if (error) {
@@ -27,7 +27,7 @@ export async function getFollows(id: string): Promise<string[]> {
     const { data, error } = await supabase
         .from('user_follows')
         .select('chef_id')
-        .eq('username', id);
+        .eq('user_id', id);
 
     if (error) {
         console.error(`Error fetching follows: ${error.message}`);
@@ -87,20 +87,20 @@ export async function getAllChefs(): Promise<Chef[]> {
 }
 
 export async function createChef({
-    username, name, bio, image, sub_fee,
+    user_id, name, bio, image, sub_fee,
     niche
 }: {
-    username: string;
+    user_id: string;
     name: string;
     bio: string;
     niche: string[];
     image?: string;
     sub_fee?: string;
 }): Promise<Chef | null> {
-    console.log(`Creating chef with username: ${username}`);
+    console.log(`Creating chef with user id: ${user_id}`);
     const { data, error } = await supabase
         .from('chefs')
-        .insert([{ username, name, bio, image, niche, sub_fee }])
+        .insert([{ user_id, name, bio, image, niche, sub_fee }])
         .select()
         .single();
 
@@ -113,19 +113,19 @@ export async function createChef({
 }
 
 export async function updateChef({
-    username, name, bio, image, sub_fee,
+    user_id, name, bio, image, sub_fee,
 }: {
-    username: string;
+    user_id: string;
     name?: string;
     bio?: string;
     image?: string;
     sub_fee?: string;
 }): Promise<Chef | null> {
-    console.log(`Updating chef with username: ${username}`);
+    console.log(`Updating chef with user_id: ${user_id}`);
     const { data, error } = await supabase
         .from('chefs')
         .update({ name, bio, image, sub_fee })
-        .eq('username', username)
+        .eq('user_id', user_id)
         .select()
         .single();
 
@@ -137,21 +137,11 @@ export async function updateChef({
     return data;
 }
 
-export async function createUser({
-    username, name, image, evm_address, evm_p_key, solana_address, solana_p_key,
-}: {
-    username: string;
-    name: string;
-    image?: string;
-    evm_address?: string;
-    evm_p_key?: string;
-    solana_address?: string;
-    solana_p_key?: string;
-}): Promise<User | null> {
-    console.log(`Creating user with username: ${username}`);
+export async function createUser(user: User): Promise<User | null> {
+    console.log(`Creating user with username: ${user.id}`);
     const { data, error } = await supabase
         .from('users')
-        .insert([{ username, name, image, evm_address, evm_p_key, solana_address, solana_p_key }])
+        .insert([user])
         .select()
         .single();
 
@@ -163,26 +153,12 @@ export async function createUser({
     return data;
 }
 
-export async function updateUser({
-    username, name, image, evm_address, evm_p_key, solana_address, solana_p_key, mode, profit_goal, profit_timeline, paused
-}: {
-    username: string;
-    name?: string;
-    image?: string;
-    evm_address?: string;
-    evm_p_key?: string;
-    solana_address?: string;
-    solana_p_key?: string;
-    mode?: string;
-    profit_goal?: number;
-    profit_timeline?: number;
-    paused?: boolean;
-}): Promise<User | null> {
-    console.log(`Updating user with username: ${username}`);
+export async function updateUser(user: User): Promise<User | null> {
+    console.log(`Updating user with user id: ${user.id}`);
     const { data, error } = await supabase
         .from('users')
-        .update({ name, image, evm_address, evm_p_key, solana_address, solana_p_key, mode, profit_goal, profit_timeline, paused })
-        .eq('username', username)
+        .update(user)
+        .eq('id', user.id)
         .select()
         .single();
 
@@ -215,16 +191,16 @@ export async function storeImage(fileName: string, file: File): Promise<string> 
 }
 
 export async function followChef({
-    chef_id, username, confidence_level
+    chef_id, user_id, confidence_level
 }: {
     chef_id: string;
-    username: string;
+    user_id: string;
     confidence_level: number;
 }) {
-    console.log(`${username} is following chef with id: ${chef_id}`);
+    console.log(`${user_id} is following chef with id: ${chef_id}`);
     const { data, error } = await supabase
         .from('user_follows')
-        .upsert({ chef_id, username, confidence_level, last_subscribed_at: new Date() }, { onConflict: 'chef_id,username' })
+        .upsert({ chef_id, user_id, confidence_level, last_subscribed_at: new Date() }, { onConflict: 'chef_id,user_id' })
         .select()
         .single();
     if (error) {
@@ -256,12 +232,12 @@ export async function createPlay({
 }
 
 export async function fetchExecutedTrades(
-    username: string
+    user_id: string
 ): Promise<ExecutedTrade[]> {
     const { data: executedTrades, error: tradesError } = await supabase
         .from('executed_trades')
         .select('*')
-        .eq('username', username)
+        .eq('user_id', user_id)
         .order('created_at', { ascending: false })
 
     if (tradesError) throw tradesError
@@ -272,7 +248,7 @@ export async function fetchExecutedTrades(
         .select(`
         *,
         chef:chefs(
-            username
+            user_id
         )
     `)
         .in('id', executedTrades.map(trade => trade.trade_play_id))

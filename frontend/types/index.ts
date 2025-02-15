@@ -1,21 +1,19 @@
 export type User = {
-    username: string;
-    name?: string | null;
-    image?: string | null;
-    paused?: boolean | null;
-    evm_address?: string | null;
-    evm_p_key?: string | null;
+    id: string;
+    name: string;
+    paused: boolean;
     mode: 'TREN' | 'CHAD';
-    profit_timeline?: number | null;
+    agent_url: string;
+    pkp_address: string;
+    safe_address: string;
     profit_goal?: number | null;
-    solana_address?: string | null;
-    solana_p_key?: string | null;
-    agent_url?: string | null;
+    profit_timeline?: number | null;
+    email?: string | null;
 };
 
 export type Chef = {
     id: string;
-    username: string;
+    user_id: string;
     name: string;
     bio: string;
     image: string;
@@ -33,7 +31,7 @@ export interface AssetData {
 }
 export type TradePlay = {
     id?: string;
-    created_at?: string;
+    created_at: string;
     chef_id: string;
     chef?: Chef;
     dex: string;
@@ -79,7 +77,7 @@ export type ExecutedTrade = {
     trade_play_id: string;
     trade_play: TradePlay;
     created_at: string;
-    username: string;
+    user_id: string;
     amount: number;
     pnl_usdt: number;
     tx_hash: string;
