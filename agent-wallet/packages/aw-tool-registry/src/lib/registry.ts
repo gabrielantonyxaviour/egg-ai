@@ -4,6 +4,7 @@ import { UniswapSwap } from '@lit-protocol/aw-tool-uniswap-swap';
 import { SignEcdsa } from '@lit-protocol/aw-tool-sign-ecdsa';
 import { Enso } from '@lit-protocol/aw-tool-enso';
 import { SafeCowSwap } from '@lit-protocol/aw-tool-safe-cow-swap';
+import { AwToolSafeInit } from '@lit-protocol/aw-tool-aw-tool-safe-init';
 
 /**
  * Represents the Lit network environment.
@@ -126,3 +127,4 @@ registerTool('UniswapSwap', UniswapSwap);
 registerTool('SignEcdsa', SignEcdsa);
 registerTool('Enso', Enso);
 registerTool('SafeCowSwap', SafeCowSwap);
+registerTool('AwToolSafeInit', AwToolSafeInit);
