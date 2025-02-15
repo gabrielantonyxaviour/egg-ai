@@ -3,7 +3,7 @@ import { ERC20Transfer } from '@lit-protocol/aw-tool-erc20-transfer';
 import { UniswapSwap } from '@lit-protocol/aw-tool-uniswap-swap';
 import { SignEcdsa } from '@lit-protocol/aw-tool-sign-ecdsa';
 import { Enso } from '@lit-protocol/aw-tool-enso';
-import { SafeCowSwap } from '@lit-protocol/aw-tool-safe-cow-swap';
+import { CowSwap } from '@lit-protocol/aw-tool-cow-swap';
 
 /**
  * Represents the Lit network environment.
@@ -125,4 +125,4 @@ registerTool('ERC20Transfer', ERC20Transfer);
 registerTool('UniswapSwap', UniswapSwap);
 registerTool('SignEcdsa', SignEcdsa);
 registerTool('Enso', Enso);
-registerTool('SafeCowSwap', SafeCowSwap);
+registerTool('CowSwap', CowSwap);

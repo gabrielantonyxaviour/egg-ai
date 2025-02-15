@@ -11,12 +11,10 @@ declare global {
   const pkpTokenId: string;
   const delegateeAddress: string;
   const toolParameters: {
-    kind: string;
-    sellToken: string;
-    sellTokenDecimals: number;
+    safeAddress: string;
     buyToken: string;
-    buyTokenDecimals: number;
-    amount: number;
+    sellToken: string;
+    amount: string;
   };
 }
 
@@ -44,9 +42,28 @@ declare global {
     parentToolIpfsCid,
     delegateeAddress,
     [
-      'allowedTokenAddresses'
+      'assets'
     ]
   );
-  console.log(policyParameters)
-  // Add your policy validation logic here using policyParameters
+
+  let assets: string[] = [];
+
+  for (const parameter of policyParameters) {
+    const value = ethers.utils.toUtf8String(parameter.value);
+
+    switch (parameter.name) {
+      case 'assets':
+        assets = JSON.parse(value);
+        assets = assets.map((addr: string) =>
+          ethers.utils.getAddress(addr)
+        );
+        console.log(`Formatted assets: ${assets}`);
+        break;
+    }
+  }
+  console.log("Validating assets...");
+  if (!assets.includes(toolParameters.sellToken) || !assets.includes(toolParameters.buyToken)) {
+    throw new Error(`Asset ${toolParameters.sellToken} or ${toolParameters.buyToken} is not allowed`);
+  }
+  console.log('Policy parameters validated');
 })();

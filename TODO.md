@@ -114,3 +114,5 @@ docker buildx build --platform=linux/amd64  -t eggai/eggai-chick .
 11. Make responsive
 12. Call pappa
 13. Meet romario
+
+0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14,0x0625aFB445C3B6B7B929342a04A22599fd5dBB59,0xbe72E441BF55620febc26715db68d3494213D8Cb,0x58Eb19eF91e8A6327FEd391b51aE1887b833cc91

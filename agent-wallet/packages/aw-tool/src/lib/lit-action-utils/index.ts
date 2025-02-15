@@ -18,6 +18,7 @@ declare global {
       formatEther: any;
       arrayify: any;
       keccak256: any;
+      hashMessage: any;
       serializeTransaction: any;
       joinSignature: any;
       isHexString: any;
@@ -25,6 +26,7 @@ declare global {
       defaultAbiCoder: any;
       toUtf8Bytes: any;
       toUtf8String: any;
+      _TypedDataEncoder: any;
     };
     BigNumber: any;
     Contract: any;

@@ -1,13 +1,16 @@
 {
-  "name": "@lit-protocol/aw-tool-safe-cow-swap",
+  "name": "@lit-protocol/aw-tool-cow-swap",
   "version": "0.1.0-1",
   "publishConfig": {
     "access": "public"
   },
   "dependencies": {
+    "@cowprotocol/cow-sdk": "^5.10.0",
     "@lit-protocol/aw-tool": "workspace:*",
+    "@safe-global/protocol-kit": "^5.2.2",
     "ethers": "^5.7.2",
     "tslib": "^2.8.1",
+    "viem": "^2.23.2",
     "zod": "^3.24.1"
   },
   "devDependencies": {
@@ -24,7 +27,7 @@
     "!**/*.tsbuildinfo"
   ],
   "nx": {
-    "sourceRoot": "packages/aw-tool-safe-cow-swap/src",
+    "sourceRoot": "packages/aw-tool-cow-swap/src",
     "projectType": "library",
     "targets": {
       "build": {
@@ -33,11 +36,11 @@
           "{options.outputPath}"
         ],
         "options": {
-          "outputPath": "packages/aw-tool-safe-cow-swap/dist",
-          "main": "packages/aw-tool-safe-cow-swap/src/index.ts",
-          "tsConfig": "packages/aw-tool-safe-cow-swap/tsconfig.lib.json",
+          "outputPath": "packages/aw-tool-cow-swap/dist",
+          "main": "packages/aw-tool-cow-swap/src/index.ts",
+          "tsConfig": "packages/aw-tool-cow-swap/tsconfig.lib.json",
           "assets": [
-            "packages/aw-tool-safe-cow-swap/*.md"
+            "packages/aw-tool-cow-swap/*.md"
           ]
         }
       },
@@ -50,11 +53,11 @@
           "commands": [
             "node tools/scripts/build-lit-action.js"
           ],
-          "cwd": "packages/aw-tool-safe-cow-swap",
+          "cwd": "packages/aw-tool-cow-swap",
           "parallel": false
         },
         "outputs": [
-          "{workspaceRoot}/packages/aw-tool-safe-cow-swap/dist/deployed-lit-action.js"
+          "{workspaceRoot}/packages/aw-tool-cow-swap/dist/deployed-lit-action.js"
         ]
       },
       "deploy": {
@@ -66,7 +69,7 @@
           "commands": [
             "node tools/scripts/deploy-lit-action.js"
           ],
-          "cwd": "packages/aw-tool-safe-cow-swap"
+          "cwd": "packages/aw-tool-cow-swap"
         }
       },
       "publish": {
@@ -79,6 +82,6 @@
         }
       }
     },
-    "name": "aw-tool-safe-cow-swap"
+    "name": "aw-tool-cow-swap"
   }
 }

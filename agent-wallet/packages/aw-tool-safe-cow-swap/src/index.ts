@@ -1,1 +1,0 @@
-export { SafeCowSwap } from './lib/tool';

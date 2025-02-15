@@ -1,6 +1,6 @@
-# AW-Tool SafeCowSwap Documentation
+# AW-Tool CowSwap Documentation
 
-The `aw-tool-safe-cow-swap` package provides functionality for performing ECDSA signing operations using Lit Protocol's PKPs (Programmable Key Pairs). This tool enables secure signing of arbitrary messages or transactions while enforcing policy-based controls.
+The `aw-tool-cow-swap` package provides functionality for performing ECDSA signing operations using Lit Protocol's PKPs (Programmable Key Pairs). This tool enables secure signing of arbitrary messages or transactions while enforcing policy-based controls.
 
 ---
 

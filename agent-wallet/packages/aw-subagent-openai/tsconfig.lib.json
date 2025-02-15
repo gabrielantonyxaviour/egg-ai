@@ -19,13 +19,13 @@
       "path": "../aw-tool-sign-ecdsa/tsconfig.lib.json"
     },
     {
-      "path": "../aw-tool-safe-cow-swap/tsconfig.lib.json"
-    },
-    {
       "path": "../aw-tool-erc20-transfer/tsconfig.lib.json"
     },
     {
       "path": "../aw-tool-enso/tsconfig.lib.json"
+    },
+    {
+      "path": "../aw-tool-cow-swap/tsconfig.lib.json"
     },
     {
       "path": "../aw-tool-registry/tsconfig.lib.json"

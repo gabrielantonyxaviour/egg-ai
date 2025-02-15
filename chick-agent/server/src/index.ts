@@ -12,6 +12,7 @@ import { isHttpError } from "http-errors";
 import { ElizaService } from "./services/eliza.service.js";
 import { NgrokService } from "./services/ngrok.service.js";
 import { SupabaseService } from "./services/supabase.service.js";
+import { LitService } from "./services/lit.service.js";
 
 // Convert ESM module URL to filesystem path
 const __filename = fileURLToPath(import.meta.url);
@@ -80,9 +81,10 @@ app.listen(port, async () => {
 
     await elizaService.start();
     await supabaseService.start()
-
+    const litService = await LitService.getInstance()
     services.push(elizaService);
     services.push(supabaseService);
+    services.push(litService);
 
     if (process.env.NODE_ENV == "dev") {
       const ngrokService = NgrokService.getInstance();

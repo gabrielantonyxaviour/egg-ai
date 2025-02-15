@@ -1,0 +1,18 @@
+{
+    "sepolia": {
+        "weth": "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
+        "cow": "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
+        "usdc": "0xbe72E441BF55620febc26715db68d3494213D8Cb",
+        "usdt": "0x58Eb19eF91e8A6327FEd391b51aE1887b833cc91",
+        "array": [
+            "0xfFf9976782d46CC05630D1f6eBAb18b2324d6B14",
+            "0x0625aFB445C3B6B7B929342a04A22599fd5dBB59",
+            "0xbe72E441BF55620febc26715db68d3494213D8Cb",
+            "0x58Eb19eF91e8A6327FEd391b51aE1887b833cc91"
+        ],
+        "pkp": "0x9921202Ad0088A3316CDf3918c5d506e321AB1a1",
+        "safe": "0x5Fb528A3A9C3C4f3354a072B2AA0b1b0eF259938",
+        "policy": "QmbnqHFQZCdVMHA6E8UVDUa77t7uAozwefsjpDncSNRZcg",
+        "action": "QmS2yDDEL6H1fNSTqB14WoZjADHhM6n3FuunJZ6PpbeWCm"
+    }
+}

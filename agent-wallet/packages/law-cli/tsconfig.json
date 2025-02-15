@@ -10,13 +10,13 @@
       "path": "../aw-tool-sign-ecdsa"
     },
     {
-      "path": "../aw-tool-safe-cow-swap"
-    },
-    {
       "path": "../aw-tool-erc20-transfer"
     },
     {
       "path": "../aw-tool-enso"
+    },
+    {
+      "path": "../aw-tool-cow-swap"
     },
     {
       "path": "../aw-tool-registry"
