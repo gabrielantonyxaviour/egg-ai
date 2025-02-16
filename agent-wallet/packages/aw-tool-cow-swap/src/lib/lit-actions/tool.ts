@@ -79,9 +79,9 @@ declare global {
       buyTokenDecimals: tokenInfo.buyToken.decimals,
       amount: params.amount,
     };
+
     const advancedParameters: SwapAdvancedSettings = {
       quoteRequest: {
-        // Specify the signing scheme
         signingScheme: SigningScheme.PRESIGN,
       },
     };
