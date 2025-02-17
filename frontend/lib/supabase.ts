@@ -6,12 +6,12 @@ const supabaseAnonKey = process.env.SUPABASE_KEY!;
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
-export async function getUser(username: string): Promise<User | null> {
-    console.log(`Fetching user with username: ${username}`);
+export async function getUser(user_id: string): Promise<User | null> {
+    console.log(`Fetching user with user_id: ${user_id}`);
     const { data, error } = await supabase
         .from('users')
         .select('*')
-        .eq('id', username)
+        .eq('id', user_id)
         .single();
 
     if (error) {
@@ -52,13 +52,13 @@ export async function getRecipes(id: string): Promise<TradePlay[]> {
     return data;
 
 }
-export async function getChef(username: string): Promise<Chef | null> {
-    console.log(`Fetching chef with username: ${username}`);
+export async function getChef(user_id: string): Promise<Chef | null> {
+    console.log(`Fetching chef with user_id: ${user_id}`);
 
     const { data, error } = await supabase
         .from('chef_profile')
         .select('*')
-        .eq('username', username)
+        .eq('username', user_id)
         .single();
 
 
@@ -138,7 +138,7 @@ export async function updateChef({
 }
 
 export async function createUser(user: User): Promise<User | null> {
-    console.log(`Creating user with username: ${user.id}`);
+    console.log(`Creating user with user_id: ${user.id}`);
     const { data, error } = await supabase
         .from('users')
         .insert([user])

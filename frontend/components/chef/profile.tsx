@@ -5,19 +5,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "../ui/button";
 import { Badge } from "../ui/badge";
+import { Chef } from "@/types";
 
-export type Chef = {
-    id: string;
-    username: string;
-    name: string;
-    bio: string;
-    image: string;
-    sub_fee: number;
-    niche: string[];
-    total_subscribers: number;
-    avg_pnl_percentage: number;
-    avg_calls_per_day: number;
-}
 
 export default function ChefProfile({ chef_id, close }: { chef_id: string; close: () => void }) {
     const { user, chef, user_follows, setUserFollow } = useEnvironmentStore((store) => store);
@@ -66,13 +55,12 @@ export default function ChefProfile({ chef_id, close }: { chef_id: string; close
                     <Avatar className="h-24 w-24">
                         <AvatarImage src={chefData.image || ''} />
                         <AvatarFallback>
-                            {chefData.name?.charAt(0) || chefData.username.charAt(0)}
+                            {chefData.name?.charAt(0) || chefData.user_id.charAt(0)}
                         </AvatarFallback>
                     </Avatar>
                     <div className="space-y-2">
                         <div>
-                            <h2 className="text-2xl font-bold">{chefData.name || chefData.username}</h2>
-                            <p className="text-gray-600">@{chefData.username}</p>
+                            <h2 className="text-2xl font-bold">{chefData.name || chefData.user_id}</h2>
                         </div>
                         <div className="flex flex-wrap gap-2 mt-1.5 ">
                             {chefData.niche.map((tag) => (
@@ -135,7 +123,7 @@ export default function ChefProfile({ chef_id, close }: { chef_id: string; close
 
                                         'Content-Type': 'application/json',
                                     }, body: JSON.stringify({
-                                        username: user.username,
+                                        username: user.id,
                                         chef_id: chefData.id,
                                         confidence_level: 80
 

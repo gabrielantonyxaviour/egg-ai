@@ -83,7 +83,7 @@ export default function ChefHome() {
                 )}
                 {showWindows[0] && (
                     <Chef
-                        chef_id={user.username}
+                        chef_id={user.id}
                         close={() => {
                             setShowWindows((prev) =>
                                 prev.map((val, index) => (index === 0 ? !val : val))

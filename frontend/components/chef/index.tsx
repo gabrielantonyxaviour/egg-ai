@@ -18,10 +18,10 @@ export default function Chef() {
             return;
         }
 
-        console.log(`Fetching chef data for user: ${user.username}`);
+        console.log(`Fetching chef data for user: ${user.id}`);
         (async () => {
             try {
-                const response = await fetch(`/api/supabase/get-chef?username=${user.username}`, {
+                const response = await fetch(`/api/supabase/get-chef?username=${user.id}`, {
                     method: "GET",
                     headers: {
                         "Content-Type": "application/json",

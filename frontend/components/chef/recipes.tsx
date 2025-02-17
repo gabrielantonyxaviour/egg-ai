@@ -15,7 +15,7 @@ export default function Recipes({ setOpenDetailedRecipe, close }: { setOpenDetai
     useEffect(() => {
         if (chef == undefined) return;
 
-        console.log(`Fetching recipes for chef: ${chef.username}`);
+        console.log(`Fetching recipes for chef: ${chef.name}`);
 
         (async () => {
             try {

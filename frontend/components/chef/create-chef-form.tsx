@@ -25,7 +25,7 @@ export default function CreateChefForm() {
 
     const nicheOptions = [
         { id: 'spot', label: 'Spot Trading' },
-        { id: 'futures', label: 'Futures Trading' },
+        { id: 'perps', label: 'Perps Trading' },
         { id: 'memecoins', label: 'Memecoins' },
     ]
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -65,7 +65,7 @@ export default function CreateChefForm() {
 
         const formData = new FormData()
         formData.append('name', name)
-        formData.append('username', user?.username || "")
+        formData.append('user_id', user?.id || "")
         formData.append('bio', bio)
         formData.append('image', image)
         formData.append('niches', JSON.stringify(niches))
@@ -108,10 +108,10 @@ export default function CreateChefForm() {
                             />
                         </div>
                         <div className='space-y-2 w-1/2 pl-1'>
-                            <Label htmlFor="name">Username</Label>
+                            <Label htmlFor="name">User Id</Label>
                             <Input
-                                id="username"
-                                value={user?.username}
+                                id="user_id"
+                                value={user?.id}
                                 disabled
                                 required
                                 className="bg-white"

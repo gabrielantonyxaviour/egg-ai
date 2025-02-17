@@ -5,7 +5,7 @@ export async function POST(request: Request) {
         console.log('Received request to create play')
         const formData = await request.formData()
         const chef_id = formData.get('chef_id') as string
-        const username = formData.get("username") as string
+        const name = formData.get("name") as string
         const asset = formData.get('asset') as string
         const direction = formData.get('direction') as string
         const chain = formData.get('chain') as string
@@ -51,7 +51,7 @@ export async function POST(request: Request) {
             },
             method: 'POST',
             body: JSON.stringify({
-                username, tradePlay: {
+                username: name, tradePlay: {
                     chef_id,
                     asset,
                     direction,
